@@ -67,6 +67,15 @@
 # If not, see <http://www.dwarfvesaregonnabeatyoutodeath.com>.
 ###
 
+### Protection against multiple inclusions
+if [ -z ${CLEANUTILS_SH} ]; then
+
+CLEANUTILS_SH="CLEANUTILS_SH" # Reset using CLEANUTILS_SH=""
+
+### Inclusions
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/printUtils.sh"
+
 ### Functions
 ##!
 # @brief Delete all the provided directories
@@ -209,6 +218,8 @@ RestoreEnvVars()
 
     return $NB_FAILS
 }
+
+fi # CLEANUTILS_SH
 
 #  ______________________________ 
 # |                              |

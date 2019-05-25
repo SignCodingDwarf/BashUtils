@@ -76,9 +76,22 @@
 ### Behavior Variables
 FAILED_TEST_NB=0
 
+### Test inclusion state before inclusion
+if [ ! -z ${FUNCTIONUTILS_SH} ]; then 
+    echo "FUNCTIONUTILS_SH already has value ${FUNCTIONUTILS_SH}"
+    ((FAILED_TEST_NB++))
+    exit ${FAILED_TEST_NB}
+fi
+
 ### Include functionUtils.sh
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 . "${SCRIPT_LOCATION}/../functionUtils.sh"
+
+if [ ! "${FUNCTIONUTILS_SH}" = "FUNCTIONUTILS_SH" ]; then 
+    echo "Loading of functionUtils.sh failed"
+    ((FAILED_TEST_NB++))
+    exit ${FAILED_TEST_NB}
+fi
 
 ### Test before function exists
 FunctionExists DummyFunction

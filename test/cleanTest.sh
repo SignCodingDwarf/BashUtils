@@ -76,11 +76,23 @@
 ### Behavior Variables
 FAILED_TEST_NB=0
 
+### Test inclusion state before inclusion
+if [ ! -z ${CLEANUTILS_SH} ]; then 
+    echo "CLEANUTILS_SH already has value ${CLEANUTILS_SH}"
+    ((FAILED_TEST_NB++))
+    exit ${FAILED_TEST_NB}
+fi
+
 ### Include cleanUtils.sh
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../printUtils.sh"
 . "${SCRIPT_LOCATION}/../cleanUtils.sh"
 VERBOSE=true
+
+if [ ! "${CLEANUTILS_SH}" = "CLEANUTILS_SH" ]; then 
+    echo "Loading of cleanUtils.sh failed"
+    ((FAILED_TEST_NB++))
+    exit ${FAILED_TEST_NB}
+fi
 
 ### Functions
 ##!

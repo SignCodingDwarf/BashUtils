@@ -76,9 +76,24 @@
 ### Behavior Variables
 FAILED_TEST_NB=0
 
+### Test inclusion state before inclusion
+if [ ! -z ${PRINTUTILS_SH} ]; then 
+    echo "PRINTUTILS_SH already has value ${PRINTUTILS_SH}"
+    ((FAILED_TEST_NB++))
+    echo -e "\033[1;31mTest KO\033[0m"
+    exit ${FAILED_TEST_NB}
+fi
+
 ### Include printUtils.sh
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 . "${SCRIPT_LOCATION}/../printUtils.sh"
+
+if [ ! "${PRINTUTILS_SH}" = "PRINTUTILS_SH" ]; then 
+    echo "Loading of printUtils.sh failed"
+    ((FAILED_TEST_NB++))
+    echo -e "\033[1;31mTest KO\033[0m"
+    exit ${FAILED_TEST_NB}
+fi
 
 ### Test Functions
 ##!
@@ -207,7 +222,12 @@ TestPrint PrintError false "Some error message"
 VERBOSE=true # Enable verbosity
 TestPrint PrintInfo false "Some other info message" # Still displays nothing because funtion is defined once and for all at fisrt call
 
+### No reloading
+. "${SCRIPT_LOCATION}/../printUtils.sh" # Reload does nothing
+TestPrint PrintInfo false "Still an info message" # Still displays nothing because funtion was no loaded once again
+
 ### Test print with verbosity 
+PRINTUTILS_SH="" # Allows script to be reloaded
 . "${SCRIPT_LOCATION}/../printUtils.sh" # Reload print utils to "reset" PrintInfo
 TestPrint PrintInfo true "Yet another info message"
 TestPrint PrintWarning true "Yet another warning message"

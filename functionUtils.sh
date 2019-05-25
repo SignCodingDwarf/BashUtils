@@ -67,6 +67,11 @@
 # If not, see <http://www.dwarfvesaregonnabeatyoutodeath.com>.
 ###
 
+### Protection against multiple inclusions
+if [ -z ${FUNCTIONUTILS_SH} ]; then
+
+FUNCTIONUTILS_SH="FUNCTIONUTILS_SH" # Reset using FUNCTIONUTILS_SH=""
+
 ##!
 # @brief Check if a function with a given name exists
 # @param 1 : Function name
@@ -80,6 +85,7 @@ FunctionExists()
     declare -f $1 > /dev/null  
 }
 
+fi # FUNCTIONUTILS_SH
 
 #  ______________________________ 
 # |                              |

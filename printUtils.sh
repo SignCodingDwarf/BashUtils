@@ -67,6 +67,11 @@
 # If not, see <http://www.dwarfvesaregonnabeatyoutodeath.com>.
 ###
 
+### Protection against multiple inclusions
+if [ -z ${PRINTUTILS_SH} ]; then
+
+PRINTUTILS_SH="PRINTUTILS_SH" # Reset using PRINTUTILS_SH=""
+
 ### Colors
 # Usage
 usageColor='\033[1;34m' # Help on command is printed in light blue
@@ -185,6 +190,8 @@ PrintError()
     fi
     printf "${formatBegin}%s${formatEnd}\n" "$*" >&2 # Concatenate args into a string, print it and redirect to stderr 
 }
+
+fi # PRINTUTILS_SH
 
 #  ______________________________ 
 # |                              |
