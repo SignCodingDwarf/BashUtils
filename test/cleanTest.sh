@@ -2,8 +2,8 @@
 
 # file :  cleanTest.sh
 # author : SignC0dingDw@rf
-# version : 0.1
-# date : 23 May 2019
+# version : 1.0
+# date : 25 May 2019
 # Unit testing of cleanUtils file. Does not implement runTest framework because it tests functions this framework uses.
 
 ### Exit Code

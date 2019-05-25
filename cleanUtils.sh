@@ -2,8 +2,8 @@
 
 # file :  cleanUtils.sh
 # author : SignC0dingDw@rf
-# version : 0.2
-# date : 23 May 2019
+# version : 1.0
+# date : 25 May 2019
 # Definition of utility functions to clean environment after test
 
 ###

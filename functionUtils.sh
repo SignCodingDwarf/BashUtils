@@ -2,8 +2,8 @@
 
 # file :  functionUtils.sh
 # author : SignC0dingDw@rf
-# version : 0.1
-# date : 17 April 2019
+# version : 1.0
+# date : 25 May 2019
 # Definition of utilitaries and variables used to manage functions and commands and especially check their availability
 
 ###

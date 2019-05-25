@@ -2,8 +2,8 @@
 
 # file :  functionTest.sh
 # author : SignC0dingDw@rf
-# version : 0.1
-# date : 09 May 2019
+# version : 1.0
+# date : 25 May 2019
 # Unit testing of functionUtils file. Does not implement runTest framework because it tests functions this framework uses.
 
 ### Exit Code

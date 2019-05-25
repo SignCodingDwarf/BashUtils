@@ -2,8 +2,8 @@
 
 # file :  printUtils.sh
 # author : SignC0dingDw@rf
-# version : 0.2
-# date : 05 May 2019
+# version : 1.0
+# date : 25 May 2019
 # Definition of utilitaries and variables used to display information
 
 ###
