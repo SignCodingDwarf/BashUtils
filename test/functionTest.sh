@@ -77,7 +77,8 @@
 FAILED_TEST_NB=0
 
 ### Include functionUtils.sh
-. "../functionUtils.sh"
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/../functionUtils.sh"
 
 ### Test before function exists
 FunctionExists DummyFunction

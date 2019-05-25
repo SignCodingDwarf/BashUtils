@@ -77,8 +77,9 @@
 FAILED_TEST_NB=0
 
 ### Include cleanUtils.sh
-. "../printUtils.sh"
-. "../cleanUtils.sh"
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/../printUtils.sh"
+. "${SCRIPT_LOCATION}/../cleanUtils.sh"
 VERBOSE=true
 
 ### Functions

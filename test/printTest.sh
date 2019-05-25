@@ -76,6 +76,10 @@
 ### Behavior Variables
 FAILED_TEST_NB=0
 
+### Include printUtils.sh
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/../printUtils.sh"
+
 ### Test Functions
 ##!
 # @brief Test that a color is the expected one
@@ -153,9 +157,6 @@ TestPrint()
     fi
 }
 
-### Include printUtils.sh
-. "../printUtils.sh"
-
 ### Test colors
 TestColor "usage color" "\033[1;34m" ${usageColor}
 TestColor "description color" "\033[1;31m" ${descriptionColor}
@@ -207,7 +208,7 @@ VERBOSE=true # Enable verbosity
 TestPrint PrintInfo false "Some other info message" # Still displays nothing because funtion is defined once and for all at fisrt call
 
 ### Test print with verbosity 
-. "../printUtils.sh" # Reload print utils to "reset" PrintInfo
+. "${SCRIPT_LOCATION}/../printUtils.sh" # Reload print utils to "reset" PrintInfo
 TestPrint PrintInfo true "Yet another info message"
 TestPrint PrintWarning true "Yet another warning message"
 TestPrint PrintError true "Yet another error message"
