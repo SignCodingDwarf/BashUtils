@@ -2,8 +2,8 @@
 
 # file :  printUtils.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 25 May 2019
+# version : 1.1
+# date : 19 June 2019
 # Definition of utilitaries and variables used to display information
 
 ###
@@ -109,6 +109,36 @@ IsWrittenToTerminal()
 }
 
 ##!
+# @brief Manages print with handling of destination and format
+# @param 1  : desired output id
+# @param 2  : Begin format for terminal outputs
+# @param 3  : End format for terminal outputs
+# @param 4  : Begin format for non terminal outputs
+# @param 5  : End format for non terminal outputs
+# @param 6* : Elements to print
+# @return 0 if printing was successful, >0 otherwise
+#
+# Format depends on output type (terminal or not)
+#
+##
+FormattedPrint()
+{
+    local output=$1
+    local formatBeing=""
+    local formatEnd=""
+
+     IsWrittenToTerminal ${output}
+     if [ $? -eq 0 ]; then
+         formatBegin=$2
+         formatEnd=$3
+    else
+         formatBegin=$4
+         formatEnd=$5
+    fi
+    printf "${formatBegin}%s${formatEnd}\n" "${*:6}" >&${output}
+}
+
+##!
 # @brief Print an information formatted message to the stderr
 # @param * : Elements to display
 # @return 0 if printing was successful, >0 otherwise
@@ -125,16 +155,7 @@ PrintInfo()
     if [ "${VERBOSE}" = true ]; then
         PrintInfo() # Print is defined as verbose at first call
         {
-            local formatBegin=""
-            local formatEnd=""
-            IsWrittenToTerminal 2
-            if [ $? -eq 0 ]; then
-                formatBegin=${infoColor}
-                formatEnd=${NC}
-            else
-                formatBegin="[Info] : "
-            fi
-            printf "${formatBegin}%s${formatEnd}\n" "$*" >&2 # Concatenate args into a string, print it and redirect to stderr 
+            FormattedPrint 2 ${infoColor} ${NC} "[Info] : " "" "$*"
         }
         PrintInfo "$*" # We print the first thing we wanted to print
     else
@@ -156,16 +177,7 @@ PrintInfo()
 ##
 PrintWarning()
 {
-    local formatBegin=""
-    local formatEnd=""
-    IsWrittenToTerminal 2
-    if [ $? -eq 0 ]; then
-        formatBegin=${warningColor}
-        formatEnd=${NC}
-    else
-        formatBegin="[Warning] : "
-    fi
-    printf "${formatBegin}%s${formatEnd}\n" "$*" >&2 # Concatenate args into a string, print it and redirect to stderr
+    FormattedPrint 2 ${warningColor} ${NC} "[Warning] : " "" "$*"
 }
 
 ##!
@@ -179,16 +191,7 @@ PrintWarning()
 ##
 PrintError()
 {
-    local formatBegin=""
-    local formatEnd=""
-    IsWrittenToTerminal 2
-    if [ $? -eq 0 ]; then
-        formatBegin=${errorColor}
-        formatEnd=${NC}
-    else
-        formatBegin="[Error] : "
-    fi
-    printf "${formatBegin}%s${formatEnd}\n" "$*" >&2 # Concatenate args into a string, print it and redirect to stderr 
+    FormattedPrint 2 ${errorColor} ${NC} "[Error] : " "" "$*"
 }
 
 fi # PRINTUTILS_SH

@@ -2,8 +2,8 @@
 
 # file :  printTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 25 May 2019
+# version : 1.1
+# date : 19 June 2019
 # Unit testing of printUtils file. Does not implement runTest framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -123,7 +123,31 @@ TestColor()
     fi
 }
 
-### Test Functions
+##!
+# @brief Test that the result of a formatted print to file (i.e. not terminal) is the one expected
+# @return 0 if function displays message as expected, or 1 if message is not printed correctly
+#
+# Also increments FAILED_TEST_NB to ligthen test "main" structure
+#
+##
+TestPrintToFile()
+{
+    # Compute printed text and expected text
+    FormattedPrint 1 "Head Terminal : " " : Foot Terminal" "Head File : " " : Foot File" "A" "small" "text" > toto
+    local printedText=$(cat toto)
+    local expectedText="Head File : A small text : Foot File"
+    
+    # Compute output
+    if [ "${printedText}" = "${expectedText}" ]; then
+        return 0
+    else
+        echo "Expected ${expectedText}"
+        echo "but ${printedText} was printed"
+        ((FAILED_TEST_NB++)) ## New invalid test
+        return 1
+    fi    
+}
+
 ##!
 # @brief Test that the result of a print method is indeed the one expected
 # @param 1 : Function name
@@ -212,6 +236,9 @@ if [ $? -ne 1 ]; then
     ((FAILED_TEST_NB++)) ## New invalid test
     echo "[IsWrittenToTerminal] : Error output should be redirected"
 fi
+
+### Test FormattedPrint
+TestPrintToFile # We only test redirection to file because printing to terminal does not allow us to capture flux
 
 ### Test print with no verbosity 
 # Only redirection to file is tested
