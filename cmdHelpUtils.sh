@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# file :  printUtils.sh
+# file :  cmdHelpUtils.sh
 # author : SignC0dingDw@rf
-# version : 1.2
+# version : 1.0
 # date : 22 June 2019
-# Definition of utilitaries and variables used to display information
+# Definition of utilitaries and variables used to display help and usage of commands
 
 ###
 # MIT License
@@ -68,138 +68,149 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${PRINTUTILS_SH} ]; then
+if [ -z ${CMDHELPUTILS_SH} ]; then
 
-PRINTUTILS_SH="PRINTUTILS_SH" # Reset using PRINTUTILS_SH=""
+CMDHELPUTILS_SH="CMDHELPUTILS_SH" # Reset using CMDHELPUTILS_SH=""
 
-### Colors
-# Usage
-usageColor='\033[1;34m' # Help on command is printed in light blue
-descriptionColor='\033[1;31m' # Help on command is printed in light red
-helpOptionsColor='\033[1;32m' # Help on options is printed in light green
-helpCategoryColor="\033[1;33m" # Help options categories are printed in yellow
-
-# Messages
-infoColor='\033[1;34m' # Infos are printed in light blue
-warningColor='\033[1;33m' # Errors are printed in yellow
-errorColor='\033[1;31m' # Errors are printed in light red
-
-# No format
-NC='\033[0m' # No Color
+### Include printUtils.sh
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/printUtils.sh"
 
 ### Functions
 ##!
-# @brief Detect if output is written to a terminal or not
-# @param 1 : Terminal name
-# @return 0 if terminal, 1 if not a terminal, 2 if input is invalid
-#
-# From https://stackoverflow.com/questions/911168/how-to-detect-if-my-shell-script-is-running-through-a-pipe
+# @brief Print usage of a script
+# @param 1  : Cmd name
+# @param 2* : Cmd arguments
+# @return 0 if print was successful, >0 otherwise
 #
 ##
-IsWrittenToTerminal()
+PrintUsage()
 {
-    if [ -z "$1" ]; then
-        return 2
-    fi
-    if [ -t $1 ]; then
+    printf "Usage \n"
+    FormattedPrint 1 "${usageColor}" "${NC}" "" "" " ./${1} ${*:2}" 
+}
+
+##!
+# @brief Print description of a cmd action
+# @param *  : Description
+# @return 0 if print was successful, >0 otherwise
+#
+##
+PrintDescription()
+{
+    FormattedPrint 1 "${descriptionColor}" "${NC}" "" "" "$*"
+}
+
+##!
+# @brief Print category of options
+# @param * : Category name
+# @return 0 if print was successful, >0 otherwise
+#
+##
+PrintOptionCategory()
+{
+    FormattedPrint 1 "${helpCategoryColor}----- " " -----${NC}" "----- " " -----" "$*"
+}
+
+##!
+# @brief Check if option is long option (i.e. starts with --)
+# @param 1 : Option name (with - or --)
+# @return 0 if option is long, 1 otherwise
+#
+##
+IsLongOption()
+{
+    local option=$1
+    if [[ ${option} == --[A-Za-z0-9][A-Za-z0-9]* ]]; then # long options have at least two characters
         return 0
     else
         return 1
-    fi 
+    fi         
 }
 
 ##!
-# @brief Manages print with handling of destination and format
-# @param 1  : desired output id
-# @param 2  : Begin format for terminal outputs
-# @param 3  : End format for terminal outputs
-# @param 4  : Begin format for non terminal outputs
-# @param 5  : End format for non terminal outputs
-# @param 6* : Elements to print
-# @return 0 if printing was successful, >0 otherwise
-#
-# Format depends on output type (terminal or not)
+# @brief Check if option is short option (i.e. starts with -)
+# @param 1 : Option name (with - or --)
+# @return 0 if option is short, 1 otherwise
 #
 ##
-FormattedPrint()
+IsShortOption()
 {
-    local output=$1
-    local formatBeing=""
-    local formatEnd=""
-
-     IsWrittenToTerminal ${output}
-     if [ $? -eq 0 ]; then
-         formatBegin=$2
-         formatEnd=$3
+    local option=$1
+    if [[ ${option} == -[A-Za-z0-9] ]]; then # long options have at least two characters
+        return 0
     else
-         formatBegin=$4
-         formatEnd=$5
-    fi
-
-    if [[ "${formatBegin}" == -* ]]; then # When first char starts with - it is mistaken for an option so should be handled
-        printf "%s%s${formatEnd}\n" "${formatBegin}" "${*:6}" >&${output}
-    else
-        printf "${formatBegin}%s${formatEnd}\n" "${*:6}" >&${output}
+        return 1
     fi
 }
 
 ##!
-# @brief Print an information formatted message to the stderr
-# @param * : Elements to display
-# @return 0 if printing was successful, >0 otherwise
-#
-# From https://stackoverflow.com/questions/2990414/echo-that-outputs-to-stderr
-# Uses the environment defined VERBOSE to determine whether printg should be done.
-# Uses the principle of collapsing functions in bash 
-# https://wiki.bash-hackers.org/howto/collapsing_functions 
-# Format depends on output type (terminal or not)
+# @brief Print option with both long and short options
+# @param 1 : Short option (if used) or long option (if used)
+# @param 2 : Short option (if used) or long option (if used)
+# @param 2/3* : Option description (depends on option position)
+# @return 0 if print was successful, 255 if no option is defined, 254 if an option is defined twice, >0 otherwise
 #
 ##
-PrintInfo()
+PrintOption()
 {
-    if [ "${VERBOSE}" = true ]; then
-        PrintInfo() # Print is defined as verbose at first call
-        {
-            FormattedPrint 2 ${infoColor} ${NC} "[Info] : " "" "$*"
-        }
-        PrintInfo "$*" # We print the first thing we wanted to print
+    local shortOpt=""
+    local longOpt=""
+    local description=""
+
+    ### Check First argument. Must be an option
+    if IsShortOption "$1"; then
+        shortOpt="$1"
+    elif IsLongOption "$1"; then
+        longOpt="$1"
     else
-        PrintInfo() 
-        {
-            : # Does nothing if verbosity is disabled
-        } 
+        PrintError "$1 is not a valid option name"
+        return 255
     fi
+
+    ### Check Second argument. Can be an option
+    if IsShortOption "$2"; then
+        if [ -n "${shortOpt}" ]; then
+            PrintError "Defined twice short option with ${shortOpt} and $2"
+            return 254
+        fi
+        shortOpt="$2"
+        description="${*:3}"
+    elif IsLongOption "$2"; then
+        if [ -n "${longOpt}" ]; then
+            PrintError "Defined twice long option with ${longOpt} and $2"
+            return 254
+        fi
+        longOpt="$2"
+        description="${*:3}"        
+    else
+        description="${*:2}" # Only one option with description
+    fi
+
+    ### Apply styling (must be done here because it is in the middle of the text)
+    local optionText=""
+    if [ -n "${shortOpt}" ]; then
+        if IsWrittenToTerminal 1; then
+            ${shortOpt}="${helpOptionsColor}${shortOpt}${NC}"
+        fi
+        optionText="${shortOpt}"
+    fi
+
+    if [ -n "${longOpt}" ]; then
+        if IsWrittenToTerminal 1; then
+            ${longOpt}="${helpOptionsColor}${longOpt}${NC}"
+        fi
+        if [ -n "${optionText}" ]; then ## Separate both options if they exist
+            optionText="${optionText} or "
+        fi
+        optionText="${optionText}${longOpt}"
+    fi
+
+    ### Write text (styling was previously done)
+    FormattedPrint 1 "" "" "" "" "${optionText}\t\t" "${description}"
 }
 
-##!
-# @brief Print a warning formatted message to the stderr
-# @param * : Elements to display
-# @return 0 if printing was successful, >0 otherwise
-#
-# From https://stackoverflow.com/questions/2990414/echo-that-outputs-to-stderr
-# Format depends on output type (terminal or not)
-#
-##
-PrintWarning()
-{
-    FormattedPrint 2 ${warningColor} ${NC} "[Warning] : " "" "$*"
-}
-
-##!
-# @brief Print an error formatted message to the stderr
-# @param * : Elements to display
-# @return 0 if printing was successful, >0 otherwise
-#
-# From https://stackoverflow.com/questions/2990414/echo-that-outputs-to-stderr
-# Format depends on output type (terminal or not)
-#
-##
-PrintError()
-{
-    FormattedPrint 2 ${errorColor} ${NC} "[Error] : " "" "$*"
-}
-
-fi # PRINTUTILS_SH
+fi # CMDHELPUTILS_SH
 
 #  ______________________________ 
 # |                              |
