@@ -2,8 +2,8 @@
 
 # file :  cmdHelpUtilsTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 22 June 2019
+# version : 1.1
+# date : 23 June 2019
 # Unit testing of cmdHelpUtils file. Does not implement runTest framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -256,7 +256,7 @@ if [ $? -ne 0 ]; then
     ((FAILED_TEST_NB++)) ## New invalid test
     echo "Option should be displayed without error"
 fi
-printf "%s\n" "-v or --verbose\t\t set verbosity" > ref
+printf "%s\t\t %s\n" "-v or --verbose" "set verbosity" > ref
 TestWrittenText toto ref 
 
 PrintOption "-h" "print help" > toto
@@ -264,7 +264,7 @@ if [ $? -ne 0 ]; then
     ((FAILED_TEST_NB++)) ## New invalid test
     echo "Option should be displayed without error"
 fi
-printf "%s\n" "-h\t\t print help" > ref
+printf "%s\t\t %s\n" "-h" "print help" > ref
 TestWrittenText toto ref 
 
 PrintOption "--test" "testing stuff" > toto
@@ -272,7 +272,7 @@ if [ $? -ne 0 ]; then
     ((FAILED_TEST_NB++)) ## New invalid test
     echo "Option should be displayed without error"
 fi
-printf "%s\n" "--test\t\t testing stuff" > ref
+printf "%s\t\t %s\n" "--test" "testing stuff" > ref
 TestWrittenText toto ref 
 
 PrintOption "--foo" "-f" "what" "a" "bar" > toto
@@ -280,7 +280,7 @@ if [ $? -ne 0 ]; then
     ((FAILED_TEST_NB++)) ## New invalid test
     echo "Option should be displayed without error"
 fi
-printf "%s\n" "-f or --foo\t\t what a bar" > ref
+printf "%s\t\t %s\n" "-f or --foo" "what a bar" > ref
 TestWrittenText toto ref 
 
 PrintOption "--long" "-s" "--fail" "after arg 3 : not viewed as an option" > toto
@@ -288,7 +288,7 @@ if [ $? -ne 0 ]; then
     ((FAILED_TEST_NB++)) ## New invalid test
     echo "Option shoudl be ignored at argument 3"
 fi
-printf "%s\n" "-s or --long\t\t --fail after arg 3 : not viewed as an option" > ref
+printf "%s\t\t %s\n" "-s or --long" "--fail after arg 3 : not viewed as an option" > ref
 TestWrittenText toto ref 
 
 ### Test PrintOption error cases

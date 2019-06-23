@@ -2,8 +2,8 @@
 
 # file :  cmdHelpUtils.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 22 June 2019
+# version : 1.1
+# date : 23 June 2019
 # Definition of utilitaries and variables used to display help and usage of commands
 
 ###
@@ -187,27 +187,28 @@ PrintOption()
         description="${*:2}" # Only one option with description
     fi
 
-    ### Apply styling (must be done here because it is in the middle of the text)
-    local optionText=""
+    ### Print (we do not use FormattedPrint because there is sytling in the middle of the text)
     if [ -n "${shortOpt}" ]; then
+        if [ -n "${longOpt}" ]; then
+            if IsWrittenToTerminal 1; then
+                printf "${helpOptionsColor}%s${NC} or ${helpOptionsColor}%s${NC}\t\t %s\n" "${shortOpt}" "${longOpt}" "${description}"  
+            else
+                printf "%s or %s\t\t %s\n" "${shortOpt}" "${longOpt}" "${description}"
+            fi
+        else
+            if IsWrittenToTerminal 1; then
+                printf "${helpOptionsColor}%s${NC}\t\t %s\n" "${shortOpt}" "${description}"  
+            else
+                printf "%s\t\t %s\n" "${shortOpt}" "${description}" 
+            fi
+        fi
+    else
         if IsWrittenToTerminal 1; then
-            ${shortOpt}="${helpOptionsColor}${shortOpt}${NC}"
+            printf "${helpOptionsColor}%s${NC}\t\t %s\n" "${longOpt}" "${description}"  
+        else
+            printf "%s\t\t %s\n" "${longOpt}" "${description}" 
         fi
-        optionText="${shortOpt}"
     fi
-
-    if [ -n "${longOpt}" ]; then
-        if IsWrittenToTerminal 1; then
-            ${longOpt}="${helpOptionsColor}${longOpt}${NC}"
-        fi
-        if [ -n "${optionText}" ]; then ## Separate both options if they exist
-            optionText="${optionText} or "
-        fi
-        optionText="${optionText}${longOpt}"
-    fi
-
-    ### Write text (styling was previously done)
-    FormattedPrint 1 "" "" "" "" "${optionText}\t\t" "${description}"
 }
 
 fi # CMDHELPUTILS_SH
