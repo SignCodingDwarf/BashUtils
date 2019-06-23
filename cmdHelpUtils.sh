@@ -2,7 +2,7 @@
 
 # file :  cmdHelpUtils.sh
 # author : SignC0dingDw@rf
-# version : 1.1
+# version : 1.2
 # date : 23 June 2019
 # Definition of utilitaries and variables used to display help and usage of commands
 
@@ -73,8 +73,8 @@ if [ -z ${CMDHELPUTILS_SH} ]; then
 CMDHELPUTILS_SH="CMDHELPUTILS_SH" # Reset using CMDHELPUTILS_SH=""
 
 ### Include printUtils.sh
-SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/printUtils.sh"
+SCRIPT_LOCATION_CMDHELPUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_CMDHELPUTILS_SH}/printUtils.sh"
 
 ### Functions
 ##!

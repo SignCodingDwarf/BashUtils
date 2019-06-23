@@ -2,8 +2,8 @@
 
 # file :  cleanUtils.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 25 May 2019
+# version : 1.1
+# date : 23 June 2019
 # Definition of utility functions to clean environment after test
 
 ###
@@ -73,8 +73,8 @@ if [ -z ${CLEANUTILS_SH} ]; then
 CLEANUTILS_SH="CLEANUTILS_SH" # Reset using CLEANUTILS_SH=""
 
 ### Inclusions
-SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/printUtils.sh"
+SCRIPT_LOCATION_CLEANUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_CLEANUTILS_SH}/printUtils.sh"
 
 ### Functions
 ##!
