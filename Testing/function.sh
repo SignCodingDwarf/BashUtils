@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# file :  functionUtils.sh
-# author : SignC0dingDw@rf
-# version : 1.0
-# date : 25 May 2019
-# Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @file function.sh
+# @author SignC0dingDw@rf
+# @version 1.1
+# @date 23 October 2019
+# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
 
 ###
 # MIT License
@@ -68,9 +68,13 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTIONUTILS_SH} ]; then
+if [ -z ${FUNCTION_SH} ]; then
 
-FUNCTIONUTILS_SH="FUNCTIONUTILS_SH" # Reset using FUNCTIONUTILS_SH=""
+### Include parseVersion.sh
+SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+
+FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
 
 ##!
 # @brief Check if a function with a given name exists
@@ -85,7 +89,7 @@ FunctionExists()
     declare -f $1 > /dev/null  
 }
 
-fi # FUNCTIONUTILS_SH
+fi # FUNCTION_SH
 
 #  ______________________________ 
 # |                              |

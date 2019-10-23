@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# file :  functionTest.sh
-# author : SignC0dingDw@rf
-# version : 1.0
-# date : 25 May 2019
-# Unit testing of functionUtils file. Does not implement runTest framework because it tests functions this framework uses.
+# @file functionTest.sh
+# @author SignC0dingDw@rf
+# @version 2.0
+# @date 27 October 2019
+# @brief Unit testing of function.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
 #
@@ -73,73 +73,174 @@
 # If not, see <http://www.dwarfvesaregonnabeatyoutodeath.com>.
 ###
 
+################################################################################
+###                                                                          ###
+###                  Redefinition of BashUnit basic functions                ###
+###                                                                          ###
+################################################################################
+### Define a minimal working set allowing to have a readable test while not using BashUnit framework since it tests elements used by BashUtils
 ### Behavior Variables
 FAILED_TEST_NB=0
+RUN_TEST_NB=0
+TEST_NAME_FORMAT='\033[1;34m' # Test name is printed in light blue
+FAILURE_FORMAT='\033[1;31m' # A failure is printed in light red
+SUCCESS_FORMAT='\033[1;32m' # A success is printed in light green
+NF='\033[0m' # No Format
 
-### Test inclusion state before inclusion
-if [ ! -z ${FUNCTIONUTILS_SH} ]; then 
-    echo "FUNCTIONUTILS_SH already has value ${FUNCTIONUTILS_SH}"
-    ((FAILED_TEST_NB++))
-    exit ${FAILED_TEST_NB}
-fi
-
-### Include functionUtils.sh
-SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../functionUtils.sh"
-
-if [ ! "${FUNCTIONUTILS_SH}" = "FUNCTIONUTILS_SH" ]; then 
-    echo "Loading of functionUtils.sh failed"
-    ((FAILED_TEST_NB++))
-    exit ${FAILED_TEST_NB}
-fi
-
-### Test before function exists
-FunctionExists DummyFunction
-RESULT=$?
-if [ $RESULT -eq "0" ]; then
-    echo "Test of non existing function should not return 0"
-    ((FAILED_TEST_NB++)) ## New invalid test
-fi
-
-### Test that function does not create symbol of function
-FunctionExists DummyFunction
-RESULT=$?
-if [ $RESULT -eq "0" ]; then
-    echo "Testing function existence should not create associated symbol"
-    ((FAILED_TEST_NB++)) ## New invalid test
-fi
-
-### Declare function
-DummyFunction()
+### Functions
+##!
+# @brief Do a test
+# @param 1 : Test description (in quotes)
+# @param 2 : Test to perform
+# @return 0 if test is successful, 1 if test failed, 2 if no test has been specified
+#
+## 
+doTest()
 {
-    echo "Does nothing"
+    local TEST_NAME="$1"
+    local TEST_CONTENT="$2"
+
+    if [ -z "${TEST_CONTENT}" ]; then
+        printf "${FAILURE_FORMAT}Empty test ${TEST_NAME}${NF}\n"
+        return 2
+    fi
+
+    printf "${TEST_NAME_FORMAT}***** Running Test : ${TEST_NAME} *****${NF}\n"
+    ((RUN_TEST_NB++))
+    eval ${TEST_CONTENT}
+
+    local TEST_RESULT=$?
+    if [ "${TEST_RESULT}" -ne "0" ]; then
+        printf "${FAILURE_FORMAT}Test Failed with error ${TEST_RESULT}${NF}\n"
+        ((FAILED_TEST_NB++))
+        return 1
+    else
+        printf "${SUCCESS_FORMAT}Test Successful${NF}\n"
+        return 0
+    fi 
 }
 
-### Test existing function
-FunctionExists DummyFunction
-RESULT=$?
-if [ $RESULT -ne "0" ]; then
-    echo "Existence test of existing function should return 0 but returned ${RESULT} instead."
-    ((FAILED_TEST_NB++)) ## New invalid test
-fi
+##!
+# @brief Display test suite results
+# @return 0 
+#
+## 
+displaySuiteResults()
+{
+    local SUCCESSFUL_TESTS=0
+    ((SUCCESSFUL_TESTS=${RUN_TEST_NB}-${FAILED_TEST_NB}))
+    if [ ${FAILED_TEST_NB} -eq 0 ]; then
+        printf "${SUCCESS_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : OK${NF}\n"
+    else
+        printf "${FAILURE_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : KO${NF}\n"
+    fi    
+}
 
-### Delete Function symbol
-unset -f DummyFunction
+################################################################################
+###                                                                          ###
+###                              Declare Tests                               ###
+###                                                                          ###
+################################################################################
+##!
+# @brief Check if script is not included
+# @return 0 if script is not included, 1 otherwise
+#
+## 
+scriptNotIncluded()
+{
+    if [ ! -z ${FUNCTION_SH} ]; then 
+        echo "FUNCTION_SH already has value ${FUNCTION_SH}"
+        return 1
+    else
+        return 0
+    fi
+}
 
-### Test function deletion
-FunctionExists DummyFunction
-RESULT=$?
-if [ $RESULT -eq "0" ]; then
-    echo "Deletion of function should remove symbol."
-    ((FAILED_TEST_NB++)) ## New invalid test
-fi
+##!
+# @brief Check if script is included with correct version
+# @return 0 if script is included, 1 otherwise
+#
+## 
+scriptIncluded()
+{
+    SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+    . "${SCRIPT_LOCATION}/../function.sh"
 
-### Test result
-if [ ${FAILED_TEST_NB} -eq 0 ]; then
-    echo -e "\033[1;32mTest OK\033[0m"
-else
-    echo -e "\033[1;31mTest KO\033[0m"
-fi
+    if [ ! "${FUNCTION_SH}" = "1.1" ]; then 
+        echo "Loading of function.sh failed. Content is ${FUNCTION_SH}"
+        return 1
+    else
+        return 0
+    fi
+}
+
+##!
+# @brief Test FunctionExists in multiple ways
+# @return 0 if all tests are successful, 1 otherwise
+#
+## 
+testFunctionExists()
+{
+    ### Test before function exists
+    FunctionExists DummyFunction
+    RESULT=$?
+    if [ $RESULT -eq "0" ]; then
+        echo "Test of non existing function should not return 0"
+        return 1
+    fi
+
+    ### Test that function does not create symbol of function
+    FunctionExists DummyFunction
+    RESULT=$?
+    if [ $RESULT -eq "0" ]; then
+        echo "Testing function existence should not create associated symbol"
+        return 1
+    fi
+
+    ### Declare function
+    DummyFunction()
+    {
+        echo "Does nothing"
+    }
+
+    ### Test existing function
+    FunctionExists DummyFunction
+    RESULT=$?
+    if [ $RESULT -ne "0" ]; then
+        echo "Existence test of existing function should return 0 but returned ${RESULT} instead."
+        return 1
+    fi
+
+    ### Delete Function symbol
+    unset -f DummyFunction
+
+    ### Test function deletion
+    FunctionExists DummyFunction
+    RESULT=$?
+    if [ $RESULT -eq "0" ]; then
+        echo "Deletion of function should remove symbol."
+        return 1
+    fi
+
+    return 0
+}
+
+################################################################################
+###                                                                          ###
+###                              Execute tests                               ###
+###                                                                          ###
+################################################################################
+### SetUp
+
+### Do Tests
+doTest "function.sh not included" scriptNotIncluded
+doTest "function.sh included" scriptIncluded
+doTest "test FunctionExists" testFunctionExists
+
+### Clean Up
+
+### Tests result
+displaySuiteResults
 
 exit ${FAILED_TEST_NB}
 
