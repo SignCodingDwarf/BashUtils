@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# file :  cmdHelpUtils.sh
-# author : SignC0dingDw@rf
-# version : 1.2
-# date : 23 June 2019
-# Definition of utilitaries and variables used to display help and usage of commands
+# @file cmdHelp.sh
+# @author SignC0dingDw@rf
+# @version 1.0
+# @date 27 October 2019
+# @brief Definition of formats and functions used to display help and usage of commands
 
 ###
 # MIT License
@@ -68,13 +68,21 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${CMDHELPUTILS_SH} ]; then
-
-CMDHELPUTILS_SH="CMDHELPUTILS_SH" # Reset using CMDHELPUTILS_SH=""
+if [ -z ${CMDHELP_SH} ]; then
 
 ### Include printUtils.sh
-SCRIPT_LOCATION_CMDHELPUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_CMDHELPUTILS_SH}/printUtils.sh"
+SCRIPT_LOCATION_CMDHELP_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_CMDHELP_SH}/../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_CMDHELP_SH}/debug.sh"
+
+CMDHELP_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using CMDHELP_SH=""
+
+### Format
+# Usage
+usageFormat='\033[1;34m' # Help on command is printed in light blue
+descriptionFormat='\033[1;31m' # Help on command is printed in light red
+helpOptionsFormat='\033[1;32m' # Help on options is printed in light green
+helpCategoryFormat="\033[1;33m" # Help options categories are printed in yellow
 
 ### Functions
 ##!
@@ -87,7 +95,7 @@ SCRIPT_LOCATION_CMDHELPUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/
 PrintUsage()
 {
     printf "Usage \n"
-    FormattedPrint 1 "${usageColor}" "${NC}" "" "" " ./${1} ${*:2}" 
+    FormattedPrint 1 "${usageFormat}" "${NF}" "" "" " ./${1} ${*:2}" 
 }
 
 ##!
@@ -98,7 +106,7 @@ PrintUsage()
 ##
 PrintDescription()
 {
-    FormattedPrint 1 "${descriptionColor}" "${NC}" "" "" "$*"
+    FormattedPrint 1 "${descriptionFormat}" "${NF}" "" "" "$*"
 }
 
 ##!
@@ -109,7 +117,7 @@ PrintDescription()
 ##
 PrintOptionCategory()
 {
-    FormattedPrint 1 "${helpCategoryColor}----- " " -----${NC}" "----- " " -----" "$*"
+    FormattedPrint 1 "${helpCategoryFormat}----- " " -----${NF}" "----- " " -----" "$*"
 }
 
 ##!
@@ -191,27 +199,27 @@ PrintOption()
     if [ -n "${shortOpt}" ]; then
         if [ -n "${longOpt}" ]; then
             if IsWrittenToTerminal 1; then
-                printf "${helpOptionsColor}%s${NC} or ${helpOptionsColor}%s${NC}\t\t %s\n" "${shortOpt}" "${longOpt}" "${description}"  
+                printf "${helpOptionsFormat}%s${NF} or ${helpOptionsFormat}%s${NF}\t\t %s\n" "${shortOpt}" "${longOpt}" "${description}"  
             else
                 printf "%s or %s\t\t %s\n" "${shortOpt}" "${longOpt}" "${description}"
             fi
         else
             if IsWrittenToTerminal 1; then
-                printf "${helpOptionsColor}%s${NC}\t\t %s\n" "${shortOpt}" "${description}"  
+                printf "${helpOptionsFormat}%s${NF}\t\t %s\n" "${shortOpt}" "${description}"  
             else
                 printf "%s\t\t %s\n" "${shortOpt}" "${description}" 
             fi
         fi
     else
         if IsWrittenToTerminal 1; then
-            printf "${helpOptionsColor}%s${NC}\t\t %s\n" "${longOpt}" "${description}"  
+            printf "${helpOptionsFormat}%s${NF}\t\t %s\n" "${longOpt}" "${description}"  
         else
             printf "%s\t\t %s\n" "${longOpt}" "${description}" 
         fi
     fi
 }
 
-fi # CMDHELPUTILS_SH
+fi # CMDHELP_SH
 
 #  ______________________________ 
 # |                              |

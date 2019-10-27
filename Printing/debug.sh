@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# file :  printUtils.sh
-# author : SignC0dingDw@rf
-# version : 1.2
-# date : 22 June 2019
-# Definition of utilitaries and variables used to display information
+# @file debug.sh
+# @author SignC0dingDw@rf
+# @version 1.0
+# @date 27 October 2019
+# @brief Definition of debug formats and of functions used for debug printing
 
 ###
 # MIT License
@@ -68,84 +68,24 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${PRINTUTILS_SH} ]; then
+if [ -z ${DEBUG_SH} ]; then
 
-PRINTUTILS_SH="PRINTUTILS_SH" # Reset using PRINTUTILS_SH=""
+### Include parseVersion.sh
+SCRIPT_LOCATION_PRINT_DEBUG_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_DEBUG_SH}/../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_DEBUG_SH}/base.sh"
 
-### Colors
-# Usage
-usageColor='\033[1;34m' # Help on command is printed in light blue
-descriptionColor='\033[1;31m' # Help on command is printed in light red
-helpOptionsColor='\033[1;32m' # Help on options is printed in light green
-helpCategoryColor="\033[1;33m" # Help options categories are printed in yellow
+DEBUG_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using DEBUG_SH=""
 
-# Messages
-infoColor='\033[1;34m' # Infos are printed in light blue
-warningColor='\033[1;33m' # Errors are printed in yellow
-errorColor='\033[1;31m' # Errors are printed in light red
-
-# No format
-NC='\033[0m' # No Color
-
-### Functions
-##!
-# @brief Detect if output is written to a terminal or not
-# @param 1 : Terminal name
-# @return 0 if terminal, 1 if not a terminal, 2 if input is invalid
-#
-# From https://stackoverflow.com/questions/911168/how-to-detect-if-my-shell-script-is-running-through-a-pipe
-#
-##
-IsWrittenToTerminal()
-{
-    if [ -z "$1" ]; then
-        return 2
-    fi
-    if [ -t $1 ]; then
-        return 0
-    else
-        return 1
-    fi 
-}
-
-##!
-# @brief Manages print with handling of destination and format
-# @param 1  : desired output id
-# @param 2  : Begin format for terminal outputs
-# @param 3  : End format for terminal outputs
-# @param 4  : Begin format for non terminal outputs
-# @param 5  : End format for non terminal outputs
-# @param 6* : Elements to print
-# @return 0 if printing was successful, >0 otherwise
-#
-# Format depends on output type (terminal or not)
-#
-##
-FormattedPrint()
-{
-    local output=$1
-    local formatBeing=""
-    local formatEnd=""
-
-     IsWrittenToTerminal ${output}
-     if [ $? -eq 0 ]; then
-         formatBegin=$2
-         formatEnd=$3
-    else
-         formatBegin=$4
-         formatEnd=$5
-    fi
-
-    if [[ "${formatBegin}" == -* ]]; then # When first char starts with - it is mistaken for an option so should be handled
-        printf "%s%s${formatEnd}\n" "${formatBegin}" "${*:6}" >&${output}
-    else
-        printf "${formatBegin}%s${formatEnd}\n" "${*:6}" >&${output}
-    fi
-}
+### Formats
+infoFormat='\033[1;34m' # Infos are printed in light blue
+warningFormat='\033[1;33m' # Errors are printed in yellow
+errorFormat='\033[1;31m' # Errors are printed in light red
 
 ##!
 # @brief Print an information formatted message to the stderr
 # @param * : Elements to display
+# @output Nothing if VERBOSE is false at the time of inclusion, an info formatted message otherwise
 # @return 0 if printing was successful, >0 otherwise
 #
 # From https://stackoverflow.com/questions/2990414/echo-that-outputs-to-stderr
@@ -160,7 +100,7 @@ PrintInfo()
     if [ "${VERBOSE}" = true ]; then
         PrintInfo() # Print is defined as verbose at first call
         {
-            FormattedPrint 2 ${infoColor} ${NC} "[Info] : " "" "$*"
+            FormattedPrint 2 ${infoFormat} ${NF} "[Info] : " "" "$*"
         }
         PrintInfo "$*" # We print the first thing we wanted to print
     else
@@ -174,6 +114,7 @@ PrintInfo()
 ##!
 # @brief Print a warning formatted message to the stderr
 # @param * : Elements to display
+# @output A warning formatted message otherwise
 # @return 0 if printing was successful, >0 otherwise
 #
 # From https://stackoverflow.com/questions/2990414/echo-that-outputs-to-stderr
@@ -182,12 +123,13 @@ PrintInfo()
 ##
 PrintWarning()
 {
-    FormattedPrint 2 ${warningColor} ${NC} "[Warning] : " "" "$*"
+    FormattedPrint 2 ${warningFormat} ${NF} "[Warning] : " "" "$*"
 }
 
 ##!
 # @brief Print an error formatted message to the stderr
 # @param * : Elements to display
+# @output An error formatted message otherwise
 # @return 0 if printing was successful, >0 otherwise
 #
 # From https://stackoverflow.com/questions/2990414/echo-that-outputs-to-stderr
@@ -196,10 +138,10 @@ PrintWarning()
 ##
 PrintError()
 {
-    FormattedPrint 2 ${errorColor} ${NC} "[Error] : " "" "$*"
+    FormattedPrint 2 ${errorFormat} ${NF} "[Error] : " "" "$*"
 }
 
-fi # PRINTUTILS_SH
+fi # DEBUG_SH
 
 #  ______________________________ 
 # |                              |
