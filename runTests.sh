@@ -77,16 +77,27 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 
 ### Functions
 ##!
-# @brief Do a test
-# @output The list of modules (i.e. subdirectories) of BashUnit (terminated with /)
-# @return 0 if test is successful, 1 if ls encountered some minor issues , 2 if nls encountered some major issues
-#
-# Return code is the one of the ls function
+# @brief List all TESTS folders
+# @output The list of TESTS folders of BashUnit (terminated with /)
+# @return 0 if test is successful, see find for other error codes
 #
 ## 
-ListModulesPaths()
+ListTestFolderPaths()
 {
-    ls -d ${SCRIPT_LOCATION}/*/
+    find ${SCRIPT_LOCATION} -type d -name '*TESTS'
+}
+
+### Functions
+##!
+# @brief Convert a test folder to module
+# @input 1 : Test folder path
+# @output The module name. If module has submodule (i.e. subdirectories), submodules are separated by ":"
+# @return 0 if test is successful, see find for other error codes
+#
+## 
+TestFolderToModule()
+{
+    echo $1 | sed -r "s|${SCRIPT_LOCATION}/||" | sed -r 's|/TESTS||' | sed -r 's|/|:|'
 }
 
 ################################################################################
@@ -94,17 +105,30 @@ ListModulesPaths()
 ###                                Main Loop                                 ###
 ###                                                                          ###
 ################################################################################
-### List modules
-MODULES=$(ListModulesPaths)
+### List test folders
+TEST_FOLDERS=$(ListTestFolderPaths)
+
+### Result control variables
+TESTS_NAMES=()
+TESTS_RESULTS=()
 
 ### Run tests
-for module in ${MODULES}; do
-    echo ${module}
+for test_folder in ${TEST_FOLDERS}; do
+    MODULE=$(TestFolderToModule ${test_folder}) # Get module name from test folder
+    printf "****** Running tests of module ${MODULE} ******\n"
     ## List test files
-    TEST_FILES=$(ls -d ${module}TESTS/*)
+    TEST_FILES=$(ls ${test_folder}/*.sh)
     for test_file in ${TEST_FILES}; do
         (. ${test_file}) # Displays the output but does not exit when a test ends
+        TEST_RESULT=$?
+        TESTS_NAMES+=("${MODULE}:${test_file##*/}") # Add running test tests list with only file path
+        TESTS_RESULTS+=("${TEST_RESULT}") # Add result to results list
     done
+done
+
+### Display tests summary
+for index in "${!TESTS_NAMES[@]}"; do 
+    printf "KO for Test ${TESTS_NAMES[${index}]} = ${TESTS_RESULTS[${index}]}\n"
 done
 
 exit 0
