@@ -239,7 +239,7 @@ scriptIncluded()
 
 ##!
 # @brief Check AddTests behavior if no arguments are provided
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 AddTestsNoParam()
@@ -262,7 +262,7 @@ AddTestsNoParam()
 
 ##!
 # @brief Check AddTests behavior if no arguments are provided
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 AddTestsOnlyAddFailures()
@@ -288,7 +288,7 @@ AddTestsOnlyAddFailures()
 
 ##!
 # @brief Check AddTests behavior if no arguments are provided
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 AddTestsAddFailures()
@@ -315,7 +315,7 @@ AddTestsAddFailures()
 
 ##!
 # @brief Check AddTests behavior if no arguments are provided
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 AddTestsOnlyAddSuccess()
@@ -339,7 +339,7 @@ AddTestsOnlyAddSuccess()
 
 ##!
 # @brief Check AddTests behavior if no arguments are provided
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 AddTestsAddRedundant()
@@ -365,7 +365,7 @@ AddTestsAddRedundant()
 
 ##!
 # @brief Check RunTests behavior if no arguments are provided
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 RunTestsNoParam()
@@ -393,7 +393,7 @@ RunTestsNoParam()
 
 ##!
 # @brief Check RunTests behavior if only tests to run are not in test suite 
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 RunTestsOnlyRunFailures()
@@ -425,7 +425,7 @@ RunTestsOnlyRunFailures()
 
 ##!
 # @brief Check RunTests behavior if some tests to run are not in test suite
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 RunTestsRunFailures()
@@ -457,7 +457,7 @@ RunTestsRunFailures()
 
 ##!
 # @brief Check RunTests behavior if all tests are run
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 RunTestsOnlyRunSuccess()
@@ -488,7 +488,7 @@ RunTestsOnlyRunSuccess()
 
 ##!
 # @brief Check RunTests behavior if some tests are already run
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 RunTestsRunRedundant()
@@ -520,7 +520,7 @@ RunTestsRunRedundant()
 
 ##!
 # @brief Check RunAllTests behavior if there are no tests in suite
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 RunAllTestsEmpty()
@@ -551,7 +551,7 @@ RunAllTestsEmpty()
 
 ##!
 # @brief Check RunAllTests behavior in nominal case
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 RunAllTestsNominal()
@@ -583,7 +583,7 @@ RunAllTestsNominal()
 
 ##!
 # @brief Check RunAllTests behavior if there are duplicates in it
-# @return 0 if script is included, 1 otherwise
+# @return 0 if behavior is as expected, 1 otherwise
 #
 ## 
 RunAllTestsDuplicates()

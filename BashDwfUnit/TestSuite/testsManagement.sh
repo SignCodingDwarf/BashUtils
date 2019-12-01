@@ -74,9 +74,9 @@ if [ -z ${TESTSMANAGEMENT_SH} ]; then
 SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 . "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/../../Parsing/parseVersion.sh"
 . "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/structure.sh"
-. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../../Printing/debug.sh"
-. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../../Testing/function.sh"
-. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../../Testing/arrays.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/../../Printing/debug.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/../../Testing/function.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/../../Testing/arrays.sh"
 
 TESTSMANAGEMENT_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTSMANAGEMENT_SH=""
 
