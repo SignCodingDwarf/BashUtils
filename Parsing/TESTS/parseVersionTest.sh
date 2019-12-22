@@ -3,8 +3,8 @@
 ###
 # @file parseVersionTest.sh
 # @author SignC0dingDw@rf
-# @version 0.1
-# @date 23 October 2019
+# @version 1.0
+# @date 23 December 2019
 # @brief Unit testing of parseVersion.sh file. Reimplements BashUnit basic test features because it is used by this framework.
 ###
 
@@ -74,62 +74,66 @@
 ###                  Redefinition of BashUnit basic functions                ###
 ###                                                                          ###
 ################################################################################
-### Define a minimal working set allowing to have a readable test while not using BashUnit framework since it tests elements used by BashUtils
-### Behavior Variables
-FAILED_TEST_NB=0
-RUN_TEST_NB=0
-TEST_NAME_FORMAT='\033[1;34m' # Test name is printed in light blue
-FAILURE_FORMAT='\033[1;31m' # A failure is printed in light red
-SUCCESS_FORMAT='\033[1;32m' # A success is printed in light green
-NF='\033[0m' # No Format
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/../../TESTS/testUtils.sh"
 
-### Functions
-##!
-# @brief Do a test
-# @param 1 : Test description (in quotes)
-# @param 2 : Test to perform
-# @return 0 if test is successful, 1 if test failed, 2 if no test has been specified
-#
-## 
-doTest()
+
+################################################################################
+###                                                                          ###
+###                                  Setup                                   ###
+###                                                                          ###
+################################################################################
+Setup()
 {
-    local TEST_NAME="$1"
-    local TEST_CONTENT="$2"
+    # Create file with no version
+    touch /tmp/barNoVersion
+    echo "; @file barNoVersion" >> /tmp/barNoVersion
+    echo "; @author Chewbacca" >> /tmp/barNoVersion
+    echo "; @brief The Empire Sucks" >> /tmp/barNoVersion
+    echo "; version 4.5.6" >> /tmp/barNoVersion
+    echo "print version : E.N.V2" >> /tmp/barNoVersion
 
-    if [ -z "${TEST_CONTENT}" ]; then
-        printf "${FAILURE_FORMAT}Empty test ${TEST_NAME}${NF}\n"
-        return 2
-    fi
+    # Create file with single version
+    touch /tmp/barVersion
+    echo "// @file barVersion" >> /tmp/barVersion
+    echo "// @author A dwarf" >> /tmp/barVersion
+    echo "// @version 2.3.4" >> /tmp/barVersion
+    echo "// @brief Fortune and fame" >> /tmp/barVersion
+    echo "Doing things" >> /tmp/barVersion
+    echo "More things" >> /tmp/barVersion
 
-    printf "${TEST_NAME_FORMAT}***** Running Test : ${TEST_NAME} *****${NF}\n"
-    ((RUN_TEST_NB++))
-    eval "${TEST_CONTENT}"
+    # Create file with multiple versions
+    touch /tmp/barMultiVersion
+    echo "! @file barMultiVersion" >> /tmp/barMultiVersion
+    echo "! @author A dwarf" >> /tmp/barMultiVersion
+    echo "! @version 42.69rev666" >> /tmp/barMultiVersion
+    echo "! @brief The answer" >> /tmp/barMultiVersion
+    echo "Busy working" >> /tmp/barMultiVersion
+    echo "More work ?" >> /tmp/barMultiVersion
+    echo "! @version 7.497" >> /tmp/barMultiVersion
+    echo "D'oh" >> /tmp/barMultiVersion
+    echo "! @version 12.34" >> /tmp/barMultiVersion
 
-    local TEST_RESULT=$?
-    if [ "${TEST_RESULT}" -ne "0" ]; then
-        printf "${FAILURE_FORMAT}Test Failed with error ${TEST_RESULT}${NF}\n"
-        ((FAILED_TEST_NB++))
-        return 1
-    else
-        printf "${SUCCESS_FORMAT}Test Successful${NF}\n"
-        return 0
-    fi 
+    # Create file with version definition in the middle of a line
+    touch /tmp/barFullLineVersion
+    echo "// @file barStartVersion" >> /tmp/barFullLineVersion
+    echo "// @author A dwarf" >> /tmp/barFullLineVersion
+    echo "// The versions is indicated with // @version <VERSION>" >> /tmp/barFullLineVersion
+    echo "// @brief The line other this one shoud be ignored" >> /tmp/barFullLineVersion
+    echo "// @version 6.3.4" >> /tmp/barFullLineVersion    
+
+    return 0
 }
 
-##!
-# @brief Display test suite results
-# @return 0 
-#
-## 
-displaySuiteResults()
+################################################################################
+###                                                                          ###
+###                                 Cleanup                                  ###
+###                                                                          ###
+################################################################################
+Cleanup()
 {
-    local SUCCESSFUL_TESTS=0
-    ((SUCCESSFUL_TESTS=${RUN_TEST_NB}-${FAILED_TEST_NB}))
-    if [ ${FAILED_TEST_NB} -eq 0 ]; then
-        printf "${SUCCESS_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : OK${NF}\n"
-    else
-        printf "${FAILURE_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : KO${NF}\n"
-    fi    
+    rm -f /tmp/bar*
+    return 0
 }
 
 ################################################################################
@@ -138,52 +142,22 @@ displaySuiteResults()
 ###                                                                          ###
 ################################################################################
 ##!
-# @brief Check if script is not included
-# @return 0 if script is not included, 1 otherwise
-#
-## 
-scriptNotIncluded()
-{
-    if [ ! -z ${PARSEVERSION_SH} ]; then 
-        echo "PARSEVERSION_SH already has value ${PARSEVERSION_SH}"
-        return 1
-    else
-        return 0
-    fi
-}
-
-##!
-# @brief Check if script is included with correct version
-# @return 0 if script is included, 1 otherwise
-#
-## 
-scriptIncluded()
-{
-    SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-    . "${SCRIPT_LOCATION}/../parseVersion.sh"
-
-    if [ ! "${PARSEVERSION_SH}" = "1.0" ]; then 
-        echo "Loading of parseVersion.sh failed. Content is ${PARSEVERSION_SH}"
-        return 1
-    else
-        return 0
-    fi
-}
-
-##!
 # @brief Check behavior of parseDoxygenVersion if provided file does not exist
 # @return 0 if behavior ok, 1 otherwise
 #
 ## 
 testFileDoesNotExist()
 {
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
     parseDoxygenVersion /tmp/filethat/does/not/exist "//"
-    local RESULT=$?
-    if [ $RESULT -ne "1" ]; then
-        echo "Trying to parse on a non existing file should return 1"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
+    COMMAND_RESULT=$?
+
+    # Process result
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\" " "Trying to parse on a non existing file should return 1 but returned ${COMMAND_RESULT}"
     return 0
 }
 
@@ -194,19 +168,19 @@ testFileDoesNotExist()
 ## 
 testFileNoVersion()
 {
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
     local VERSION_PARSED="etc"
     VERSION_PARSED=$(parseDoxygenVersion /tmp/barNoVersion ";")
-    local RESULT=$?
-    if [ $RESULT -ne "2" ]; then
-        echo "Trying to parse a file with no version should return 2"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
-    if [ ! "${VERSION_PARSED}" = "0.0" ]; then
-        echo "Default version if version line not found should be 0.0"
-        echo "but was ${VERSION_PARSED}"
-        return 1
-    fi
+    COMMAND_RESULT=$?
+
+    # Check results
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"2\" " "Trying to parse a file with no version should return 2 but returned ${COMMAND_RESULT}"
+    endTestIfAssertFails "\"${VERSION_PARSED}\" = \"0.0\"" "Default version if version line not found should be 0.0 but was ${VERSION_PARSED}"
+
     return 0
 }
 
@@ -217,19 +191,20 @@ testFileNoVersion()
 ## 
 testFileVersion()
 {
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
     local VERSION_PARSED="etc"
     VERSION_PARSED=$(parseDoxygenVersion /tmp/barVersion "//")
-    local RESULT=$?
-    if [ $RESULT -ne "0" ]; then
-        echo "Parsing should have succeeded"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
-    if [ ! "${VERSION_PARSED}" = "2.3.4" ]; then
-        echo "Read Version should be 2.3.4"
-        echo "but was ${VERSION_PARSED}"
-        return 1
-    fi
+    COMMAND_RESULT=$?
+
+    # Check results
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\" " "Parsing should have succeeded with error code 0 but returned ${COMMAND_RESULT}"
+
+    endTestIfAssertFails "\"${VERSION_PARSED}\" = \"2.3.4\"" "Read Version should be 2.3.4 but was ${VERSION_PARSED}"
+
     return 0
 }
 
@@ -240,19 +215,20 @@ testFileVersion()
 ## 
 testFileMultiVersion()
 {
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
     local VERSION_PARSED="etc"
     VERSION_PARSED=$(parseDoxygenVersion /tmp/barMultiVersion "!")
-    local RESULT=$?
-    if [ $RESULT -ne "0" ]; then
-        echo "Parsing should have succeeded"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
-    if [ ! "${VERSION_PARSED}" = "42.69rev666" ]; then
-        echo "Read Version should be 42.69rev666" # first version encountered should be displayed
-        echo "but was ${VERSION_PARSED}"
-        return 1
-    fi
+    COMMAND_RESULT=$?
+
+    # Check results
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\" " "Parsing should have succeeded with error code 0 but returned ${COMMAND_RESULT}"
+
+    endTestIfAssertFails "\"${VERSION_PARSED}\" = \"42.69rev666\"" "Read Version should be 42.69rev666 but was ${VERSION_PARSED}"
+
     return 0
 }
 
@@ -263,19 +239,20 @@ testFileMultiVersion()
 ## 
 testFileFullLineVersion()
 {
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
     local VERSION_PARSED="etc"
     VERSION_PARSED=$(parseDoxygenVersion /tmp/barFullLineVersion "//")
-    local RESULT=$?
-    if [ $RESULT -ne "0" ]; then
-        echo "Parsing should have succeeded"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
-    if [ ! "${VERSION_PARSED}" = "6.3.4" ]; then
-        echo "Read Version should be 6.3.4" # previous version is in the middle of a line so should be ignored
-        echo "but was ${VERSION_PARSED}"
-        return 1
-    fi
+    COMMAND_RESULT=$?
+
+    # Check results
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\" " "Parsing should have succeeded with error code 0 but returned ${COMMAND_RESULT}"
+
+    endTestIfAssertFails "\"${VERSION_PARSED}\" = \"6.3.4\"" "Read Version should be 6.3.4 but was ${VERSION_PARSED}" # previous version is in the middle of a line so should be ignored
+
     return 0
 }
 
@@ -286,13 +263,16 @@ testFileFullLineVersion()
 ## 
 testBashFileDoesNotExist()
 {
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
     parseBashDoxygenVersion /tmp/filethat/does/not/exist
-    local RESULT=$?
-    if [ $RESULT -ne "1" ]; then
-        echo "Trying to parse on a non existing file should return 1"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
+    COMMAND_RESULT=$?
+
+    # Process result
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\" " "Trying to parse on a non existing file should return 1 but returned ${COMMAND_RESULT}"
     return 0
 }
 
@@ -303,21 +283,22 @@ testBashFileDoesNotExist()
 ## 
 testBashFileNoVersion()
 {
-    local VERSION_PARSED="etc"
+    # Pre test operations
     sed -i 's/;/#/g' /tmp/barNoVersion # Replace line head by bash comments
 
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
+    local VERSION_PARSED="etc"
     VERSION_PARSED=$(parseBashDoxygenVersion /tmp/barNoVersion)
-    local RESULT=$?
-    if [ $RESULT -ne "2" ]; then
-        echo "Trying to parse a file with no version should return 2"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
-    if [ ! "${VERSION_PARSED}" = "0.0" ]; then
-        echo "Default version if version line not found should be 0.0"
-        echo "but was ${VERSION_PARSED}"
-        return 1
-    fi
+    COMMAND_RESULT=$?
+
+    # Check results
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"2\" " "Trying to parse a file with no version should return 2 but returned ${COMMAND_RESULT}"
+    endTestIfAssertFails "\"${VERSION_PARSED}\" = \"0.0\"" "Default version if version line not found should be 0.0 but was ${VERSION_PARSED}"
+
     return 0
 }
 
@@ -328,20 +309,23 @@ testBashFileNoVersion()
 ## 
 testBashFileVersion()
 {
-    local VERSION_PARSED="etc"
+    # Pre test operations
     sed -i 's/\/\//#/g' /tmp/barVersion # Replace line head by bash comments
+
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
+    local VERSION_PARSED="etc"
     VERSION_PARSED=$(parseBashDoxygenVersion /tmp/barVersion)
-    local RESULT=$?
-    if [ $RESULT -ne "0" ]; then
-        echo "Parsing should have succeeded"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
-    if [ ! "${VERSION_PARSED}" = "2.3.4" ]; then
-        echo "Read Version should be 2.3.4"
-        echo "but was ${VERSION_PARSED}"
-        return 1
-    fi
+    COMMAND_RESULT=$?
+
+    # Check results
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\" " "Parsing should have succeeded with error code 0 but returned ${COMMAND_RESULT}"
+
+    endTestIfAssertFails "\"${VERSION_PARSED}\" = \"2.3.4\"" "Read Version should be 2.3.4 but was ${VERSION_PARSED}"
+
     return 0
 }
 
@@ -352,20 +336,23 @@ testBashFileVersion()
 ## 
 testBashFileMultiVersion()
 {
-    local VERSION_PARSED="etc"
+    # Pre test operations
     sed -i 's/!/#/g' /tmp/barMultiVersion # Replace line head by bash comments
-    VERSION_PARSED=$(parseBashDoxygenVersion /tmp/barMultiVersion)
-    local RESULT=$?
-    if [ $RESULT -ne "0" ]; then
-        echo "Parsing should have succeeded"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
-    if [ ! "${VERSION_PARSED}" = "42.69rev666" ]; then
-        echo "Read Version should be 42.69rev666" # first version encountered should be displayed
-        echo "but was ${VERSION_PARSED}"
-        return 1
-    fi
+
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
+    local VERSION_PARSED="etc"
+    VERSION_PARSED=$(parseBashDoxygenVersion /tmp/barMultiVersion "!")
+    COMMAND_RESULT=$?
+
+    # Check results
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\" " "Parsing should have succeeded with error code 0 but returned ${COMMAND_RESULT}"
+
+    endTestIfAssertFails "\"${VERSION_PARSED}\" = \"42.69rev666\"" "Read Version should be 42.69rev666 but was ${VERSION_PARSED}"
+
     return 0
 }
 
@@ -376,20 +363,23 @@ testBashFileMultiVersion()
 ## 
 testBashFileFullLineVersion()
 {
-    local VERSION_PARSED="etc"
+    # Pre test operations
     sed -i 's/\/\//#/g' /tmp/barFullLineVersion # Replace line head by bash comments
-    VERSION_PARSED=$(parseBashDoxygenVersion /tmp/barFullLineVersion)
-    local RESULT=$?
-    if [ $RESULT -ne "0" ]; then
-        echo "Parsing should have succeeded"
-        echo "but returned ${RESULT}"
-        return 1
-    fi
-    if [ ! "${VERSION_PARSED}" = "6.3.4" ]; then
-        echo "Read Version should be 6.3.4" # previous version is in the middle of a line so should be ignored
-        echo "but was ${VERSION_PARSED}"
-        return 1
-    fi
+
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../parseVersion.sh" "1.0"
+
+    # Call command
+    local COMMAND_RESULT=0
+    local VERSION_PARSED="etc"
+    VERSION_PARSED=$(parseBashDoxygenVersion /tmp/barFullLineVersion "//")
+    COMMAND_RESULT=$?
+
+    # Check results
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\" " "Parsing should have succeeded with error code 0 but returned ${COMMAND_RESULT}"
+
+    endTestIfAssertFails "\"${VERSION_PARSED}\" = \"6.3.4\"" "Read Version should be 6.3.4 but was ${VERSION_PARSED}" # previous version is in the middle of a line so should be ignored
+
     return 0
 }
 
@@ -398,62 +388,19 @@ testBashFileFullLineVersion()
 ###                              Execute tests                               ###
 ###                                                                          ###
 ################################################################################
-### SetUp
-# Create file with no version
-touch /tmp/barNoVersion
-echo "; @file barNoVersion" >> /tmp/barNoVersion
-echo "; @author Chewbacca" >> /tmp/barNoVersion
-echo "; @brief The Empire Sucks" >> /tmp/barNoVersion
-echo "; version 4.5.6" >> /tmp/barNoVersion
-echo "print version : E.N.V2" >> /tmp/barNoVersion
-
-# Create file with single version
-touch /tmp/barVersion
-echo "// @file barVersion" >> /tmp/barVersion
-echo "// @author A dwarf" >> /tmp/barVersion
-echo "// @version 2.3.4" >> /tmp/barVersion
-echo "// @brief Fortune and fame" >> /tmp/barVersion
-echo "Doing things" >> /tmp/barVersion
-echo "More things" >> /tmp/barVersion
-
-# Create file with multiple versions
-touch /tmp/barMultiVersion
-echo "! @file barMultiVersion" >> /tmp/barMultiVersion
-echo "! @author A dwarf" >> /tmp/barMultiVersion
-echo "! @version 42.69rev666" >> /tmp/barMultiVersion
-echo "! @brief The answer" >> /tmp/barMultiVersion
-echo "Busy working" >> /tmp/barMultiVersion
-echo "More work ?" >> /tmp/barMultiVersion
-echo "! @version 7.497" >> /tmp/barMultiVersion
-echo "D'oh" >> /tmp/barMultiVersion
-echo "! @version 12.34" >> /tmp/barMultiVersion
-
-# Create file with version definition in the middle of a line
-touch /tmp/barFullLineVersion
-echo "// @file barStartVersion" >> /tmp/barFullLineVersion
-echo "// @author A dwarf" >> /tmp/barFullLineVersion
-echo "// The versions is indicated with // @version <VERSION>" >> /tmp/barFullLineVersion
-echo "// @brief The line other this one shoud be ignored" >> /tmp/barFullLineVersion
-echo "// @version 6.3.4" >> /tmp/barFullLineVersion
-
-### Do Tests
-doTest "parseVersion.sh not included" scriptNotIncluded
-doTest "parseVersion.sh included" scriptIncluded
 # parseDoxygenVersion tests
-doTest "parseDoxygenVersion with unexisting file" testFileDoesNotExist
-doTest "parseDoxygenVersion with no version line" testFileNoVersion
-doTest "parseDoxygenVersion with valid version line" testFileVersion
-doTest "parseDoxygenVersion with multiple valid version lines" testFileMultiVersion
-doTest "parseDoxygenVersion with version definition in the middle of a line" testFileFullLineVersion
-# apply same tests with parseBashDoxygenVersion
-doTest "parseBashDoxygenVersion with unexisting file" testBashFileDoesNotExist
-doTest "parseBashDoxygenVersion with no version line" testBashFileNoVersion
-doTest "parseBashDoxygenVersion with valid version line" testBashFileVersion
-doTest "parseBashDoxygenVersion with multiple valid version lines" testBashFileMultiVersion
-doTest "parseBashDoxygenVersion with version definition in the middle of a line" testBashFileFullLineVersion
+doTest testFileDoesNotExist
+doTest testFileNoVersion
+doTest testFileVersion
+doTest testFileMultiVersion
+doTest testFileFullLineVersion
 
-### Clean Up
-rm -f /tmp/bar*
+# parseBashDoxygenVersion tests
+doTest testBashFileDoesNotExist
+doTest testBashFileNoVersion
+doTest testBashFileVersion
+doTest testBashFileMultiVersion
+doTest testBashFileFullLineVersion
 
 ### Tests result
 displaySuiteResults

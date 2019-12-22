@@ -2,8 +2,8 @@
 
 # @file runTests.sh
 # @author SignC0dingDw@rf
-# @version 0.1
-# @date 06 November 2019
+# @version 0.2
+# @date 23 December 2019
 # @brief Script allowing to run tests scripts in all BashUtils modules and display results
 
 ### Exit Code
@@ -78,13 +78,13 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 ### Functions
 ##!
 # @brief List all TESTS folders
-# @output The list of TESTS folders of BashUnit (terminated with /)
+# @output The list of TESTS folders of BashUnit
 # @return 0 if test is successful, see find for other error codes
 #
 ## 
 ListTestFolderPaths()
 {
-    find ${SCRIPT_LOCATION} -type d -name '*TESTS'
+    find ${SCRIPT_LOCATION} -type d -name '*TESTS' | grep -v "${SCRIPT_LOCATION}/TESTS" # Ignore TESTS folder not in a module because it only contains help utils
 }
 
 ### Functions
