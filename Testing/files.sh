@@ -1,16 +1,10 @@
 #!/bin/bash
 
-# @file functionTest.sh
+# @file files.sh
 # @author SignC0dingDw@rf
-# @version 2.1
-# @date 23 December 2019
-# @brief Unit testing of function.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
-
-### Exit Code
-#
-# 0 : Execution succeeded
-# Number of failed tests otherwise
-#
+# @version 1.0
+# @date 24 December 2019
+# @brief Definition of functions used to perform tests on files
 
 ###
 # MIT License
@@ -73,74 +67,71 @@
 # If not, see <http://www.dwarfvesaregonnabeatyoutodeath.com>.
 ###
 
-################################################################################
-###                                                                          ###
-###                  Redefinition of BashUnit basic functions                ###
-###                                                                          ###
-################################################################################
-SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../TESTS/testUtils.sh"
+### Protection against multiple inclusions
+if [ -z ${FILES_SH} ]; then
 
-################################################################################
-###                                                                          ###
-###                              Declare Tests                               ###
-###                                                                          ###
-################################################################################
+### Include parseVersion.sh
+SCRIPT_LOCATION_FILES_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_FILES_SH}/../Parsing/parseVersion.sh"
+
+FILES_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FILES_SH=""
+
 ##!
-# @brief Test FunctionExists in multiple ways
-# @return 0 if all tests are successful, exit 1 after first test failure
+# @brief Check if a path is path of a file
+# @param 1 : Path
+# @return 0 if file path, 1 otherwise
 #
-## 
-testFunctionExists()
+##
+isFilePath()
 {
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.1"
-
-    ### Test before function exists
-    FunctionExists DummyFunction
-    local COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
-    ### Test that function does not create symbol of function
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
-    ### Declare function
-    DummyFunction()
-    {
-        echo "Does nothing"
-    }
-
-    ### Test existing function
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Test of existing function should return code 0 but returned code ${COMMAND_RESULT}"
-   
- ### Delete Function symbol
-    unset -f DummyFunction
-
-    ### Test function deletion
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
-
-    return 0
+    if [ -f "$1" ]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
-################################################################################
-###                                                                          ###
-###                              Execute tests                               ###
-###                                                                          ###
-################################################################################
-### Do Tests
-doTest testFunctionExists
+##!
+# @brief Compare files content
+# @param 1 : File 1
+# @param 2 : File 2
+# @return 0 if files are identical
+#         1 if files are different
+#         2 if first argument is not a file
+#         3 if second argument is not a file
+#
+##
+areFilesIdentical()
+{
+    ### Get arguments
+    local file_1="$1"
+    local file_2="$2"
+    
+    ### Check arguments
+    isFilePath "${file_1}"
+    local is_file_1=$?
+    if [ "${is_file_1}" -ne "0" ]; then
+        return 2
+    fi
 
-### Tests result
-displaySuiteResults
+    ### Check arguments
+    isFilePath "${file_2}"
+    local is_file_2=$?
+    if [ "${is_file_2}" -ne "0" ]; then
+        return 3
+    fi
 
-exit ${FAILED_TEST_NB}
+    ### Compoare
+    cmp -s "${file_1}" "${file_2}"
+    local are_identical=$?
+    if [ "${are_identical}" -eq "0" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+fi # FILES_SH
 
 #  ______________________________ 
 # |                              |

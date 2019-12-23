@@ -3,8 +3,8 @@
 ###
 # @file testUtils.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 23 December 2019
+# @version 1.1
+# @date 26 December 2019
 # @brief Reimplements BashDwfUnit basic test features to allow testing of elements used by this framework.
 ###
 
@@ -73,7 +73,7 @@
 if [ -z ${TESTUTILS_SH} ]; then
 
 # Definition of inclusion also contains the current library version
-TESTUTILS_SH="1.0" # Reset using TESTUTILS_SH=""
+TESTUTILS_SH="1.1" # Reset using TESTUTILS_SH=""
 
 ################################################################################
 ###                                                                          ###
@@ -202,7 +202,7 @@ endTestIfAssertFails()
     eval "test $1"
     if [ "$?" -ne "0" ]; then
         if [ ! -z "$2" ]; then
-            printf "$2\n"
+            printf "%s\n" "$2"
             exit 1
         fi
     fi   

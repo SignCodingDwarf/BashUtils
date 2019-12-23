@@ -2,8 +2,8 @@
 
 # @file debugTest.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 27 October 2019
+# @version 1.1
+# @date 24 December 2019
 # @brief Unit testing of debug.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -78,63 +78,8 @@
 ###                  Redefinition of BashUnit basic functions                ###
 ###                                                                          ###
 ################################################################################
-### Define a minimal working set allowing to have a readable test while not using BashUnit framework since it tests elements used by BashUtils
-### Behavior Variables
-FAILED_TEST_NB=0
-RUN_TEST_NB=0
-TEST_NAME_FORMAT='\033[1;34m' # Test name is printed in light blue
-FAILURE_FORMAT='\033[1;31m' # A failure is printed in light red
-SUCCESS_FORMAT='\033[1;32m' # A success is printed in light green
-NF='\033[0m' # No Format
-
-### Functions
-##!
-# @brief Do a test
-# @param 1 : Test description (in quotes)
-# @param 2 : Test to perform
-# @return 0 if test is successful, 1 if test failed, 2 if no test has been specified
-#
-## 
-doTest()
-{
-    local TEST_NAME="$1"
-    local TEST_CONTENT="$2"
-
-    if [ -z "${TEST_CONTENT}" ]; then
-        printf "${FAILURE_FORMAT}Empty test ${TEST_NAME}${NF}\n"
-        return 2
-    fi
-
-    printf "${TEST_NAME_FORMAT}***** Running Test : ${TEST_NAME} *****${NF}\n"
-    ((RUN_TEST_NB++))
-    eval ${TEST_CONTENT}
-
-    local TEST_RESULT=$?
-    if [ "${TEST_RESULT}" -ne "0" ]; then
-        printf "${FAILURE_FORMAT}Test Failed with error ${TEST_RESULT}${NF}\n"
-        ((FAILED_TEST_NB++))
-        return 1
-    else
-        printf "${SUCCESS_FORMAT}Test Successful${NF}\n"
-        return 0
-    fi 
-}
-
-##!
-# @brief Display test suite results
-# @return 0 
-#
-## 
-displaySuiteResults()
-{
-    local SUCCESSFUL_TESTS=0
-    ((SUCCESSFUL_TESTS=${RUN_TEST_NB}-${FAILED_TEST_NB}))
-    if [ ${FAILED_TEST_NB} -eq 0 ]; then
-        printf "${SUCCESS_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : OK${NF}\n"
-    else
-        printf "${FAILURE_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : KO${NF}\n"
-    fi    
-}
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/../../TESTS/testUtils.sh"
 
 ################################################################################
 ###                                                                          ###
@@ -146,7 +91,8 @@ displaySuiteResults()
 # @param 1 : Function name
 # @param 2 : Verbose enabled
 # @param 3 : Message
-# @return 0 if function displays message as expected, 1 if message is not printed correctly or 2 if function name is unknown
+# @return 0 if function displays message as expected
+#         exit 1 if message is not printed correctly or if function name is unknown
 #
 ##
 TestPrint()
@@ -167,9 +113,7 @@ TestPrint()
     elif [ "${functionName}" = "PrintError" ]; then
         local expectedMessage="[Error] : ${message}"
     else
-        echo "Unknown function ${functionName}"
-        ((FAILED_TEST_NB++)) ## New invalid test
-        return 2
+        endTestIfAssertFails '0 -eq 1' "Unknown function ${functionName}" # Dummy assertion to make test fail
     fi
 
     # Run function and get Written message
@@ -177,59 +121,16 @@ TestPrint()
     writtenMessage=$(cat /tmp/bar)
 
     # Compute output
-    if [ "${writtenMessage}" = "${expectedMessage}" ]; then
-        return 0
-    else
-        echo "Expected ${functionName} to print ${expectedMessage}"
-        echo "but ${writtenMessage} was printed"
-        return 1
-    fi
-}
+    endTestIfAssertFails "\"${writtenMessage}\" = \"${expectedMessage}\"" "Expected ${functionName} to print\n${expectedMessage}\nBut\n ${writtenMessage}\nwas printed"   
 
-
-################################################################################
-###                                                                          ###
-###                              Declare Tests                               ###
-###                                                                          ###
-################################################################################
-##!
-# @brief Check if script is not included
-# @return 0 if script is not included, 1 otherwise
-#
-## 
-scriptNotIncluded()
-{
-    if [ ! -z ${DEBUG_SH} ]; then 
-        echo "DEBUG_SH already has value ${DEBUG_SH}"
-        return 1
-    else
-        return 0
-    fi
-}
-
-##!
-# @brief Check if script is included with correct version
-# @return 0 if script is included, 1 otherwise
-#
-## 
-scriptIncluded()
-{
-    SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-    . "${SCRIPT_LOCATION}/../debug.sh"
-
-    if [ ! "${DEBUG_SH}" = "1.0" ]; then 
-        echo "Loading of debug.sh failed. Content is ${DEBUG_SH}"
-        return 1
-    else
-        return 0
-    fi
+    return 0
 }
 
 ##!
 # @brief Test that a format is the expected one
 # @param 1 : Expected value
 # @param 2 : Current value
-# @return 0 if format has expected value, 1 otherwise
+# @return 0 if format has expected value, exit 1 otherwise
 #
 ##
 testFormat()
@@ -243,13 +144,91 @@ testFormat()
         echo "Invalid Format"
         echo "Expected ${expectedValue}"
         echo "Got ${currentValue}"
-        return 1    
+        exit 1    
     fi
+}
+
+################################################################################
+###                                                                          ###
+###                             Global Variables                             ###
+###                                                                          ###
+################################################################################
+CURRENT_VERBOSE=""
+
+################################################################################
+###                                                                          ###
+###                                  Setup                                   ###
+###                                                                          ###
+################################################################################
+Setup()
+{
+    CURRENT_VERBOSE=${VERBOSE}
+    VERBOSE=false # Because testDebugPrint assumes that it is false at start
+    return 0
+}
+
+################################################################################
+###                                                                          ###
+###                                 Cleanup                                  ###
+###                                                                          ###
+################################################################################
+Cleanup()
+{
+    rm -f /tmp/bar
+    VERBOSE=${CURRENT_VERBOSE} # Restaure VERBOSE value
+    return 0
+}
+
+################################################################################
+###                                                                          ###
+###                              Declare Tests                               ###
+###                                                                          ###
+################################################################################
+##!
+# @brief Check infoFormat value
+# @return 0 if format has expected value, exit 1 otherwise
+#
+## 
+testInfoFormat()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.0"
+
+    testFormat "\033[1;34m" "${infoFormat}"
+    return 0    
+}
+
+##!
+# @brief Check warningFormat value
+# @return 0 if format has expected value, exit 1 otherwise
+#
+## 
+testWarningFormat()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.0"
+
+    testFormat "\033[1;33m" "${warningFormat}"
+    return 0    
+}
+
+##!
+# @brief Check errorFormat value
+# @return 0 if format has expected value, exit 1 otherwise
+#
+## 
+testErrorFormat()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.0"
+
+    testFormat "\033[1;31m" "${errorFormat}"
+    return 0    
 }
 
 ##!
 # @brief Test the behavior of printing methods
-# @return 0 if behavior is the one expected, 1 otherwise or 2 if an unknown method has been called
+# @return 0 if behavior is the one expected, ecit 1 otherwise
 #
 # Only redirection to file is tested since we cannot capture output to terminal
 # - Initial conditions VERBOSE=false
@@ -265,63 +244,29 @@ testFormat()
 ##
 testDebugPrint()
 {
-    # Only redirection to file is tested
-    TestPrint PrintInfo false "Some info message" # Should display nothing
-    local RETURN=$?
-    if [ "${RETURN}" -ne "0" ]; then
-        return ${RETURN}
-    fi
-    TestPrint PrintWarning false "Some warning message"
-    RETURN=$?
-    if [ "${RETURN}" -ne "0" ]; then
-        return ${RETURN}
-    fi
-    TestPrint PrintError false "Some error message"
-    RETURN=$?
-    if [ "${RETURN}" -ne "0" ]; then
-        return ${RETURN}
-    fi
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.0"
 
+    # Only redirection to file is tested
+    ### Test print without verbosity 
+    TestPrint PrintInfo false "Some info message" # Should display nothing
+    TestPrint PrintWarning false "Some warning message"
+    TestPrint PrintError false "Some error message"
     VERBOSE=true # Enable verbosity
     TestPrint PrintInfo false "Some other info message" # Still displays nothing because funtion is defined once and for all at fisrt call
-    RETURN=$?
-    if [ "${RETURN}" -ne "0" ]; then
-        return ${RETURN}
-    fi
 
     ### No reloading
     . "${SCRIPT_LOCATION}/../debug.sh" # Reload does nothing
     TestPrint PrintInfo false "Still an info message" # Still displays nothing because funtion was no loaded once again
-    RETURN=$?
-    if [ "${RETURN}" -ne "0" ]; then
-        return ${RETURN}
-    fi
 
     ### Test print with verbosity 
     DEBUG_SH="" # Allows script to be reloaded
     . "${SCRIPT_LOCATION}/../debug.sh" # Reload print utils to "reset" PrintInfo
     TestPrint PrintInfo true "Yet another info message"
-    RETURN=$?
-    if [ "${RETURN}" -ne "0" ]; then
-        return ${RETURN}
-    fi
     TestPrint PrintWarning true "Yet another warning message"
-    RETURN=$?
-    if [ "${RETURN}" -ne "0" ]; then
-        return ${RETURN}
-    fi
-    RETURN=$?
-    if [ "${RETURN}" -ne "0" ]; then
-        return ${RETURN}
-    fi
     TestPrint PrintError true "Yet another error message"
-
     VERBOSE=false # Disable verbosity
     TestPrint PrintInfo true "The last info message" # Still displays because funtion is defined once and for all at fisrt call
-    RETURN=$?
-    if [ "${RETURN}" -ne "0" ]; then
-        return ${RETURN}
-    fi
 
     return 0
 }
@@ -331,26 +276,14 @@ testDebugPrint()
 ###                              Execute tests                               ###
 ###                                                                          ###
 ################################################################################
-### SetUp
-CURRENT_VERBOSE=${VERBOSE}
-VERBOSE=false # Because testDebugPrint assumes that it is false at start
-
 ### Do Tests
-#Inclusion
-doTest "debug.sh not included" scriptNotIncluded
-doTest "debug.sh included" scriptIncluded
-
 #Format
-doTest "Info Format definition" "testFormat \"\033[1;34m\" \"${infoFormat}\"" # Quotes are needed otherwise ";" is considered splitting instructions
-doTest "Warning Format definition" "testFormat \"\033[1;33m\" \"${warningFormat}\"" # Quotes are needed otherwise ";" is considered splitting instructions
-doTest "Error Format definition" "testFormat \"\033[1;31m\" \"${errorFormat}\"" # Quotes are needed otherwise ";" is considered splitting instructions
+doTest testInfoFormat
+doTest testWarningFormat
+doTest testErrorFormat
 
 #Print Messages
-doTest "Test debug message printing methods" testDebugPrint
-
-### Clean Up
-rm /tmp/bar
-VERBOSE=${CURRENT_VERBOSE} # Restaure VERBOSE value
+doTest testDebugPrint
 
 ### Tests result
 displaySuiteResults

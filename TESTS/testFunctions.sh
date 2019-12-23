@@ -1,16 +1,12 @@
 #!/bin/bash
 
-# @file functionTest.sh
+###
+# @file testFunctions.sh
 # @author SignC0dingDw@rf
-# @version 2.1
-# @date 23 December 2019
-# @brief Unit testing of function.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
-
-### Exit Code
-#
-# 0 : Execution succeeded
-# Number of failed tests otherwise
-#
+# @version 1.0
+# @date 26 December 2019
+# @brief A set of additional test functions used to mutualize commonly performed tests.
+###
 
 ###
 # MIT License
@@ -73,74 +69,46 @@
 # If not, see <http://www.dwarfvesaregonnabeatyoutodeath.com>.
 ###
 
-################################################################################
-###                                                                          ###
-###                  Redefinition of BashUnit basic functions                ###
-###                                                                          ###
-################################################################################
-SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../TESTS/testUtils.sh"
+### Protection against multiple inclusions
+if [ -z ${TESTFUNCTIONS_SH} ]; then
+
+# Definition of inclusion also contains the current library version
+TESTFUNCTIONS_SH="1.0" # Reset using TESTFUNCTIONS_SH=""
+
+# Inclusion of dependencies
+SCRIPT_LOCATION_TESTFUNCTIONS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_TESTFUNCTIONS_SH}/testUtils.sh"
+. "${SCRIPT_LOCATION_TESTFUNCTIONS_SH}/../Testing/files.sh"
 
 ################################################################################
 ###                                                                          ###
-###                              Declare Tests                               ###
+###                            Helper functions                              ###
 ###                                                                          ###
 ################################################################################
 ##!
-# @brief Test FunctionExists in multiple ways
-# @return 0 if all tests are successful, exit 1 after first test failure
+# @brief Check that file content is the one expected
+# @param 1 : Result File name
+# @param 2 : Expected Result file name
+# @return 0 if text has expected value, exit 1 otherwise
 #
-## 
-testFunctionExists()
+##
+TestWrittenText()
 {
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.1"
+    local resultFileName="$1"
+    local expectedResultFileName="$2"
 
-    ### Test before function exists
-    FunctionExists DummyFunction
-    local COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
-    ### Test that function does not create symbol of function
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
-    ### Declare function
-    DummyFunction()
-    {
-        echo "Does nothing"
-    }
-
-    ### Test existing function
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Test of existing function should return code 0 but returned code ${COMMAND_RESULT}"
-   
- ### Delete Function symbol
-    unset -f DummyFunction
-
-    ### Test function deletion
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
-
+    local resultContent=$(cat ${resultFileName})
+    local expectedContent=$(cat ${expectedResultFileName})
+    
+    # Test identity
+    areFilesIdentical ${resultFileName} ${expectedResultFileName}
+    local are_identical=$?
+    endTestIfAssertFails "\"${are_identical}\" -eq \"0\"" "Wrong file content. Expected\n${resultContent}\nGot\n${expectedContent}"
+    
     return 0
 }
 
-################################################################################
-###                                                                          ###
-###                              Execute tests                               ###
-###                                                                          ###
-################################################################################
-### Do Tests
-doTest testFunctionExists
-
-### Tests result
-displaySuiteResults
-
-exit ${FAILED_TEST_NB}
+fi # TESTFUNCTIONS_SH
 
 #  ______________________________ 
 # |                              |
