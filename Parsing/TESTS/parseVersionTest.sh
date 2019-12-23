@@ -143,7 +143,7 @@ Cleanup()
 ################################################################################
 ##!
 # @brief Check behavior of parseDoxygenVersion if provided file does not exist
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testFileDoesNotExist()
@@ -163,7 +163,7 @@ testFileDoesNotExist()
 
 ##!
 # @brief Check behavior of parseDoxygenVersion if provided file does not contain version
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testFileNoVersion()
@@ -186,7 +186,7 @@ testFileNoVersion()
 
 ##!
 # @brief Check behavior of parseDoxygenVersion if provided file contains version
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testFileVersion()
@@ -210,7 +210,7 @@ testFileVersion()
 
 ##!
 # @brief Check behavior of parseDoxygenVersion if provided file contains multiple valid version definitions
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testFileMultiVersion()
@@ -234,7 +234,7 @@ testFileMultiVersion()
 
 ##!
 # @brief Check behavior of parseDoxygenVersion if provided file contains a version definition in the middle of the line. It should be ignored 
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testFileFullLineVersion()
@@ -258,7 +258,7 @@ testFileFullLineVersion()
 
 ##!
 # @brief Check behavior of parseBashDoxygenVersion if provided file does not exist
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testBashFileDoesNotExist()
@@ -278,7 +278,7 @@ testBashFileDoesNotExist()
 
 ##!
 # @brief Check behavior of parseDoxygenVersion if provided file does not contain version
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testBashFileNoVersion()
@@ -304,7 +304,7 @@ testBashFileNoVersion()
 
 ##!
 # @brief Check behavior of parseDoxygenVersion if provided file contains version
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testBashFileVersion()
@@ -331,7 +331,7 @@ testBashFileVersion()
 
 ##!
 # @brief Check behavior of parseDoxygenVersion if provided file contains multiple valid version definitions
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testBashFileMultiVersion()
@@ -358,7 +358,7 @@ testBashFileMultiVersion()
 
 ##!
 # @brief Check behavior of parseDoxygenVersion if provided file contains a version definition in the middle of the line. It should be ignored 
-# @return 0 if behavior ok, 1 otherwise
+# @return 0 if behavior ok, exit 1 otherwise
 #
 ## 
 testBashFileFullLineVersion()

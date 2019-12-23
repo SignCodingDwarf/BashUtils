@@ -2,8 +2,8 @@
 
 # @file functionTest.sh
 # @author SignC0dingDw@rf
-# @version 2.0
-# @date 27 October 2019
+# @version 2.1
+# @date 23 December 2019
 # @brief Unit testing of function.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -78,124 +78,34 @@
 ###                  Redefinition of BashUnit basic functions                ###
 ###                                                                          ###
 ################################################################################
-### Define a minimal working set allowing to have a readable test while not using BashUnit framework since it tests elements used by BashUtils
-### Behavior Variables
-FAILED_TEST_NB=0
-RUN_TEST_NB=0
-TEST_NAME_FORMAT='\033[1;34m' # Test name is printed in light blue
-FAILURE_FORMAT='\033[1;31m' # A failure is printed in light red
-SUCCESS_FORMAT='\033[1;32m' # A success is printed in light green
-NF='\033[0m' # No Format
-
-### Functions
-##!
-# @brief Do a test
-# @param 1 : Test description (in quotes)
-# @param 2 : Test to perform
-# @return 0 if test is successful, 1 if test failed, 2 if no test has been specified
-#
-## 
-doTest()
-{
-    local TEST_NAME="$1"
-    local TEST_CONTENT="$2"
-
-    if [ -z "${TEST_CONTENT}" ]; then
-        printf "${FAILURE_FORMAT}Empty test ${TEST_NAME}${NF}\n"
-        return 2
-    fi
-
-    printf "${TEST_NAME_FORMAT}***** Running Test : ${TEST_NAME} *****${NF}\n"
-    ((RUN_TEST_NB++))
-    eval ${TEST_CONTENT}
-
-    local TEST_RESULT=$?
-    if [ "${TEST_RESULT}" -ne "0" ]; then
-        printf "${FAILURE_FORMAT}Test Failed with error ${TEST_RESULT}${NF}\n"
-        ((FAILED_TEST_NB++))
-        return 1
-    else
-        printf "${SUCCESS_FORMAT}Test Successful${NF}\n"
-        return 0
-    fi 
-}
-
-##!
-# @brief Display test suite results
-# @return 0 
-#
-## 
-displaySuiteResults()
-{
-    local SUCCESSFUL_TESTS=0
-    ((SUCCESSFUL_TESTS=${RUN_TEST_NB}-${FAILED_TEST_NB}))
-    if [ ${FAILED_TEST_NB} -eq 0 ]; then
-        printf "${SUCCESS_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : OK${NF}\n"
-    else
-        printf "${FAILURE_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : KO${NF}\n"
-    fi    
-}
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/../../TESTS/testUtils.sh"
 
 ################################################################################
 ###                                                                          ###
 ###                              Declare Tests                               ###
 ###                                                                          ###
 ################################################################################
-##!
-# @brief Check if script is not included
-# @return 0 if script is not included, 1 otherwise
-#
-## 
-scriptNotIncluded()
-{
-    if [ ! -z ${FUNCTION_SH} ]; then 
-        echo "FUNCTION_SH already has value ${FUNCTION_SH}"
-        return 1
-    else
-        return 0
-    fi
-}
-
-##!
-# @brief Check if script is included with correct version
-# @return 0 if script is included, 1 otherwise
-#
-## 
-scriptIncluded()
-{
-    SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-    . "${SCRIPT_LOCATION}/../function.sh"
-
-    if [ ! "${FUNCTION_SH}" = "1.1" ]; then 
-        echo "Loading of function.sh failed. Content is ${FUNCTION_SH}"
-        return 1
-    else
-        return 0
-    fi
-}
 
 ##!
 # @brief Test FunctionExists in multiple ways
-# @return 0 if all tests are successful, 1 otherwise
+# @return 0 if all tests are successful, exit 1 after first test failure
 #
 ## 
 testFunctionExists()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.1"
+
     ### Test before function exists
     FunctionExists DummyFunction
-    RESULT=$?
-    if [ $RESULT -eq "0" ]; then
-        echo "Test of non existing function should not return 0"
-        return 1
-    fi
+    local COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
 
     ### Test that function does not create symbol of function
     FunctionExists DummyFunction
-    RESULT=$?
-    if [ $RESULT -eq "0" ]; then
-        echo "Testing function existence should not create associated symbol"
-        return 1
-    fi
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
 
     ### Declare function
     DummyFunction()
@@ -205,22 +115,17 @@ testFunctionExists()
 
     ### Test existing function
     FunctionExists DummyFunction
-    RESULT=$?
-    if [ $RESULT -ne "0" ]; then
-        echo "Existence test of existing function should return 0 but returned ${RESULT} instead."
-        return 1
-    fi
-
-    ### Delete Function symbol
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Test of existing function should return code 0 but returned code ${COMMAND_RESULT}"
+   
+ ### Delete Function symbol
     unset -f DummyFunction
 
     ### Test function deletion
     FunctionExists DummyFunction
-    RESULT=$?
-    if [ $RESULT -eq "0" ]; then
-        echo "Deletion of function should remove symbol."
-        return 1
-    fi
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
+
 
     return 0
 }
@@ -230,14 +135,8 @@ testFunctionExists()
 ###                              Execute tests                               ###
 ###                                                                          ###
 ################################################################################
-### SetUp
-
 ### Do Tests
-doTest "function.sh not included" scriptNotIncluded
-doTest "function.sh included" scriptIncluded
-doTest "test FunctionExists" testFunctionExists
-
-### Clean Up
+doTest testFunctionExists
 
 ### Tests result
 displaySuiteResults
