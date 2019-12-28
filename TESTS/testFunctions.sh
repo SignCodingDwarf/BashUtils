@@ -3,8 +3,8 @@
 ###
 # @file testFunctions.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 26 December 2019
+# @version 1.1
+# @date 28 December 2019
 # @brief A set of additional test functions used to mutualize commonly performed tests.
 ###
 
@@ -85,6 +85,28 @@ SCRIPT_LOCATION_TESTFUNCTIONS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev
 ###                            Helper functions                              ###
 ###                                                                          ###
 ################################################################################
+##!
+# @brief Test that a format is the expected one
+# @param 1 : Expected value
+# @param 2 : Current value
+# @return 0 if format has expected value, exit 1 otherwise
+#
+##
+testFormat()
+{
+    local expectedValue="$1"
+    local currentValue="$2"
+
+    if [ "${currentValue}" = "${expectedValue}" ]; then
+        return 0
+    else
+        echo "Invalid Format"
+        echo "Expected ${expectedValue}"
+        echo "Got ${currentValue}"
+        exit 1    
+    fi
+}
+
 ##!
 # @brief Check that file content is the one expected
 # @param 1 : Result File name

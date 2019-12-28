@@ -2,8 +2,8 @@
 
 # @file baseTest.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 24 December 2019
+# @version 1.2
+# @date 28 December 2019
 # @brief Unit testing of base.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -79,7 +79,7 @@
 ###                                                                          ###
 ################################################################################
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../TESTS/testUtils.sh"
+. "${SCRIPT_LOCATION}/../../TESTS/testFunctions.sh"
 
 ################################################################################
 ###                                                                          ###
@@ -108,14 +108,7 @@ TestNoFormat()
     testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
  
     # Test format
-    if [ "\033[0m" = "${NF}" ]; then
-        return 0
-    else
-        echo "Invalid Format"
-        echo "Expected \033[0m"
-        echo "Got ${NF}"
-        exit 1
-    fi
+    testFormat "\033[0m" "${NF}"
 }
 
 ##!

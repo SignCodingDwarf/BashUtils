@@ -2,8 +2,8 @@
 
 # @file debugTest.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 24 December 2019
+# @version 1.2
+# @date 28 December 2019
 # @brief Unit testing of debug.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -79,7 +79,7 @@
 ###                                                                          ###
 ################################################################################
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../TESTS/testUtils.sh"
+. "${SCRIPT_LOCATION}/../../TESTS/testFunctions.sh"
 
 ################################################################################
 ###                                                                          ###
@@ -124,28 +124,6 @@ TestPrint()
     endTestIfAssertFails "\"${writtenMessage}\" = \"${expectedMessage}\"" "Expected ${functionName} to print\n${expectedMessage}\nBut\n ${writtenMessage}\nwas printed"   
 
     return 0
-}
-
-##!
-# @brief Test that a format is the expected one
-# @param 1 : Expected value
-# @param 2 : Current value
-# @return 0 if format has expected value, exit 1 otherwise
-#
-##
-testFormat()
-{
-    local expectedValue="$1"
-    local currentValue="$2"
-
-    if [ "${currentValue}" = "${expectedValue}" ]; then
-        return 0
-    else
-        echo "Invalid Format"
-        echo "Expected ${expectedValue}"
-        echo "Got ${currentValue}"
-        exit 1    
-    fi
 }
 
 ################################################################################
