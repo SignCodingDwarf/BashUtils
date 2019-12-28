@@ -2,8 +2,8 @@
 
 # @file teardownTest.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 08 December 2019
+# @version 1.1
+# @date 28 December 2019
 # @brief Unit testing of teardown.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -78,125 +78,57 @@
 ###                  Redefinition of BashUnit basic functions                ###
 ###                                                                          ###
 ################################################################################
-### Define a minimal working set allowing to have a readable test while not using BashUnit framework since it tests elements used by BashUtils
-### Behavior Variables
-FAILED_TEST_NB=0
-RUN_TEST_NB=0
-TEST_NAME_FORMAT='\033[1;34m' # Test name is printed in light blue
-FAILURE_FORMAT='\033[1;31m' # A failure is printed in light red
-SUCCESS_FORMAT='\033[1;32m' # A success is printed in light green
-NF='\033[0m' # No Format
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/../../../TESTS/testFunctions.sh"
 
-### Functions
-##!
-# @brief Do a test
-# @param 1 : Test description (in quotes)
-# @param 2 : Test to perform
-# @return 0 if test is successful, 1 if test failed, 2 if no test has been specified
-#
-## 
-doTest()
+################################################################################
+###                                                                          ###
+###                                  Setup                                   ###
+###                                                                          ###
+################################################################################
+Setup()
 {
-    local TEST_NAME="$1"
-    local TEST_CONTENT="$2"
+    # Create directories for the test
+    for ((i=1;i<=10;i++)); do
+        mkdir /tmp/toto${i}
+    done
+    # Create files for the test
+    for ((i=1;i<=20;i++)); do
+        touch /tmp/toto8/dummy${i}
+    done
 
-    if [ -z "${TEST_CONTENT}" ]; then
-        printf "${FAILURE_FORMAT}Empty test ${TEST_NAME}${NF}\n"
-        return 2
-    fi
+    ### Divert Folders for the test
+    for ((i=1;i<=5;i++)); do
+        mkdir /tmp/tutu${i}
+        mkdir /tmp/tutu${i}.utmv
+    done
+    rm -r /tmp/tutu3.utmv
 
-    printf "${TEST_NAME_FORMAT}***** Running Test : ${TEST_NAME} *****${NF}\n"
-    ((RUN_TEST_NB++))
-    eval ${TEST_CONTENT}
+    ### Create Environment variables for the test
+    ENV_T1="ValA"
+    ENV_T2="ValB"
+    ENV_T3="ValC"
 
-    local TEST_RESULT=$?
-    if [ "${TEST_RESULT}" -ne "0" ]; then
-        printf "${FAILURE_FORMAT}Test Failed with error ${TEST_RESULT}${NF}\n"
-        ((FAILED_TEST_NB++))
-        return 1
-    else
-        printf "${SUCCESS_FORMAT}Test Successful${NF}\n"
-        return 0
-    fi 
-}
-
-##!
-# @brief Display test suite results
-# @return 0 
-#
-## 
-displaySuiteResults()
-{
-    local SUCCESSFUL_TESTS=0
-    ((SUCCESSFUL_TESTS=${RUN_TEST_NB}-${FAILED_TEST_NB}))
-    if [ ${FAILED_TEST_NB} -eq 0 ]; then
-        printf "${SUCCESS_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : OK${NF}\n"
-    else
-        printf "${FAILURE_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : KO${NF}\n"
-    fi    
+    return 0    
 }
 
 ################################################################################
 ###                                                                          ###
-###                            Helper functions                              ###
+###                                 Cleanup                                  ###
 ###                                                                          ###
 ################################################################################
-##!
-# @brief Check if an array has expected content
-# @param 1 : Name of the array to check
-# @param 2 : Name of the expected array
-# @return 0 if array has expected content, 1 otherwise
-#
-## 
-CheckArrayContent()
+Cleanup()
 {
-    local arrayName="$1"
-    local expectedName="$2"
-    local -n arrayContent=${arrayName}
-    local -n expectedArray=${expectedName}
+    rm -rf /tmp/barError*
+    rm -rf /tmp/toto*
+    rm -rf /tmp/tutu*
 
-    local differences=(`echo ${expectedArray[@]} ${arrayContent[@]} | tr ' ' '\n' | sort | uniq -u`) # https://stackoverflow.com/questions/2312762/compare-difference-of-two-arrays-in-bash
+    # Restore variables
+    ENV_T1=""
+    ENV_T2=""
+    ENV_T3=""
 
-    # Compute result
-    if [ ${#differences[@]} -eq 0 ]; then
-        return 0
-    else
-        printf "Expecting to get the content : "
-        printf "%s " "${expectedArray[*]}"
-        printf "\n\n"
-        printf "But array ${arrayName} has content : "
-        printf "%s " "${arrayContent[*]}"
-        printf "\n\n"
-        printf "Difference : "
-        printf "%s " "${differences[*]}"
-        printf "\n"
-        return 1
-    fi
-}
-
-##!
-# @brief Test that the text written to a file is not the one 
-# @param 1 : Result File name
-# @param 2 : Expected Result file name
-# @return 0 if text has expected value, 1 otherwise
-#
-##
-TestWrittenText()
-{
-    local resultFileName=$1
-    local expectedResultFileName=$2
-
-    local currentValue=$(cat ${resultFileName})
-    local expectedValue=$(cat ${expectedResultFileName})
-
-    if [ "${currentValue}" = "${expectedValue}" ]; then
-        return 0
-    else
-        echo "Invalid Text"
-        echo "Expected ${expectedValue}"
-        echo "Got ${currentValue}"
-        return 1    
-    fi
+    return 0
 }
 
 ################################################################################
@@ -205,62 +137,36 @@ TestWrittenText()
 ###                                                                          ###
 ################################################################################
 ##!
-# @brief Check if script is not included
-# @return 0 if script is not included, 1 otherwise
-#
-## 
-scriptNotIncluded()
-{
-    if [ ! -z ${TEARDOWN_SH} ]; then 
-        echo "TEARDOWN_SH already has value ${TEARDOWN_SH}"
-        return 1
-    else
-        return 0
-    fi
-}
-
-##!
-# @brief Check if script is included with correct version
-# @return 0 if script is included, 1 otherwise
-#
-## 
-scriptIncluded()
-{
-    SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-    . "${SCRIPT_LOCATION}/../teardown.sh"
-
-    if [ ! "${TEARDOWN_SH}" = "1.0" ]; then 
-        echo "Loading of teardown.sh failed. Content is ${TEARDOWN_SH}"
-        return 1
-    else
-        return 0
-    fi
-}
-
-##!
 # @brief Check Teardown behavior if nothing is to be done
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 TeardownNoAction()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+
+    ### Execute Command
     Teardown 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        printf "Expected function Teardown to exit with code 0 but exited with code ${result}\n"
-        return 1
-    fi
-    printf "[Warning] : No User defined teardown is to be performed" > /tmp/barErrorRef
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
+    ### Check Output
+    printf "[Warning] : No User defined teardown is to be performed\n" > /tmp/barErrorRef
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check Teardown behavior if everything works fine
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 TeardownAllOK()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+
+    ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto1" "/tmp/toto8/dummy2")
     ELEMENTS_DIVERTED=("/tmp/tutu1" "/tmp/tutu4")
     ENV_VARS_VALUES_TO_RESTORE=("ENV_T1" "ValZ")
@@ -268,23 +174,28 @@ TeardownAllOK()
     {
         return 0
     }
+
+    ### Execute Command
     Teardown 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        printf "Expected function Teardown to exit with code 0 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
+    ### Check Output
     printf "" > /tmp/barErrorRef
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check Teardown behavior if user defined TestTeardown fails
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 TeardownTestTeardownError()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+
+    ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto6" "/tmp/toto8/dummy4")
     ELEMENTS_DIVERTED=("/tmp/tutu5")
     ENV_VARS_VALUES_TO_RESTORE=("ENV_T2" "ValY")
@@ -292,23 +203,28 @@ TeardownTestTeardownError()
     {
         return 1
     }
+
+    ### Execute Command
     Teardown 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "128" ]; then
-        printf "Expected function Teardown to exit with code 128 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"128\" " "Expected function to exit with code 128 but exited with code ${test_result}"
+
+    ### Check Output
     printf "" > /tmp/barErrorRef
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check Teardown behavior if restauring environment variables fails
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 TeardownTestEnvVarError()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+
+    ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto7" "/tmp/toto8/dummy6")
     ELEMENTS_DIVERTED=("/tmp/tutu2")
     ENV_VARS_VALUES_TO_RESTORE=("ENV_T3")
@@ -316,23 +232,28 @@ TeardownTestEnvVarError()
     {
         return 0
     }
+
+    ### Execute Command
     Teardown 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "4" ]; then
-        printf "Expected function Teardown to exit with code 4 but exited with code ${result}\n"
-        return 1
-    fi
-    printf "[Error] : Value ENV_T3 has no associated value to restore. Ignoring it." > /tmp/barErrorRef
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"4\" " "Expected function to exit with code 4 but exited with code ${test_result}"
+
+    ### Check Output
+    printf "[Error] : Value ENV_T3 has no associated value to restore. Ignoring it.\n" > /tmp/barErrorRef
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check Teardown behavior if restauring diverted element fails
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 TeardownTestDivertionError()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+
+    ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto10" "/tmp/toto8/dummy8")
     ELEMENTS_DIVERTED=("/tmp/tutu3")
     ENV_VARS_VALUES_TO_RESTORE=("ENV_T3" "ValU")
@@ -340,14 +261,15 @@ TeardownTestDivertionError()
     {
         return 0
     }
+
+    ### Execute Command
     Teardown 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "2" ]; then
-        printf "Expected function Teardown to exit with code 2 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"2\" " "Expected function to exit with code 2 but exited with code ${test_result}"
+
+    ### Check Output
     printf "mv: cannot stat '/tmp/tutu3.utmv': No such file or directory\n" > /tmp/barErrorRef
-    printf "[Error] : Failed to restore /tmp/tutu3 with /tmp/tutu3.utmv" >> /tmp/barErrorRef
+    printf "[Error] : Failed to restore /tmp/tutu3 with /tmp/tutu3.utmv\n" >> /tmp/barErrorRef
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
@@ -356,44 +278,12 @@ TeardownTestDivertionError()
 ###                              Execute tests                               ###
 ###                                                                          ###
 ################################################################################
-### SetUp
-# Create directories for the test
-for ((i=1;i<=10;i++)); do
-    mkdir /tmp/toto${i}
-done
-# Create files for the test
-for ((i=1;i<=20;i++)); do
-    touch /tmp/toto8/dummy${i}
-done
-
-### Divert Folders for the test
-for ((i=1;i<=5;i++)); do
-    mkdir /tmp/tutu${i}
-    mkdir /tmp/tutu${i}.utmv
-done
-rm -r /tmp/tutu3.utmv
-
-### Create Environment variables for the test
-ENV_T1="ValA"
-ENV_T2="ValB"
-ENV_T3="ValC"
-
 ### Do Tests
-#Inclusion
-doTest "teardown.sh not included" scriptNotIncluded
-doTest "teardown.sh included" scriptIncluded
-
-doTest "Teardown with nothing to do" TeardownNoAction
-doTest "Teardown with everything working fine" TeardownAllOK
-doTest "Teardown with error TestTeardown" TeardownTestTeardownError
-doTest "Teardown with error Environment Vars Restauration" TeardownTestEnvVarError
-doTest "Teardown with error Element Divertion" TeardownTestDivertionError
-
-### Clean Up
-rm -rf /tmp/barError*
-rm -rf /tmp/toto*
-rm -rf /tmp/tutu*
-
+doTest TeardownNoAction
+doTest TeardownAllOK
+doTest TeardownTestTeardownError
+doTest TeardownTestEnvVarError
+doTest TeardownTestDivertionError
 
 ### Tests result
 displaySuiteResults

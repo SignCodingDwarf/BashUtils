@@ -4,14 +4,14 @@
 # @file testFunctions.sh
 # @author SignC0dingDw@rf
 # @version 1.1
-# @date 28 December 2019
+# @date 04 January 2020
 # @brief A set of additional test functions used to mutualize commonly performed tests.
 ###
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -128,6 +128,72 @@ TestWrittenText()
     endTestIfAssertFails "\"${are_identical}\" -eq \"0\"" "Wrong file content. Expected\n${resultContent}\nGot\n${expectedContent}"
     
     return 0
+}
+
+##!
+# @brief Check if an array has expected content
+# @param 1 : Name of the array to check
+# @param 2 : Name of the expected array
+# @return 0 if array has expected content, exit 1 otherwise
+#
+## 
+CheckArrayContent()
+{
+    local arrayName="$1"
+    local expectedName="$2"
+    local -n arrayContent=${arrayName}
+    local -n expectedArray=${expectedName}
+
+    local differences=(`echo ${expectedArray[@]} ${arrayContent[@]} | tr ' ' '\n' | sort | uniq -u`) # https://stackoverflow.com/questions/2312762/compare-difference-of-two-arrays-in-bash
+
+    # Compute result
+    if [ ${#differences[@]} -eq 0 ]; then
+        return 0
+    else
+        printf "Expecting to get the content : "
+        printf "%s " "${expectedArray[*]}"
+        printf "\n\n"
+        printf "But array ${arrayName} has content : "
+        printf "%s " "${arrayContent[*]}"
+        printf "\n\n"
+        printf "Difference : "
+        printf "%s " "${differences[*]}"
+        printf "\n"
+        exit 1
+    fi
+}
+
+##!
+# @brief Check that directory content corresponds to expected elements according to filter
+# @param 1 : Folder
+# @param 2 : Filter of folder lists
+# @param 3-@ : Expected elements array
+# @return 0 if content is correct, exit 1 otherwise
+#
+##
+CheckDirContent()
+{
+    local content=$(ls $1 | grep $2)
+    local expectedArray=("${@:3}")
+
+    # Compute differences as an array
+    local differences=(`echo ${expectedArray[@]} ${content[@]} | tr ' ' '\n' | sort | uniq -u`) # https://stackoverflow.com/questions/2312762/compare-difference-of-two-arrays-in-bash
+
+    # Compute result
+    if [ ${#differences[@]} -eq 0 ]; then
+        return 0
+    else
+        printf "Expecting to get the content : "
+        printf "%s " "${expectedArray[*]}"
+        printf "\n\n"
+        printf "But folder ${1} has content : "
+        printf "%s " "${content[*]}"
+        printf "\n\n"
+        printf "Difference : "
+        printf "%s " "${differences[*]}"
+        printf "\n"
+        exit 1
+    fi
 }
 
 fi # TESTFUNCTIONS_SH
