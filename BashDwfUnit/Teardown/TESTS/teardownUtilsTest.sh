@@ -2,8 +2,8 @@
 
 # @file teardownUtilsTest.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 05 January 2020
+# @version 1.2
+# @date 12 January 2020
 # @brief Unit testing of teardownUtils.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -783,13 +783,13 @@ RestoreEnvVarsNominalInput()
     testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
 
     ### Test command
-    VARS_RES=("ENV_T1" "ValZ" "ENV_T3" "ValX")
+    VARS_RES=("ENV_T1" "ValZ" "ENV_T4" "" "ENV_T3" "ValX")
     RestoreEnvVars "${VARS_RES[@]}" 2> /tmp/barErrorOutput
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
 
     local envVarsContent=("${ENV_T1}" "${ENV_T2}" "${ENV_T3}" "${ENV_T4}" "${ENV_T5}" "${ENV_T6}")
-    local envVarsExpected=("ValZ" "ValB" "ValX" "ValD" "ValE" "ValF")
+    local envVarsExpected=("ValZ" "ValB" "ValX" "" "ValE" "ValF")
     CheckArrayContent "envVarsContent" "envVarsExpected"
 
     printf "" > /tmp/barErrorRef
