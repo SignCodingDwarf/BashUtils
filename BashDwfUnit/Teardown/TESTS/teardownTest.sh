@@ -2,8 +2,8 @@
 
 # @file teardownTest.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 28 December 2019
+# @version 1.2
+# @date 29 January 2020
 # @brief Unit testing of teardown.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -15,7 +15,7 @@
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -144,7 +144,7 @@ Cleanup()
 TeardownNoAction()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
 
     ### Execute Command
     Teardown 2> /tmp/barErrorOutput
@@ -164,7 +164,7 @@ TeardownNoAction()
 TeardownAllOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
 
     ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto1" "/tmp/toto8/dummy2")
@@ -193,7 +193,7 @@ TeardownAllOK()
 TeardownTestTeardownError()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
 
     ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto6" "/tmp/toto8/dummy4")
@@ -222,7 +222,7 @@ TeardownTestTeardownError()
 TeardownTestEnvVarError()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
 
     ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto7" "/tmp/toto8/dummy6")
@@ -236,7 +236,7 @@ TeardownTestEnvVarError()
     ### Execute Command
     Teardown 2> /tmp/barErrorOutput
     local test_result=$?
-    endTestIfAssertFails "\"${test_result}\" -eq \"4\" " "Expected function to exit with code 4 but exited with code ${test_result}"
+    endTestIfAssertFails "\"${test_result}\" -eq \"64\" " "Expected function to exit with code 64 but exited with code ${test_result}"
 
     ### Check Output
     printf "[Error] : Value ENV_T3 has no associated value to restore. Ignoring it.\n" > /tmp/barErrorRef
@@ -251,7 +251,7 @@ TeardownTestEnvVarError()
 TeardownTestDivertionError()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
 
     ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto10" "/tmp/toto8/dummy8")
@@ -265,7 +265,7 @@ TeardownTestDivertionError()
     ### Execute Command
     Teardown 2> /tmp/barErrorOutput
     local test_result=$?
-    endTestIfAssertFails "\"${test_result}\" -eq \"2\" " "Expected function to exit with code 2 but exited with code ${test_result}"
+    endTestIfAssertFails "\"${test_result}\" -eq \"32\" " "Expected function to exit with code 32 but exited with code ${test_result}"
 
     ### Check Output
     printf "mv: cannot stat '/tmp/tutu3.utmv': No such file or directory\n" > /tmp/barErrorRef

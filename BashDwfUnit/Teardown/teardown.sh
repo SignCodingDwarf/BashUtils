@@ -2,14 +2,14 @@
 
 # @file teardown.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 08 December 2019
+# @version 2.0
+# @date 29 January 2020
 # @brief Definition of the teardown function used to clean up environment after execution of TestSuite tests.
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -82,10 +82,10 @@ TEARDOWN_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TEARDOWN_SH=
 ##!
 # @brief Test teardown phase
 # @return 0 if setup was successful, otherwise adds one of more of following values
-# 1  : Element deletion failed
-# 2  : Restoring diverted elements failed
-# 4 : Restoring environment variables failed
-# 128 : User defined TestTeardown failed
+#         16  : Element deletion failed
+#         32  : Restoring diverted elements failed
+#         64 : Restoring environment variables failed
+#         128 : User defined TestTeardown failed
 #
 ##
 Teardown()
@@ -95,19 +95,19 @@ Teardown()
     # Delete created elements
     DeleteElements "${ELEMENTS_CREATED[@]}"
     if [ "$?" -ne "0" ]; then
-        ((exitCode+=1))
+        ((exitCode+=16))
     fi
 
     # Restore diverted elements
     RestoreElements "${ELEMENTS_DIVERTED[@]}"
     if [ "$?" -ne "0" ]; then
-        ((exitCode+=2))
+        ((exitCode+=32))
     fi
 
     # Restore environment variables
     RestoreEnvVars "${ENV_VARS_VALUES_TO_RESTORE[@]}"
     if [ "$?" -ne "0" ]; then
-        ((exitCode+=4))
+        ((exitCode+=64))
     fi
 
     # Check if user has defined specific operations
