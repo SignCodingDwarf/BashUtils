@@ -2,8 +2,8 @@
 
 # @file functionTest.sh
 # @author SignC0dingDw@rf
-# @version 2.1
-# @date 23 December 2019
+# @version 2.2
+# @date 01 February 2020
 # @brief Unit testing of function.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -15,7 +15,7 @@
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -94,7 +94,7 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 testFunctionExists()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.2"
 
     ### Test before function exists
     FunctionExists DummyFunction
@@ -129,6 +129,22 @@ testFunctionExists()
     return 0
 }
 
+##!
+# @brief Check FunctionExists if no argument is provided
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+## 
+testNoArg()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.2"
+
+    ## Test command
+    FunctionExists 
+    local commandResult=$?
+    endTestIfAssertFails "\"${commandResult}\" -eq \"1\"" "Test without argument should return code 1 but returned code ${commandResult}"
+}
+
 ################################################################################
 ###                                                                          ###
 ###                              Execute tests                               ###
@@ -136,6 +152,7 @@ testFunctionExists()
 ################################################################################
 ### Do Tests
 doTest testFunctionExists
+doTest testNoArg
 
 ### Tests result
 displaySuiteResults

@@ -2,14 +2,14 @@
 
 # @file function.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 23 October 2019
+# @version 1.2
+# @date 01 February 2020
 # @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -79,14 +79,21 @@ FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=
 ##!
 # @brief Check if a function with a given name exists
 # @param 1 : Function name
-# @return 0 if function exists, >0 otherwise
+# @return 0 if function exists,
+#         1 if empty function name
+#         >0 otherwise (see declare return codes for more details)
 #
 # From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
 #
 ##
 FunctionExists()
 {
-    declare -f $1 > /dev/null  
+    local name="${1}"
+    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
+        return 1
+    fi
+
+    declare -f ${name} > /dev/null # Return code of declare
 }
 
 fi # FUNCTION_SH
