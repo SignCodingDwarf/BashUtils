@@ -3,8 +3,8 @@
 ###
 # @file testFunctions.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 04 January 2020
+# @version 1.2
+# @date 02 February 2020
 # @brief A set of additional test functions used to mutualize commonly performed tests.
 ###
 
@@ -194,6 +194,24 @@ CheckDirContent()
         printf "\n"
         exit 1
     fi
+}
+
+##!
+# @brief Check the size of an array
+# @param 1 : Name of the array to check
+# @param 2 : Expected Size
+# @return 0 if array has expected size, exit 1 otherwise
+#
+## 
+CheckArraySize()
+{
+    local arrayName="$1"
+    local expectedSize="$2"
+    local arrayContent=()
+    eval arrayContent=\( \${${arrayName}[@]} \)
+
+    endTestIfAssertFails " \"${#arrayContent[@]}\" -eq \"${expectedSize}\" " "Array ${arrayName} is expected to have size ${expectedSize} but has size ${#arrayContent[@]}"
+    return 0
 }
 
 fi # TESTFUNCTIONS_SH
