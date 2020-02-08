@@ -2,8 +2,8 @@
 
 # @file testsManagementTests.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 01 December 2019
+# @version 2.0
+# @date 08 February 2020
 # @brief Unit testing of testsManagement.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -15,7 +15,7 @@
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -78,125 +78,59 @@
 ###                  Redefinition of BashUnit basic functions                ###
 ###                                                                          ###
 ################################################################################
-### Define a minimal working set allowing to have a readable test while not using BashUnit framework since it tests elements used by BashUtils
-### Behavior Variables
-FAILED_TEST_NB=0
-RUN_TEST_NB=0
-TEST_NAME_FORMAT='\033[1;34m' # Test name is printed in light blue
-FAILURE_FORMAT='\033[1;31m' # A failure is printed in light red
-SUCCESS_FORMAT='\033[1;32m' # A success is printed in light green
-NF='\033[0m' # No Format
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/../../../TESTS/testFunctions.sh"
 
-### Functions
-##!
-# @brief Do a test
-# @param 1 : Test description (in quotes)
-# @param 2 : Test to perform
-# @return 0 if test is successful, 1 if test failed, 2 if no test has been specified
-#
-## 
-doTest()
+################################################################################
+###                                                                          ###
+###                                  Setup                                   ###
+###                                                                          ###
+################################################################################
+Setup()
 {
-    local TEST_NAME="$1"
-    local TEST_CONTENT="$2"
+    CURRENT_VERBOSE=${VERBOSE}
+    VERBOSE=false # Disable verbosity because we are not interested by 
 
-    if [ -z "${TEST_CONTENT}" ]; then
-        printf "${FAILURE_FORMAT}Empty test ${TEST_NAME}${NF}\n"
-        return 2
-    fi
+    # A few functions and variables for array testing
+    function Aloha()
+    {
+        echo "Hello World"
+        return 0 
+    }
 
-    printf "${TEST_NAME_FORMAT}***** Running Test : ${TEST_NAME} *****${NF}\n"
-    ((RUN_TEST_NB++))
-    eval ${TEST_CONTENT}
-
-    local TEST_RESULT=$?
-    if [ "${TEST_RESULT}" -ne "0" ]; then
-        printf "${FAILURE_FORMAT}Test Failed with error ${TEST_RESULT}${NF}\n"
-        ((FAILED_TEST_NB++))
-        return 1
-    else
-        printf "${SUCCESS_FORMAT}Test Successful${NF}\n"
+    function ATest()
+    {
         return 0
-    fi 
-}
+    }
 
-##!
-# @brief Display test suite results
-# @return 0 
-#
-## 
-displaySuiteResults()
-{
-    local SUCCESSFUL_TESTS=0
-    ((SUCCESSFUL_TESTS=${RUN_TEST_NB}-${FAILED_TEST_NB}))
-    if [ ${FAILED_TEST_NB} -eq 0 ]; then
-        printf "${SUCCESS_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : OK${NF}\n"
-    else
-        printf "${FAILURE_FORMAT}Passed ${SUCCESSFUL_TESTS}/${RUN_TEST_NB} : KO${NF}\n"
-    fi    
+    NotATest="I am not a test" # A variable should not be detected as a function
+
+    function AnotherTest()
+    {
+        local content=$(ls /tmp)
+        return $?
+    }
+
+    function TerminatorTest()
+    {
+        echo "I'll be back"
+        return 101
+    }
+
+    return 0    
 }
 
 ################################################################################
 ###                                                                          ###
-###                            Helper functions                              ###
+###                                 Cleanup                                  ###
 ###                                                                          ###
 ################################################################################
-##!
-# @brief Check if an array has expected content
-# @param 1 : Name of the array to check
-# @param 2 : Name of the expected array
-# @return 0 if array has expected content, 1 otherwise
-#
-## 
-CheckArrayContent()
+Cleanup()
 {
-    local arrayName="$1"
-    local expectedName="$2"
-    local -n arrayContent=${arrayName}
-    local -n expectedArray=${expectedName}
-
-    local differences=(`echo ${expectedArray[@]} ${arrayContent[@]} | tr ' ' '\n' | sort | uniq -u`) # https://stackoverflow.com/questions/2312762/compare-difference-of-two-arrays-in-bash
-
-    # Compute result
-    if [ ${#differences[@]} -eq 0 ]; then
-        return 0
-    else
-        printf "Expecting to get the content : "
-        printf "%s " "${expectedArray[*]}"
-        printf "\n\n"
-        printf "But array ${arrayName} has content : "
-        printf "%s " "${arrayContent[*]}"
-        printf "\n\n"
-        printf "Difference : "
-        printf "%s " "${differences[*]}"
-        printf "\n"
-        return 1
-    fi
-}
-
-##!
-# @brief Test that the text written to a file is not the one 
-# @param 1 : Result File name
-# @param 2 : Expected Result file name
-# @return 0 if text has expected value, 1 otherwise
-#
-##
-TestWrittenText()
-{
-    local resultFileName=$1
-    local expectedResultFileName=$2
-
-    local currentValue=$(cat ${resultFileName})
-    local expectedValue=$(cat ${expectedResultFileName})
-
-    if [ "${currentValue}" = "${expectedValue}" ]; then
-        return 0
-    else
-        echo "Invalid Text"
-        echo "Expected ${expectedValue}"
-        echo "Got ${currentValue}"
-        return 1    
-    fi
+    rm -f /tmp/barError*
+    VERBOSE=${CURRENT_VERBOSE} # Restaure VERBOSE value
+    _SUITE_TESTS=()
+    _SUITE_NAME=""
 }
 
 ################################################################################
@@ -205,81 +139,56 @@ TestWrittenText()
 ###                                                                          ###
 ################################################################################
 ##!
-# @brief Check if script is not included
-# @return 0 if script is not included, 1 otherwise
-#
-## 
-scriptNotIncluded()
-{
-    if [ ! -z ${TESTSMANAGEMENT_SH} ]; then 
-        echo "TESTSMANAGEMENT_SH already has value ${TESTSMANAGEMENT_SH}"
-        return 1
-    else
-        return 0
-    fi
-}
-
-##!
-# @brief Check if script is included with correct version
-# @return 0 if script is included, 1 otherwise
-#
-## 
-scriptIncluded()
-{
-    SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-    . "${SCRIPT_LOCATION}/../testsManagement.sh"
-
-    if [ ! "${TESTSMANAGEMENT_SH}" = "1.0" ]; then 
-        echo "Loading of testsManagement.sh failed. Content is ${TESTSMANAGEMENT_SH}"
-        return 1
-    else
-        return 0
-    fi
-}
-
-##!
 # @brief Check AddTests behavior if no arguments are provided
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 AddTestsNoParam()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
+    _SUITE_TESTS=() # Make sure list of tests is empty
+    _SUITE_NAME="TestSuite" # Set up global test suite name
+
+    ### Execute Command
     AddTests 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        printf "Expected function AddTests to exit with code 0 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
     local emptyArray=()
     CheckArrayContent _SUITE_TESTS emptyArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
     printf "[Warning] : Empty list of tests to add\n" > /tmp/barErrorRef
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check AddTests behavior if no arguments are provided
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 AddTestsOnlyAddFailures()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
     _SUITE_TESTS=() # Make sure list of tests is empty
+    _SUITE_NAME="TestSuite" # Set up global test suite name
+    
+    ### A variable
+    local NotATest="IamDefinitelyNotATest"    
+
+    ### Execute Command
     AddTests "NotATest" "FailingToBeTested" "NoWay" 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "3" ]; then
-        printf "Expected function AddTests to exit with code 3 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"3\" " "Expected function to exit with code 3 but exited with code ${test_result}"
+
     local emptyArray=()
     CheckArrayContent _SUITE_TESTS emptyArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
     printf "[Warning] : Failed to add test NotATest because it is not a function\n" > /tmp/barErrorRef
     printf "[Warning] : Failed to add test FailingToBeTested because it is not a function\n" >> /tmp/barErrorRef
     printf "[Warning] : Failed to add test NoWay because it is not a function\n" >> /tmp/barErrorRef
@@ -288,24 +197,29 @@ AddTestsOnlyAddFailures()
 
 ##!
 # @brief Check AddTests behavior if no arguments are provided
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 AddTestsAddFailures()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
     _SUITE_TESTS=() # Make sure list of tests is empty
+    _SUITE_NAME="TestSuite" # Set up global test suite name
+    
+    ### A variable
+    local NotATest="IamDefinitelyNotATest"    
+
+    ### Execute Command
     AddTests "Aloha" "NeverDeclared" "ATest" "NotATest" "CanItBeATest?" "TerminatorTest" "WillNotBeAdded" 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "4" ]; then
-        printf "Expected function AddTests to exit with code 4 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"4\" " "Expected function to exit with code 4 but exited with code ${test_result}"
+
     local referenceArray=("Aloha" "ATest" "TerminatorTest")
     CheckArrayContent _SUITE_TESTS referenceArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
     printf "[Warning] : Failed to add test NeverDeclared because it is not a function\n" > /tmp/barErrorRef
     printf "[Warning] : Failed to add test NotATest because it is not a function\n" >> /tmp/barErrorRef
     printf "[Warning] : Failed to add test CanItBeATest? because it is not a function\n" >> /tmp/barErrorRef
@@ -314,109 +228,132 @@ AddTestsAddFailures()
 }
 
 ##!
-# @brief Check AddTests behavior if no arguments are provided
-# @return 0 if behavior is as expected, 1 otherwise
+# @brief Check AddTests behavior if all tests addition is successful
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 AddTestsOnlyAddSuccess()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
     _SUITE_TESTS=() # Make sure list of tests is empty
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
+
+    ### Execute Command
     AddTests "ATest" "TerminatorTest" "AnotherTest" "Aloha"  2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        printf "Expected function AddTests to exit with code 0 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
     local referenceArray=("ATest" "TerminatorTest" "AnotherTest" "Aloha")
     CheckArrayContent _SUITE_TESTS referenceArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
     printf "" > /tmp/barErrorRef # We ignore the info messages
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
-# @brief Check AddTests behavior if no arguments are provided
-# @return 0 if behavior is as expected, 1 otherwise
+# @brief Check AddTests behavior if redundant tests are provided
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 AddTestsAddRedundant()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
     _SUITE_TESTS=("Aloha" "AnotherTest" "ATest") # Initial test list
-    AddTests "ATest" "TerminatorTest" "AnotherTest" "Aloha"  2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "3" ]; then
-        printf "Expected function AddTests to exit with code 3 but exited with code ${result}\n"
-        return 1
-    fi
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
+
+    ### Execute Command
+    AddTests "ATest" "TerminatorTest" "AnotherTest" "TerminatorTest" "Aloha"  2> /tmp/barErrorOutput
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"4\" " "Expected function to exit with code 4 but exited with code ${test_result}"
+
     local referenceArray=("Aloha" "AnotherTest" "ATest" "TerminatorTest" )
     CheckArrayContent _SUITE_TESTS referenceArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
     printf "[Warning] : Test ATest is already included in suite TestSuite\n" > /tmp/barErrorRef 
     printf "[Warning] : Test AnotherTest is already included in suite TestSuite\n" >> /tmp/barErrorRef 
+    printf "[Warning] : Test TerminatorTest is already included in suite TestSuite\n" >> /tmp/barErrorRef 
     printf "[Warning] : Test Aloha is already included in suite TestSuite\n" >> /tmp/barErrorRef 
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check RunTests behavior if no arguments are provided
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 RunTestsNoParam()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
+    _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
+
+    ### Execute Command
     RunTests 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        printf "Expected function RunTests to exit with code 0 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
     local emptyArray=()
     CheckArrayContent _SUITE_RUN_TESTS emptyArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi 
+
     CheckArrayContent _SUITE_RUN_RESULTS emptyArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+    
+    local testListRef=("Aloha" "ATest" "AnotherTest" "TerminatorTest")
+    CheckArrayContent _SUITE_TESTS testListRef
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+
     printf "[Warning] : Empty list of tests to run\n" > /tmp/barErrorRef
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check RunTests behavior if only tests to run are not in test suite 
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 RunTestsOnlyRunFailures()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
+    _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
     _SUITE_RUN_TESTS=() # Make sure list of run tests is empty
     _SUITE_RUN_RESULTS=() # Make sure list of run results is empty
+    TestSetup() # Declare user Setup to remove warnings
+    {
+        return 0
+    }
+    TestTeardown() # Declare user Teardown to remove warnings
+    {
+        return 0
+    }
+
+    ### Execute Command
     RunTests "NotInList" "NeverATest" "Test" 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "3" ]; then
-        printf "Expected function RunTests to exit with code 3 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"3\" " "Expected function to exit with code 3 but exited with code ${test_result}"
+
     local emptyArray=()
     CheckArrayContent _SUITE_RUN_TESTS emptyArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi 
+
     CheckArrayContent _SUITE_RUN_RESULTS emptyArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+    
+    local testListRef=("Aloha" "ATest" "AnotherTest" "TerminatorTest")
+    CheckArrayContent _SUITE_TESTS testListRef
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+
     printf "[Warning] : NotInList is not in test suite list\n" > /tmp/barErrorRef
     printf "[Warning] : NeverATest is not in test suite list\n" >> /tmp/barErrorRef
     printf "[Warning] : Test is not in test suite list\n" >> /tmp/barErrorRef
@@ -425,31 +362,44 @@ RunTestsOnlyRunFailures()
 
 ##!
 # @brief Check RunTests behavior if some tests to run are not in test suite
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 RunTestsRunFailures()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
+    _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
     _SUITE_RUN_TESTS=() # Make sure list of run tests is empty
     _SUITE_RUN_RESULTS=() # Make sure list of run results is empty
+    TestSetup() # Declare user Setup to remove warnings
+    {
+        return 0
+    }
+    TestTeardown() # Declare user Teardown to remove warnings
+    {
+        return 0
+    }
+
+    ### Execute Command
     RunTests "Aloha" "SomeTest" "TerminatorTest" "Test" 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "2" ]; then
-        printf "Expected function RunTests to exit with code 2 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"2\" " "Expected function to exit with code 2 but exited with code ${test_result}"
+
     local expectedRunTests=("Aloha" "TerminatorTest")
     local expectedResults=("true" "false")
     CheckArrayContent _SUITE_RUN_TESTS expectedRunTests
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi 
+
     CheckArrayContent _SUITE_RUN_RESULTS expectedResults
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
+    local testListRef=("Aloha" "ATest" "AnotherTest" "TerminatorTest")
+    CheckArrayContent _SUITE_TESTS testListRef
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+    
     printf "[Warning] : SomeTest is not in test suite list\n" > /tmp/barErrorRef
     printf "[Warning] : Test is not in test suite list\n" >> /tmp/barErrorRef
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
@@ -457,232 +407,346 @@ RunTestsRunFailures()
 
 ##!
 # @brief Check RunTests behavior if all tests are run
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 RunTestsOnlyRunSuccess()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
+    _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
     _SUITE_RUN_TESTS=() # Make sure list of run tests is empty
     _SUITE_RUN_RESULTS=() # Make sure list of run results is empty
+    TestSetup() # Declare user Setup to remove warnings
+    {
+        return 0
+    }
+    TestTeardown() # Declare user Teardown to remove warnings
+    {
+        return 0
+    }
+
+    ### Execute Command
     RunTests "Aloha" "AnotherTest" "TerminatorTest" "ATest" 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        printf "Expected function RunTests to exit with code 0 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
     local expectedRunTests=("Aloha" "AnotherTest" "TerminatorTest" "ATest")
     local expectedResults=("true" "true" "false" "true")
     CheckArrayContent _SUITE_RUN_TESTS expectedRunTests
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi 
+ 
     CheckArrayContent _SUITE_RUN_RESULTS expectedResults
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
+    local testListRef=("Aloha" "ATest" "AnotherTest" "TerminatorTest")
+    CheckArrayContent _SUITE_TESTS testListRef
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+   
     printf "" > /tmp/barErrorRef # We ignore the info messages
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check RunTests behavior if some tests are already run
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
-RunTestsRunRedundant()
+RunTestsRunDuplicates()
 {
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
+    _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
     _SUITE_RUN_TESTS=() # Make sure list of run tests is empty
     _SUITE_RUN_RESULTS=() # Make sure list of run results is empty
+    TestSetup() # Declare user Setup to remove warnings
+    {
+        return 0
+    }
+    TestTeardown() # Declare user Teardown to remove warnings
+    {
+        return 0
+    }
+
+    ### Execute Command
     RunTests "TerminatorTest" "Aloha" "AnotherTest" "AnotherTest" "TerminatorTest" "ATest" 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "2" ]; then
-        printf "Expected function RunTests to exit with code 2 but exited with code ${result}\n"
-        return 1
-    fi
-    local expectedRunTests=("Aloha" "AnotherTest" "TerminatorTest" "ATest")
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"2\" " "Expected function to exit with code 2 but exited with code ${test_result}"
+
+    local expectedRunTests=("TerminatorTest" "Aloha" "AnotherTest" "ATest")
     local expectedResults=("false" "true" "true" "true")
     CheckArrayContent _SUITE_RUN_TESTS expectedRunTests
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi 
+
     CheckArrayContent _SUITE_RUN_RESULTS expectedResults
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
+    local testListRef=("Aloha" "ATest" "AnotherTest" "TerminatorTest")
+    CheckArrayContent _SUITE_TESTS testListRef
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+  
     printf "[Warning] : Test AnotherTest has already been run\n" > /tmp/barErrorRef 
     printf "[Warning] : Test TerminatorTest has already been run\n" >> /tmp/barErrorRef 
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
+# @brief Check RunTests behavior if some elements of suite are not tests
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+## 
+RunTestsRunNotTests()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Variables
+    local someVariable="tutu"
+
+    ### Declare Test suite
+    _SUITE_TESTS=("Aloha" "NotATest" "someVariable" "TerminatorTest") # Test list for all tests
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
+    _SUITE_RUN_TESTS=() # Make sure list of run tests is empty
+    _SUITE_RUN_RESULTS=() # Make sure list of run results is empty
+    TestSetup() # Declare user Setup to remove warnings
+    {
+        return 0
+    }
+    TestTeardown() # Declare user Teardown to remove warnings
+    {
+        return 0
+    }
+
+    ### Execute Command
+    RunTests "TerminatorTest" "Aloha" "NotATest" "someVariable" 2> /tmp/barErrorOutput
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
+    local expectedRunTests=("TerminatorTest" "Aloha" "NotATest" "someVariable")
+    local expectedResults=("false" "true" "false" "false")
+    CheckArrayContent _SUITE_RUN_TESTS expectedRunTests
+
+    CheckArrayContent _SUITE_RUN_RESULTS expectedResults
+
+    local testListRef=("Aloha" "NotATest" "someVariable" "TerminatorTest")
+    CheckArrayContent _SUITE_TESTS testListRef
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+  
+    printf "[Error] : NotATest is not a test (i.e. function) name\n" > /tmp/barErrorRef
+    printf "[Error] : someVariable is not a test (i.e. function) name\n" >> /tmp/barErrorRef 
+    TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
+}
+
+##!
 # @brief Check RunAllTests behavior if there are no tests in suite
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 RunAllTestsEmpty()
 {
-    _SUITE_TESTS=() # Empty tests list
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
+    _SUITE_TESTS=() # Empty Test List
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
     _SUITE_RUN_TESTS=() # Make sure list of run tests is empty
     _SUITE_RUN_RESULTS=() # Make sure list of run results is empty
+    TestSetup() # Declare user Setup to remove warnings
+    {
+        return 0
+    }
+    TestTeardown() # Declare user Teardown to remove warnings
+    {
+        return 0
+    }
+
+    ### Execute Command
     RunAllTests 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        printf "Expected function RunAllTests to exit with code 0 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
     local emptyArray=()
     CheckArrayContent _SUITE_RUN_TESTS emptyArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi 
+
     CheckArrayContent _SUITE_RUN_RESULTS emptyArray
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
+    CheckArrayContent _SUITE_TESTS emptyArray
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+
     printf "[Warning] : Empty list of tests to run\n" > /tmp/barErrorRef 
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check RunAllTests behavior in nominal case
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 RunAllTestsNominal()
 {
-    _SUITE_TESTS=("Aloha" "TerminatorTest" "AnotherTest" "ATest") # Empty tests list
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
+    _SUITE_TESTS=("Aloha" "TerminatorTest" "AnotherTest" "ATest") # Test list for all tests
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
     _SUITE_RUN_TESTS=() # Make sure list of run tests is empty
     _SUITE_RUN_RESULTS=() # Make sure list of run results is empty
+    TestSetup() # Declare user Setup to remove warnings
+    {
+        return 0
+    }
+    TestTeardown() # Declare user Teardown to remove warnings
+    {
+        return 0
+    }
+
+    ### Execute Command
     RunAllTests 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        printf "Expected function RunAllTests to exit with code 0 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
     local expectedRunTests=("Aloha" "TerminatorTest" "AnotherTest" "ATest")
     local expectedResults=("true" "false" "true" "true")
     CheckArrayContent _SUITE_RUN_TESTS expectedRunTests
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi 
+
     CheckArrayContent _SUITE_RUN_RESULTS expectedResults
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
+    local testListRef=("Aloha" "TerminatorTest" "AnotherTest" "ATest")
+    CheckArrayContent _SUITE_TESTS testListRef
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+
     printf "" > /tmp/barErrorRef 
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
 ##!
 # @brief Check RunAllTests behavior if there are duplicates in it
-# @return 0 if behavior is as expected, 1 otherwise
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
 RunAllTestsDuplicates()
 {
-    _SUITE_TESTS=("Aloha" "TerminatorTest" "AnotherTest" "TerminatorTest" "ATest" "Aloha") # Empty tests list
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Declare Test suite
+    _SUITE_TESTS=("Aloha" "TerminatorTest" "AnotherTest" "TerminatorTest" "ATest" "Aloha")
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
     _SUITE_RUN_TESTS=() # Make sure list of run tests is empty
     _SUITE_RUN_RESULTS=() # Make sure list of run results is empty
+    TestSetup() # Declare user Setup to remove warnings
+    {
+        return 0
+    }
+    TestTeardown() # Declare user Teardown to remove warnings
+    {
+        return 0
+    }
+
+    ### Execute Command
     RunAllTests 2> /tmp/barErrorOutput
-    local result=$?
-    if [ "${result}" -ne "2" ]; then
-        printf "Expected function RunAllTests to exit with code 2 but exited with code ${result}\n"
-        return 1
-    fi
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"2\" " "Expected function to exit with code 2 but exited with code ${test_result}"
+
     local expectedRunTests=("Aloha" "TerminatorTest" "AnotherTest" "ATest")
     local expectedResults=("true" "false" "true" "true")
     CheckArrayContent _SUITE_RUN_TESTS expectedRunTests
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi 
+
     CheckArrayContent _SUITE_RUN_RESULTS expectedResults
-    local result=$?
-    if [ "${result}" -ne "0" ]; then
-        return 1
-    fi     
+
+    local testListRef=("Aloha" "TerminatorTest" "AnotherTest" "ATest")
+    CheckArrayContent _SUITE_TESTS testListRef
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+
     printf "[Warning] : Test TerminatorTest has already been run\n" > /tmp/barErrorRef 
     printf "[Warning] : Test Aloha has already been run\n" >> /tmp/barErrorRef 
     TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
 }
 
+##!
+# @brief Check RunAllTestsNotTests behavior if there are some elements that are not tests in suite
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+## 
+RunAllTestsNotTests()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+
+    ### Variables
+    local someVariable="tutu"
+
+    ### Declare Test suite
+    _SUITE_TESTS=("Aloha" "TerminatorTest" "AnotherTest" "NotATest" "ATest" "someVariable")
+    _SUITE_NAME="TestSuite" # Set up global test suite name 
+    _SUITE_RUN_TESTS=() # Make sure list of run tests is empty
+    _SUITE_RUN_RESULTS=() # Make sure list of run results is empty
+    TestSetup() # Declare user Setup to remove warnings
+    {
+        return 0
+    }
+    TestTeardown() # Declare user Teardown to remove warnings
+    {
+        return 0
+    }
+
+    ### Execute Command
+    RunAllTests 2> /tmp/barErrorOutput
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
+    local expectedRunTests=("Aloha" "TerminatorTest" "AnotherTest" "NotATest" "ATest" "someVariable")
+    local expectedResults=("true" "false" "true" "false" "true" "false")
+    CheckArrayContent _SUITE_RUN_TESTS expectedRunTests
+
+    CheckArrayContent _SUITE_RUN_RESULTS expectedResults
+
+    local testListRef=("Aloha" "TerminatorTest" "AnotherTest" "NotATest" "ATest" "someVariable")
+    CheckArrayContent _SUITE_TESTS testListRef
+
+    endTestIfAssertFails "\"${_SUITE_NAME}\" = \"TestSuite\" " "_SUITE_NAME value should not have been altered by RunTest. But now is ${_SUITE_NAME}"
+
+    printf "[Error] : NotATest is not a test (i.e. function) name\n" > /tmp/barErrorRef
+    printf "[Error] : someVariable is not a test (i.e. function) name\n" >> /tmp/barErrorRef
+    TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
+}
 
 ################################################################################
 ###                                                                          ###
 ###                              Execute tests                               ###
 ###                                                                          ###
 ################################################################################
-### SetUp
-CURRENT_VERBOSE=${VERBOSE}
-VERBOSE=false # Disable verbosity because we are not interested by 
-
-# A few functions and variables for array testing
-function Aloha()
-{
-    echo "Hello World"
-    return 0 
-}
-
-function ATest()
-{
-    return 0
-}
-
-NotATest="I am not a test" # A variable should not be detected as a function
-
-function AnotherTest()
-{
-    local content=$(ls /tmp)
-    return $?
-}
-
-function TerminatorTest()
-{
-    echo "I'll be back"
-    return 101
-}
-
 ### Do Tests
-#Inclusion
-doTest "testsManagement.sh not included" scriptNotIncluded
-doTest "testsManagement.sh included" scriptIncluded
-_SUITE_TESTS=() # Make sure list of tests is empty
-_SUITE_NAME="TestSuite" # Set up global test suite name
-
 #AddTests
-doTest "AddTests with no parameters" AddTestsNoParam
-doTest "AddTests with only addition failures" AddTestsOnlyAddFailures
-doTest "AddTests with addition failures" AddTestsAddFailures
-doTest "AddTests with only successful additions" AddTestsOnlyAddSuccess
-doTest "AddTests with redundant additions" AddTestsAddRedundant
+doTest AddTestsNoParam
+doTest AddTestsOnlyAddFailures
+doTest AddTestsAddFailures
+doTest AddTestsOnlyAddSuccess
+doTest AddTestsAddRedundant
 
 #RunTests
-_SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
-doTest "RunTests with no parameters" RunTestsNoParam
-doTest "RunTests with only run failures" RunTestsOnlyRunFailures
-doTest "RunTests with run failures" RunTestsRunFailures
-doTest "RunTests with only successful run" RunTestsOnlyRunSuccess
-doTest "RunTests with redundant additions" RunTestsRunRedundant
+doTest RunTestsNoParam
+doTest RunTestsOnlyRunFailures
+doTest RunTestsRunFailures
+doTest RunTestsOnlyRunSuccess
+doTest RunTestsRunDuplicates
+doTest RunTestsRunNotTests
 
 # RunAllTests
-doTest "RunTests with empty test in suite" RunAllTestsEmpty
-doTest "RunTests with some tests in it" RunAllTestsNominal
-doTest "RunTests with duplicates in it" RunAllTestsDuplicates
-
-### Clean Up
-rm /tmp/barErrorOutput
-rm /tmp/barErrorRef
-VERBOSE=${CURRENT_VERBOSE} # Restaure VERBOSE value
-_SUITE_TESTS=()
-_SUITE_NAME=""
+doTest RunAllTestsEmpty
+doTest RunAllTestsNominal
+doTest RunAllTestsDuplicates
+doTest RunAllTestsNotTests
 
 ### Tests result
 displaySuiteResults

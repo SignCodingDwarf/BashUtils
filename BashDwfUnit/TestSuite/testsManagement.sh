@@ -2,14 +2,14 @@
 
 # @file testsManagement.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 01 December 2019
+# @version 1.1
+# @date 08 February 2020
 # @brief Definition of the functions used to manage tests (add them to test suite and run them).
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -74,6 +74,7 @@ if [ -z ${TESTSMANAGEMENT_SH} ]; then
 SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 . "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/../../Parsing/parseVersion.sh"
 . "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/structure.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/../TestCase/testCase.sh"
 . "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/../../Printing/debug.sh"
 . "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/../../Testing/function.sh"
 . "${SCRIPT_LOCATION_PRINT_TESTSMANAGEMENT_SH}/../../Testing/arrays.sh"
@@ -148,8 +149,7 @@ RunTests()
             IsInArray ${testToRun} _SUITE_RUN_TESTS
             local hasAlreadyBeenRun=$?
             if [ "${hasAlreadyBeenRun}" -ne "0" ]; then
-                PrintTestName "${testToRun}"
-                eval ${testToRun} # Run test
+                runTestCase "${testToRun}" # Run test
                 local testResult=$?
                 _SUITE_RUN_TESTS+=("${testToRun}")
                 if [ "${testResult}" -eq 0 ]; then
