@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file assertUtils.sh
+# @file strings.sh
 # @author SignC0dingDw@rf
-# @version 1.1
+# @version 1.0
 # @date 23 February 2020
-# @brief Definition of the utilities used to indicate assertion errors.
+# @brief Definition of utilitaries and variables used to perform tests on strings content.
 
 ###
 # MIT License
@@ -68,90 +68,41 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${ASSERTUTILS_SH} ]; then
+if [ -z ${STRINGS_SH} ]; then
 
-### Inclusions
-SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Printing/debug.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Testing/types.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Updating/stringContent.sh"
+### Include parseVersion.sh
+SCRIPT_LOCATION_STRINGS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_STRINGS_SH}/../Parsing/parseVersion.sh"
 
-ASSERTUTILS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTUTILS_SH=""
-
-### Formats
-errorMessageFormat='\033[1;31m' # Error Messages are printed in light red
-
-### Variables
-lineDelimiter="\n"
-
-### Functions
-##!
-# @brief Print error message line
-# @param 1 : Error message line
-# @return 0 if print was successful, >0 otherwise
-#
-##
-PrintErrorLine()
-{
-    FormattedPrint 1 "${errorMessageFormat}" "${NF}" "[Assertion Failure] : " "" "${1}" 
-}
+STRINGS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using STRINGS_SH=""
 
 ##!
-# @brief Print a multiline error message delimited with \n
-# @param 1 : Error message
-# @return 0 if print was successful, >0 otherwise
-#
-# A message can be displayed on mutilple lines by separating them using \n delimiter
-#
-##
-PrintErrorMessage()
-{
-    local message="$1"
-
-    message=$(AddSuffix "${message}" "${lineDelimiter}") # If message does not end with delimiter, we add delimiter to the end for parsing
-
-    while [ -n "${message}" ]; do # While we don't have removed all message content
-        PrintErrorLine "${message%%"${lineDelimiter}"*}"
-        message=${message#*"${lineDelimiter}"}
-    done
-}
-
-##!
-# @brief Display error message and exit test on failure
-# @param 1 : Error message
-# @param 2 : Error code. Default is 1
-# @return Exit on provided error code.
-#
-# Currently error codes different than ones are not specifically reported or used.
-# But who knows ...
+# @brief Check if string ends with given suffix
+# @param 1 : Value to test
+# @param 2 : Expected suffix
+# @return 0 if it ends with given suffix,
+#         1 if no suffix is provided,
+#         2 if it does not end with given suffix
 #
 ##
-EndTestOnFailure()
+EndsWithSuffix()
 {
-    local message="${1}"
-    local errorCode="${2:-1}" # Default is 1
+    local valueTested="$1"
+    local suffix="$2" 
 
-    # Check our return code is an unsigned integer
-    IsUnsignedInteger "${errorCode}"
-    local isUInt=$?
-    if [ "${isUInt}" -ne "0" ]; then # Otherwise it is set back to 1
-        PrintWarning "Invalid error code ${errorCode} set back to 1"
-        errorCode=1
+    if [ -z "${suffix}" ]; then
+        return 1
     fi
 
-    # Check if error code is in ]0 - 255] range (because 0 indicates success so test should not exit)
-    if [ "${errorCode}" -gt "255" -o "${errorCode}" -eq "0" ]; then # Otherwise it is set back to 1
-        PrintWarning "Out of ]0 - 255] range error code ${errorCode} set back to 1"
-        errorCode=1
-    fi 
-
-    # Display message and exit
-    PrintErrorMessage "${message}"
-    exit ${errorCode}
+    if [[ "${valueTested}" == *"${suffix}" ]];  then # test if it ends with suffix
+        return 0
+    else
+        return 2
+    fi
+    
 }
 
-fi # ASSERTUTILS_SH
+fi # STRINGS_SH
 
 #  ______________________________ 
 # |                              |

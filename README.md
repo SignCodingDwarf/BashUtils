@@ -5,15 +5,19 @@ It contains the following modules :
 
 ### Parsing
 
-A set of functions used to parse file contents
+A set of functions used to parse file contents.
 
 ### Printing
 
-A set of functions to display information and logs
+A set of functions to display information and logs.
 
 ### Testing
 
 A set of functions used to perform tests in bash.
+
+### Updating
+
+A set of functions used to alter variable content.
 
 ### Running tests on the library
 
