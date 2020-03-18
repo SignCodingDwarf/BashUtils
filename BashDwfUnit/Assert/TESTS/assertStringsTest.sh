@@ -321,7 +321,7 @@ testAssertStringEqualityReferencePartOfTested()
 ###                                                                          ###
 ################################################################################
 ### Do Tests
-# ASSERT_String_CODE_VALUE
+# ASSERT_STRING_IS_EQUAL
 doTest testAssertStringEqualityNoArg
 doTest testAssertStringEqualityMissingArg
 doTest testAssertStringEqualityOK
