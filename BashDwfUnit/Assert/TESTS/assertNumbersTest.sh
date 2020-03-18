@@ -4,7 +4,7 @@
 # author : SignC0dingDw@rf
 # version : 1.0
 # date : 23 February 2020
-# Unit testing of assertUtils.sh file.
+# Unit testing of assertNumbers.sh file.
 
 ### Exit Code
 #
