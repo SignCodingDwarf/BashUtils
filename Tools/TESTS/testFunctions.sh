@@ -78,7 +78,7 @@ TESTFUNCTIONS_SH="1.0" # Reset using TESTFUNCTIONS_SH=""
 # Inclusion of dependencies
 SCRIPT_LOCATION_TESTFUNCTIONS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 . "${SCRIPT_LOCATION_TESTFUNCTIONS_SH}/testUtils.sh"
-. "${SCRIPT_LOCATION_TESTFUNCTIONS_SH}/../Testing/files.sh"
+. "${SCRIPT_LOCATION_TESTFUNCTIONS_SH}/../../Testing/files.sh"
 
 ################################################################################
 ###                                                                          ###

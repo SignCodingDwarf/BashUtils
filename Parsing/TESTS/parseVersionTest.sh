@@ -75,7 +75,7 @@
 ###                                                                          ###
 ################################################################################
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../TESTS/testUtils.sh"
+. "${SCRIPT_LOCATION}/../../Tools/TESTS/testUtils.sh"
 
 
 ################################################################################
