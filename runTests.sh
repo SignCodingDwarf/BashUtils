@@ -2,19 +2,20 @@
 
 # @file runTests.sh
 # @author SignC0dingDw@rf
-# @version 0.2
-# @date 23 December 2019
+# @version 1.0
+# @date 27 March 2020
 # @brief Script allowing to run tests scripts in all BashUtils modules and display results
 
 ### Exit Code
 #
-# 0 
+# 0 : Program executed successfully
+# 1 : Failed to create results folder
 #
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +37,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -72,64 +73,143 @@
 # If not, see <http://www.dwarfvesaregonnabeatyoutodeath.com>.
 ###
 
+################################################################################
+###                                                                          ###
+###                                Inclusions                                ###
+###                                                                          ###
+################################################################################
 ### Get script location
-SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SCRIPT_LOCATION_RUN_TESTS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-### Functions
+. "${SCRIPT_LOCATION_RUN_TESTS_SH}/Printing/cmdHelp.sh"
+. "${SCRIPT_LOCATION_RUN_TESTS_SH}/Tools/tests.sh"
+
+################################################################################
+###                                                                          ###
+###                              Configuration                               ###
+###                                                                          ###
+################################################################################
+# Set module working directory
+SetModuleRoot ${SCRIPT_LOCATION_RUN_TESTS_SH}
+# Build list of modules
+ListModules
+
+################################################################################
+###                                                                          ###
+###                                  Usage                                   ###
+###                                                                          ###
+################################################################################
 ##!
-# @brief List all TESTS folders
-# @output The list of TESTS folders of BashUnit
-# @return 0 if test is successful, see find for other error codes
+# @brief Print usage of command
+# @output Command usage
+# @return 0 if print is successful, >0 otherwise
 #
 ## 
-ListTestFolderPaths()
+Usage()
 {
-    find ${SCRIPT_LOCATION} -type d -name '*TESTS' | grep -v "${SCRIPT_LOCATION}/TESTS" # Ignore TESTS folder not in a module because it only contains help utils
+    PrintUsage "runTests" "[options]" "[tested_module_1] .. [tested_module_N]" 
 }
 
-### Functions
 ##!
-# @brief Convert a test folder to module
-# @input 1 : Test folder path
-# @output The module name. If module has submodule (i.e. subdirectories), submodules are separated by ":"
-# @return 0 if test is successful, see find for other error codes
+# @brief Print command help
+# @output Command help
+# @return 0 if print is successful, >0 otherwise
 #
 ## 
-TestFolderToModule()
+Help()
 {
-    echo $1 | sed -r "s|${SCRIPT_LOCATION}/||" | sed -r 's|/TESTS||' | sed -r 's|/|:|'
+    Usage
+    printf "\n"
+    PrintDescription "Command allowing to run tests of BashUtils modules (i.e. folders)."
+    PrintDescription "Can specify one or more modules. If no modules is specified, all modules are tested."
+    printf "\n"
+
+    printf "Options:\n"
+    PrintOptionCategory "General Options"
+    PrintOption "-h" "--help" "show this help message and exit"
+    PrintOption "-v" "--verbose" "get detailed execution information"
+    printf "\n"
+    PrintOptionCategory "Listing"
+    PrintOption "-l" "--list-modules" "list available modules"
+    printf "\n"
+    PrintOptionCategory "Log"
+    PrintOption "-r" "--results-location=<path>" "folder where the execution results are stored. Default is /tmp"
 }
 
 ################################################################################
 ###                                                                          ###
-###                                Main Loop                                 ###
+###                            Control Variables                             ###
 ###                                                                          ###
 ################################################################################
-### List test folders
-TEST_FOLDERS=$(ListTestFolderPaths)
+VERBOSE=false
+MODULES_TO_TEST=() # List of tested modules
+RESULTS_LOCATION="/tmp"
 
-### Result control variables
-TESTS_NAMES=()
-TESTS_RESULTS=()
-
-### Run tests
-for test_folder in ${TEST_FOLDERS}; do
-    MODULE=$(TestFolderToModule ${test_folder}) # Get module name from test folder
-    printf "****** Running tests of module ${MODULE} ******\n"
-    ## List test files
-    TEST_FILES=$(ls ${test_folder}/*.sh)
-    for test_file in ${TEST_FILES}; do
-        (. ${test_file}) # Displays the output but does not exit when a test ends
-        TEST_RESULT=$?
-        TESTS_NAMES+=("${MODULE}:${test_file##*/}") # Add running test tests list with only file path
-        TESTS_RESULTS+=("${TEST_RESULT}") # Add result to results list
-    done
+################################################################################
+###                                                                          ###
+###                            Process Arguments                             ###
+###                                                                          ###
+################################################################################
+for argument in "$@" # for every input argument
+do
+    case $argument in
+        -h|--help) # if asked to render help
+            Help # Print help and exit
+            exit 0
+        ;;
+        -v|--verbose) # if asked to set verbose execution
+            VERBOSE=true
+        ;;
+        -l|--list-modules)
+            PrintModulesList
+            exit 0
+        ;;
+        -r=*|--results-location=*)
+            RESULTS_LOCATION="${argument#*=}"
+        ;;
+        *) #default check if argument is in list       
+            IsInModuleList ${argument}
+            inList="$?"
+            if [ "${inList}" -eq "0" ]; then
+                MODULES_TO_TEST+=(${argument})
+            else
+                PrintWarning "Failed to add ${argument} to modules to test list"
+            fi    
+        ;;
+    esac
 done
 
-### Display tests summary
-for index in "${!TESTS_NAMES[@]}"; do 
-    printf "KO for Test ${TESTS_NAMES[${index}]} = ${TESTS_RESULTS[${index}]}\n"
+# If no module to test is specified, fill the list with the complete modules list
+if [ -z "${MODULES_TO_TEST}" ]; then
+    MODULES_TO_TEST=($(PrintModulesList))
+fi
+
+# Create the folder storing results
+CreateResultFolder "${RESULTS_LOCATION}"
+if [ "$?" -ne "0" ]; then
+    exit 1
+fi 
+
+################################################################################
+###                                                                          ###
+###                              Execute Tests                               ###
+###                                                                          ###
+################################################################################
+for testedModule in ${MODULES_TO_TEST[@]}; do
+    PrintInfo "********** Testing Module ${testedModule} **********"
+    TestModule "${testedModule}"
 done
+
+################################################################################
+###                                                                          ###
+###                             Display Results                              ###
+###                                                                          ###
+################################################################################
+for testedModule in ${MODULES_TO_TEST[@]}; do
+    PrintModuleResult "${testedModule}"
+done
+
+PrintExecutionSummary
 
 exit 0
 
