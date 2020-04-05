@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file functionTest.sh
+# @file stringsTest.sh
 # @author SignC0dingDw@rf
-# @version 2.2
-# @date 01 February 2020
-# @brief Unit testing of function.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
+# @version 1.0
+# @date 23 February 2020
+# @brief Unit testing of strings.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
 #
@@ -87,62 +87,123 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 ###                                                                          ###
 ################################################################################
 ##!
-# @brief Test FunctionExists in multiple ways
-# @return 0 if all tests are successful, exit 1 after first test failure
+# @brief Test EndsWithSuffix behavior with no parameters
+# @return 0 if EndsWithSuffix has expected behavior, exit 1 otherwise
 #
 ## 
-testFunctionExists()
+testEndsWithSuffixEmptyPar()
 {
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.2"
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
 
-    ### Test before function exists
-    FunctionExists DummyFunction
+    # Call command
+    EndsWithSuffix
     local COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
 
-    ### Test that function does not create symbol of function
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
-    ### Declare function
-    DummyFunction()
-    {
-        echo "Does nothing"
-    }
-
-    ### Test existing function
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Test of existing function should return code 0 but returned code ${COMMAND_RESULT}"
-   
- ### Delete Function symbol
-    unset -f DummyFunction
-
-    ### Test function deletion
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
+    # Process result
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Expected test to return code 1 but test returned code ${COMMAND_RESULT}"
 
     return 0
 }
 
 ##!
-# @brief Check FunctionExists if no argument is provided
-# @return 0 if behavior is as expected, exit 1 otherwise
+# @brief Test EndsWithSuffix behavior with no suffix provided
+# @return 0 if EndsWithSuffix has expected behavior, exit 1 otherwise
 #
 ## 
-testNoArg()
+testEndsWithSuffixNoSuffix()
 {
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.2"
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
 
-    ## Test command
-    FunctionExists 
-    local commandResult=$?
-    endTestIfAssertFails "\"${commandResult}\" -eq \"1\"" "Test without argument should return code 1 but returned code ${commandResult}"
+    # Call command
+    EndsWithSuffix "Some String"
+    local COMMAND_RESULT=$?
+
+    # Process result
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Expected test to return code 1 but test returned code ${COMMAND_RESULT}"
+
+    return 0
+}
+
+##!
+# @brief Test EndsWithSuffix behavior with string ending with suffix provided
+# @return 0 if EndsWithSuffix has expected behavior, exit 1 otherwise
+#
+## 
+testEndsWithSuffixOK()
+{
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+
+    # Call command
+    EndsWithSuffix "Some String" "ing"
+    local COMMAND_RESULT=$?
+
+    # Process result
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Expected test to return code 0 but test returned code ${COMMAND_RESULT}"
+
+    return 0
+}
+
+##!
+# @brief Test EndsWithSuffix behavior with string not ending with suffix provided
+# @return 0 if EndsWithSuffix has expected behavior, exit 1 otherwise
+#
+## 
+testEndsWithSuffixKO()
+{
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+
+    # Call command
+    EndsWithSuffix "Some String" "NotASuffix"
+    local COMMAND_RESULT=$?
+
+    # Process result
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"2\"" "Expected test to return code 2 but test returned code ${COMMAND_RESULT}"
+
+    return 0
+}
+
+##!
+# @brief Test EndsWithSuffix behavior with string with suffix in the middle
+# @return 0 if EndsWithSuffix has expected behavior, exit 1 otherwise
+#
+## 
+testEndsWithSuffixSuffixMiddle()
+{
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+
+    # Call command
+    EndsWithSuffix "A very complex string" "lex"
+    local COMMAND_RESULT=$?
+
+    # Process result
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"2\"" "Expected test to return code 2 but test returned code ${COMMAND_RESULT}"
+
+    return 0
+}
+
+##!
+# @brief Test EndsWithSuffix behavior with a complex suffix containing spaces
+# @return 0 if EndsWithSuffix has expected behavior, exit 1 otherwise
+#
+## 
+testEndsWithSuffixComplexSuffix()
+{
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+
+    # Call command
+    EndsWithSuffix "A string with a very complex suffix \n" "lex suffix \n"
+    local COMMAND_RESULT=$?
+
+    # Process result
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Expected test to return code 0 but test returned code ${COMMAND_RESULT}"
+
+    return 0
 }
 
 ################################################################################
@@ -151,8 +212,13 @@ testNoArg()
 ###                                                                          ###
 ################################################################################
 ### Do Tests
-doTest testFunctionExists
-doTest testNoArg
+#EndsWithSuffix
+doTest testEndsWithSuffixEmptyPar
+doTest testEndsWithSuffixNoSuffix
+doTest testEndsWithSuffixOK
+doTest testEndsWithSuffixKO
+doTest testEndsWithSuffixSuffixMiddle
+doTest testEndsWithSuffixComplexSuffix
 
 ### Tests result
 displaySuiteResults

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file assertFolders.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 21 March 2020
+# @brief Definition of a set of macros used to check folders content.
 
 ###
 # MIT License
@@ -68,35 +68,79 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${ASSERTFOLDERS_SH} ]; then
 
-### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+### Inclusions
+SCRIPT_LOCATION_PRINT_ASSERTFOLDERS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_ASSERTFOLDERS_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERTFOLDERS_SH}/assertUtils.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERTFOLDERS_SH}/../../Testing/arrays.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+ASSERTFOLDERS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTFOLDERS_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
+# @brief Checks that the content of a folder matches an expected content
+# @param 1 : Name of the array containing expected folder content
+# @param 2 : Tested folder
+# @param 3 : Error Message Header. Default is "Folder has not expected content"
+# @return 0 if files are identical, exit 1 otherwise
 #
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# Compare the content of a folder (ls -a) with the content of an array that describes expected content.
+# Returns the following error message :
+# @param_3
+# Expected : 
+# @param_1 content
+# Got : 
+# @param_2 content
+#
+# Error message header (@param_3) can be multiline provided you insert \n characters in string
 #
 ##
-FunctionExists()
+ASSERT_FOLDER_HAS_EXPECTED_CONTENT()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
-        return 1
+    local expectedContentArrayName="$1"
+    local tested="$2"
+    local messageHeader="$3"
+    local errorMessage=""
+
+    # Check arguments
+    if [ -z "${expectedContentArrayName}" -o -z "${tested}" ]; then # If at least a value to compare is empty, error
+        errorMessage="Problem on provided arguments. Usage:${lineDelimiter}ASSERT_FOLDER_HAS_EXPECTED_CONTENT <expected_content_name> <tested_folder> [Message Header]${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    # Message header default value
+    if [ -z "${messageHeader}" ]; then
+        messageHeader="Folder has not expected content${lineDelimiter}"
+    fi
+    errorMessage=$(AddSuffix "${messageHeader}" "${lineDelimiter}") ## Add delimiter in the end of line
+
+    # Check expectedContentArrayName is indeed and array and get its content
+    IsArray "${expectedContentArrayName}"
+    if [ "$?" -ne "0" ]; then
+        errorMessage="${expectedContentArrayName} is not the name of an array.${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"      
+    fi
+    local -n expectedContent=${expectedContentArrayName}
+
+    # Check tested is indeed a folder and get content
+    if [ ! -d "${tested}" ]; then
+        errorMessage="${tested} is not a directory.${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"          
+    fi
+    local testedContent=$(ls ${tested} | tr '\n' ' ') # For printing on single line
+
+    # Compare contents
+    local differences=(`echo ${expectedContent[@]} ${testedContent[@]} | tr ' ' '\n' | sort | uniq -u`) # https://stackoverflow.com/questions/2312762/compare-difference-of-two-arrays-in-bash
+    if [ "${#differences[@]}" -ne "0" ]; then
+        errorMessage="${errorMessage}Expected :${lineDelimiter}${expectedContent[*]}${lineDelimiter}Got :${lineDelimiter}${testedContent[*]}${lineDelimiter}Differences :${lineDelimiter}${differences[*]}${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}" 
+    else
+        return 0
+    fi
 }
 
-fi # FUNCTION_SH
+fi # ASSERTFOLDERS_SH
 
 #  ______________________________ 
 # |                              |

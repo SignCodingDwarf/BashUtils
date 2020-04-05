@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file  declareEnvVarModif.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 12 January 2020
+# Definition of functions used to declare modified environment variables
 
 ###
 # MIT License
@@ -68,35 +68,72 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z "${DECLAREENVVARMODIF_SH}" ]; then
 
-### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_DECLAREENVVARMODIF_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_DECLAREENVVARMODIF_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_DECLAREENVVARMODIF_SH}/../../Printing/debug.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+DECLAREENVVARMODIF_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using DECLAREENVVARMODIF_SH=""
 
+### Functions
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Declare a set of Environment Variables to restore
+# @param @ : Environment Variable Names
+# @return 0 if all variables were added to restoration list
+#         1 if empty restauration list
 #
 ##
-FunctionExists()
+DeclEnvVars()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
+    local varNames=($@)
+    local varName=""
+    local additionFailures=0
+    if [ "${#varNames[@]}" -eq "0" ]; then 
+        PrintError "You should specify an environment variable to restore"
+        return 1       
+    fi
+
+    for varName in ${varNames[@]}; do
+        PrintInfo "Adding for restauration the variable : "
+        PrintInfo "${varName}"
+        PrintInfo "with value : "
+        PrintInfo "${!varName}"
+        ENV_VARS_VALUES_TO_RESTORE+=("${varName}" "${!varName}") # Append vars and values to the array
+    done
+    return ${additionFailures}
+}
+
+
+##!
+# @brief Declare Environment Variable to restore and change its value to specified value
+# @param 1 : Environment Variable Name
+# @param 2 : Environment Variable Value (shall not contain spaces)
+# @return 0 if environment variable was added to list and successfully updated
+#         1 if empty restauration list
+#         2 if variable was not added to restoration list and thus not modified
+#
+##
+DeclModEnvVar()
+{
+    local varName=$1
+    local newValue="${2}"
+
+    if [ -z "${varName}" ]; then
+        PrintError "You should specify an environment variable to restore"
         return 1
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    DeclEnvVars "${varName}"
+    if [ "$?" -ne "0" ]; then
+        return 2
+    else
+        read ${varName} <<< "${newValue}"    
+    fi
+    return 0
 }
 
-fi # FUNCTION_SH
+fi # DECLAREENVVARMODIF_SH
 
 #  ______________________________ 
 # |                              |

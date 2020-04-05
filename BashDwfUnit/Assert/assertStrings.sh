@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file assertStrings.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 18 March 2020
+# @brief Definition of a set of macros used to check strings values.
 
 ###
 # MIT License
@@ -68,35 +68,60 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${ASSERTSTRINGS_SH} ]; then
 
-### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+### Inclusions
+SCRIPT_LOCATION_PRINT_ASSERTSTRINGS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_ASSERTSTRINGS_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERTSTRINGS_SH}/assertUtils.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+ASSERTSTRINGS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTSTRINGS_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
+# @brief Checks that a string is equal to an expected value
+# @param 1 : Expected string value
+# @param 2 : Tested string value
+# @param 3 : Error Message Header. Default is "Provided strings are not identical"
+# @return 0 if strings are identical, exit 1 otherwise
 #
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# Compare two strings using = test. Strict equality (i.e. no pattern matching) is checked.
+# If tested and/or compared strings are empty, this triggers an error. 
+# Returns the following error message :
+# @param_3
+# Expected : @param_1
+# Got : @param_2
+#
+# Error message header (@param_3) can be multiline provided you insert \n characters in string
 #
 ##
-FunctionExists()
+ASSERT_STRING_IS_EQUAL()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
-        return 1
+    local expected="$1"
+    local tested="$2"
+    local messageHeader="$3"
+    local errorMessage=""
+
+    if [ -z "${expected}" -o -z "${tested}" ]; then # If at least a value to compare is empty, error
+        errorMessage="Problem on provided arguments. Usage:${lineDelimiter}ASSERT_STRING_IS_EQUAL <expected_string> <tested_string> [Message Header]${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    if [ -z "${messageHeader}" ]; then
+        messageHeader="Provided strings are not identical\n"
+    fi
+    errorMessage=$(AddSuffix "${messageHeader}" "${lineDelimiter}") ## Add delimiter in the end of line
+
+    [ "${expected}" = "${tested}" ] 2> /dev/null # Test condition
+    # Check error
+    if [ "$?" -ne "0" ]; then
+        errorMessage="${errorMessage}Expected : ${expected}${lineDelimiter}Got : ${tested}${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"
+    else
+        return 0
+    fi
 }
 
-fi # FUNCTION_SH
+fi # ASSERTSTRINGS_SH
 
 #  ______________________________ 
 # |                              |

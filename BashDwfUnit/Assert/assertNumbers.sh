@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file assertNumbers.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 23 February 2020
+# @brief Definition of a set of macros used to directly compare numbers.
 
 ###
 # MIT License
@@ -68,35 +68,102 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${ASSERTNUMBERS_SH} ]; then
 
-### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+### Inclusions
+SCRIPT_LOCATION_PRINT_ASSERTNUMBERS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_ASSERTNUMBERS_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERTNUMBERS_SH}/assertUtils.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+ASSERTNUMBERS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTNUMBERS_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
+# @brief Checks that a number is equal to an expected value
+# @param 1 : Expected number value
+# @param 2 : Tested number value
+# @param 3 : Error Message Header. Default is "Provided numbers are not equal"
+# @return 0 if numbers are identical, exit 1 otherwise
 #
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# Compare two numbers using -eq test.
+# Returns the following error message :
+# @param_3
+# Expected : @param_1
+# Got : @param_2
+#
+# Error message header (@param_3) can be multiline provided you insert \n characters in string
 #
 ##
-FunctionExists()
+ASSERT_NUMBER_IS_EQUAL()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
-        return 1
+    local expected="$1"
+    local tested="$2"
+    local messageHeader="$3"
+    local errorMessage=""
+
+    if [ -z "${expected}" -o -z "${tested}" ]; then # If at least a value to compare is empty, error
+        errorMessage="Problem on provided arguments. Usage:${lineDelimiter}ASSERT_NUMBER_IS_EQUAL <expected_nb> <tested_nb> [Message Header]${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    if [ -z "${messageHeader}" ]; then
+        messageHeader="Provided numbers are not equal\n"
+    fi
+    errorMessage=$(AddSuffix "${messageHeader}" "${lineDelimiter}") ## Add delimiter in the end of line
+
+    [ "${expected}" -eq "${tested}" ] 2> /dev/null # Test condition
+    # Check error
+    if [ "$?" -ne "0" ]; then
+        errorMessage="${errorMessage}Expected : ${expected}${lineDelimiter}Got : ${tested}${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"
+    else
+        return 0
+    fi
 }
 
-fi # FUNCTION_SH
+##!
+# @brief Checks that a number is not equal to an expected value
+# @param 1 : Expected number value
+# @param 2 : Tested number value
+# @param 3 : Error Message Header. Default is "Provided numbers are equal"
+# @return 0 if numbers are identical, exit 1 otherwise
+#
+# Compare two numbers using -ne test.
+# Returns the following error message :
+# @param_3
+# Expected : @param_1
+# Got : @param_2
+#
+# Error message header (@param_3) can be multiline provided you insert \n characters in string
+#
+##
+ASSERT_NUMBER_IS_NOT_EQUAL()
+{
+    local expected="$1"
+    local tested="$2"
+    local messageHeader="$3"
+    local errorMessage=""
+
+    if [ -z "${expected}" -o -z "${tested}" ]; then # If at least a value to compare is empty, error
+        errorMessage="Problem on provided arguments. Usage:${lineDelimiter}ASSERT_NUMBER_IS_NOT_EQUAL <expected_nb> <tested_nb> [Message Header]${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"
+    fi
+
+    if [ -z "${messageHeader}" ]; then
+        messageHeader="Provided numbers are equal\n"
+    fi
+    errorMessage=$(AddSuffix "${messageHeader}" "${lineDelimiter}") ## Add delimiter in the end of line
+
+    [ "${expected}" -ne "${tested}" ] 2> /dev/null # Test condition
+    # Check error
+    if [ "$?" -ne "0" ]; then
+        errorMessage="${errorMessage}Expected : ${expected}${lineDelimiter}Got : ${tested}${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"
+    else
+        return 0
+    fi
+}
+
+fi # ASSERTNUMBERS_SH
 
 #  ______________________________ 
 # |                              |

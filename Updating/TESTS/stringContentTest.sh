@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file functionTest.sh
+# @file stringContentTest.sh
 # @author SignC0dingDw@rf
-# @version 2.2
-# @date 01 February 2020
-# @brief Unit testing of function.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
+# @version 1.0
+# @date 23 February 2020
+# @brief Unit testing of stringContent.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
 #
@@ -87,62 +87,117 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 ###                                                                          ###
 ################################################################################
 ##!
-# @brief Test FunctionExists in multiple ways
-# @return 0 if all tests are successful, exit 1 after first test failure
+# @brief Test AddSuffix behavior with no parameters
+# @return 0 if AddSuffix has expected behavior, exit 1 otherwise
 #
 ## 
-testFunctionExists()
+testAddSuffixNoParam()
 {
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.2"
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
 
-    ### Test before function exists
-    FunctionExists DummyFunction
-    local COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
+    local resultString=""
+    # Call command
+    resultString=$(AddSuffix)
+    local commandResult=$?
 
-    ### Test that function does not create symbol of function
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
-    ### Declare function
-    DummyFunction()
-    {
-        echo "Does nothing"
-    }
-
-    ### Test existing function
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Test of existing function should return code 0 but returned code ${COMMAND_RESULT}"
-   
- ### Delete Function symbol
-    unset -f DummyFunction
-
-    ### Test function deletion
-    FunctionExists DummyFunction
-    COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing function should return code 1 but returned code ${COMMAND_RESULT}"
-
+    # Process result
+    endTestIfAssertFails "\"${commandResult}\" -eq \"0\"" "Expected function to exit with code 0 but exited with code ${commandResult}"
+    endTestIfAssertFails "\"${resultString}\" = \"\"" "Expected function to output empty string but output is : ${resultString}"
 
     return 0
 }
 
 ##!
-# @brief Check FunctionExists if no argument is provided
-# @return 0 if behavior is as expected, exit 1 otherwise
+# @brief Test AddSuffix behavior with no suffix to add
+# @return 0 if AddSuffix has expected behavior, exit 1 otherwise
 #
 ## 
-testNoArg()
+testAddSuffixEmptySuffix()
 {
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.2"
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
 
-    ## Test command
-    FunctionExists 
+    local referenceString="A message"
+    local resultString=""
+    # Call command
+    resultString=$(AddSuffix "${referenceString}")
     local commandResult=$?
-    endTestIfAssertFails "\"${commandResult}\" -eq \"1\"" "Test without argument should return code 1 but returned code ${commandResult}"
+
+    # Process result
+    endTestIfAssertFails "\"${commandResult}\" -eq \"0\"" "Expected function to exit with code 0 but exited with code ${commandResult}"
+    endTestIfAssertFails "\"${resultString}\" = \"A message\"" "Expected function to output : A message but output is : ${resultString}"
+
+    return 0
+}
+
+##!
+# @brief Test AddSuffix behavior with suffix that has to be added
+# @return 0 if AddSuffix has expected behavior, exit 1 otherwise
+#
+## 
+testAddSuffixSuffixAdded()
+{
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
+
+    local referenceString="Some text to suffix"
+    local resultString=""
+    # Call command
+    resultString=$(AddSuffix "${referenceString}" "\n")
+    local commandResult=$?
+
+    # Process result
+    endTestIfAssertFails "\"${commandResult}\" -eq \"0\"" "Expected function to exit with code 0 but exited with code ${commandResult}"
+    endTestIfAssertFails "\"${resultString}\" = \"Some text to suffix\n\"" "Expected function to output : Some text to suffix\n but output is : ${resultString}"
+
+    return 0
+}
+
+##!
+# @brief Test AddSuffix behavior with suffix that does not have to be added
+# @return 0 if AddSuffix has expected behavior, exit 1 otherwise
+#
+## 
+testAddSuffixSuffixNotAdded()
+{
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
+
+    local referenceString="Some text with already a suffix!"
+    local resultString=""
+    # Call command
+    resultString=$(AddSuffix "${referenceString}" "a suffix!")
+    local commandResult=$?
+
+    # Process result
+    endTestIfAssertFails "\"${commandResult}\" -eq \"0\"" "Expected function to exit with code 0 but exited with code ${commandResult}"
+    endTestIfAssertFails "\"${resultString}\" = \"Some text with already a suffix!\"" "Expected function to output : Some text with already a suffix! but output is : ${resultString}"
+
+    return 0
+}
+
+##!
+# @brief Test AddSuffix behavior with suffix that does not have to be added
+# @return 0 if AddSuffix has expected behavior, exit 1 otherwise
+#
+## 
+testAddSuffixComplexSuffix()
+{
+    # Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
+
+    local referenceString="Some text"
+    local resultString=""
+    # Call command
+    resultString=$(AddSuffix "${referenceString}" " with a complex\n suffix!")
+    local commandResult=$?
+
+    # Process result
+    endTestIfAssertFails "\"${commandResult}\" -eq \"0\"" "Expected function to exit with code 0 but exited with code ${commandResult}"
+    endTestIfAssertFails "\"${resultString}\" = \"Some text with a complex\n suffix!\"" "Expected function to output : Some text with a complex\n suffix! but output is : ${resultString}"
+
+    return 0
 }
 
 ################################################################################
@@ -151,8 +206,12 @@ testNoArg()
 ###                                                                          ###
 ################################################################################
 ### Do Tests
-doTest testFunctionExists
-doTest testNoArg
+#AddSuffix
+doTest testAddSuffixNoParam
+doTest testAddSuffixEmptySuffix
+doTest testAddSuffixSuffixAdded
+doTest testAddSuffixSuffixNotAdded
+doTest testAddSuffixComplexSuffix
 
 ### Tests result
 displaySuiteResults

@@ -2,14 +2,14 @@
 
 # @file cmdHelp.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 27 October 2019
+# @version 1.1
+# @date 26 March 2020
 # @brief Definition of formats and functions used to display help and usage of commands
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -159,12 +159,15 @@ IsShortOption()
 # @param 2/3* : Option description (depends on option position)
 # @return 0 if print was successful, 255 if no option is defined, 254 if an option is defined twice, >0 otherwise
 #
+# The function starts printing the description at a fixed column (25) so that all displays are consistent and good looking.
+#
 ##
 PrintOption()
 {
     local shortOpt=""
     local longOpt=""
     local description=""
+    local descriptionColumn=24 # The text will be displayed at column 25 (24+1)
 
     ### Check First argument. Must be an option
     if IsShortOption "$1"; then
@@ -195,26 +198,48 @@ PrintOption()
         description="${*:2}" # Only one option with description
     fi
 
+    ### Compute separator between options and description
+    local optionString=""
+    local separator=""
+    # We compute the option content. Thus we have its length and can compute the length of the separator
+    if [ -n "${shortOpt}" ]; then
+        if [ -n "${longOpt}" ]; then
+            optionString="${shortOpt} or ${longOpt}"
+        else
+            optionString="${shortOpt}"
+        fi
+    else
+        optionString="${longOpt}"
+    fi
+    # Compute separator content
+    if [ "${descriptionColumn}" -gt "${#optionString}" ]; then
+        local numberSpaces=$((${descriptionColumn}-${#optionString}))
+        separator=$(printf '%0.s ' $(seq 1 ${numberSpaces}))
+    else
+        separator=$(printf '%0.s ' $(seq 1 ${descriptionColumn}))
+        separator="\n${separator}" # Add Line jump
+    fi
+
     ### Print (we do not use FormattedPrint because there is sytling in the middle of the text)
     if [ -n "${shortOpt}" ]; then
         if [ -n "${longOpt}" ]; then
             if IsWrittenToTerminal 1; then
-                printf "${helpOptionsFormat}%s${NF} or ${helpOptionsFormat}%s${NF}\t\t %s\n" "${shortOpt}" "${longOpt}" "${description}"  
+                printf "${helpOptionsFormat}%s${NF} or ${helpOptionsFormat}%s${NF}${separator}%s\n" "${shortOpt}" "${longOpt}" "${description}"  
             else
-                printf "%s or %s\t\t %s\n" "${shortOpt}" "${longOpt}" "${description}"
+                printf "%s or %s${separator}%s\n" "${shortOpt}" "${longOpt}" "${description}"
             fi
         else
             if IsWrittenToTerminal 1; then
-                printf "${helpOptionsFormat}%s${NF}\t\t %s\n" "${shortOpt}" "${description}"  
+                printf "${helpOptionsFormat}%s${NF}${separator}%s\n" "${shortOpt}" "${description}"  
             else
-                printf "%s\t\t %s\n" "${shortOpt}" "${description}" 
+                printf "%s${separator}%s\n" "${shortOpt}" "${description}" 
             fi
         fi
     else
         if IsWrittenToTerminal 1; then
-            printf "${helpOptionsFormat}%s${NF}\t\t %s\n" "${longOpt}" "${description}"  
+            printf "${helpOptionsFormat}%s${NF}${separator}%s\n" "${longOpt}" "${description}"  
         else
-            printf "%s\t\t %s\n" "${longOpt}" "${description}" 
+            printf "%s${separator}%s\n" "${longOpt}" "${description}" 
         fi
     fi
 }

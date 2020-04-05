@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# @file function.sh
+# @file files.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 24 December 2019
+# @brief Definition of functions used to perform tests on files
 
 ###
 # MIT License
 #
-# Copyright (c) 2020 SignC0dingDw@rf
+# Copyright (c) 2019 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,35 +68,70 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${FILES_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_FILES_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_FILES_SH}/../Parsing/parseVersion.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+FILES_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FILES_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Check if a path is path of a file
+# @param 1 : Path
+# @return 0 if file path, 1 otherwise
 #
 ##
-FunctionExists()
+isFilePath()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
+    if [ -f "$1" ]; then
+        return 0
+    else
         return 1
     fi
-
-    declare -f ${name} > /dev/null # Return code of declare
 }
 
-fi # FUNCTION_SH
+##!
+# @brief Compare files content
+# @param 1 : File 1
+# @param 2 : File 2
+# @return 0 if files are identical
+#         1 if files are different
+#         2 if first argument is not a file
+#         3 if second argument is not a file
+#
+##
+areFilesIdentical()
+{
+    ### Get arguments
+    local file_1="$1"
+    local file_2="$2"
+    
+    ### Check arguments
+    isFilePath "${file_1}"
+    local is_file_1=$?
+    if [ "${is_file_1}" -ne "0" ]; then
+        return 2
+    fi
+
+    ### Check arguments
+    isFilePath "${file_2}"
+    local is_file_2=$?
+    if [ "${is_file_2}" -ne "0" ]; then
+        return 3
+    fi
+
+    ### Compoare
+    cmp -s "${file_1}" "${file_2}"
+    local are_identical=$?
+    if [ "${are_identical}" -eq "0" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+fi # FILES_SH
 
 #  ______________________________ 
 # |                              |

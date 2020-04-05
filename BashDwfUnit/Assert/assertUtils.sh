@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file assertUtils.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.1
+# @date 23 February 2020
+# @brief Definition of the utilities used to indicate assertion errors.
 
 ###
 # MIT License
@@ -68,35 +68,90 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${ASSERTUTILS_SH} ]; then
 
-### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+### Inclusions
+SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Printing/debug.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Testing/types.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Updating/stringContent.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+ASSERTUTILS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTUTILS_SH=""
 
+### Formats
+errorMessageFormat='\033[1;31m' # Error Messages are printed in light red
+
+### Variables
+lineDelimiter="\n"
+
+### Functions
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Print error message line
+# @param 1 : Error message line
+# @return 0 if print was successful, >0 otherwise
 #
 ##
-FunctionExists()
+PrintErrorLine()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
-        return 1
-    fi
-
-    declare -f ${name} > /dev/null # Return code of declare
+    FormattedPrint 1 "${errorMessageFormat}" "${NF}" "[Assertion Failure] : " "" "${1}" 
 }
 
-fi # FUNCTION_SH
+##!
+# @brief Print a multiline error message delimited with \n
+# @param 1 : Error message
+# @return 0 if print was successful, >0 otherwise
+#
+# A message can be displayed on mutilple lines by separating them using \n delimiter
+#
+##
+PrintErrorMessage()
+{
+    local message="$1"
+
+    message=$(AddSuffix "${message}" "${lineDelimiter}") # If message does not end with delimiter, we add delimiter to the end for parsing
+
+    while [ -n "${message}" ]; do # While we don't have removed all message content
+        PrintErrorLine "${message%%"${lineDelimiter}"*}"
+        message=${message#*"${lineDelimiter}"}
+    done
+}
+
+##!
+# @brief Display error message and exit test on failure
+# @param 1 : Error message
+# @param 2 : Error code. Default is 1
+# @return Exit on provided error code.
+#
+# Currently error codes different than ones are not specifically reported or used.
+# But who knows ...
+#
+##
+EndTestOnFailure()
+{
+    local message="${1}"
+    local errorCode="${2:-1}" # Default is 1
+
+    # Check our return code is an unsigned integer
+    IsUnsignedInteger "${errorCode}"
+    local isUInt=$?
+    if [ "${isUInt}" -ne "0" ]; then # Otherwise it is set back to 1
+        PrintWarning "Invalid error code ${errorCode} set back to 1"
+        errorCode=1
+    fi
+
+    # Check if error code is in ]0 - 255] range (because 0 indicates success so test should not exit)
+    if [ "${errorCode}" -gt "255" -o "${errorCode}" -eq "0" ]; then # Otherwise it is set back to 1
+        PrintWarning "Out of ]0 - 255] range error code ${errorCode} set back to 1"
+        errorCode=1
+    fi 
+
+    # Display message and exit
+    PrintErrorMessage "${message}"
+    exit ${errorCode}
+}
+
+fi # ASSERTUTILS_SH
 
 #  ______________________________ 
 # |                              |

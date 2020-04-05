@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file baseTest.sh
+# @file arraysTest.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 28 December 2019
-# @brief Unit testing of base.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
+# @version 1.1
+# @date 23 December 2019
+# @brief Unit testing of arrays.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
 #
@@ -79,18 +79,7 @@
 ###                                                                          ###
 ################################################################################
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../Tools/TESTS/testFunctions.sh"
-
-################################################################################
-###                                                                          ###
-###                                 Cleanup                                  ###
-###                                                                          ###
-################################################################################
-Cleanup()
-{
-    rm -f /tmp/bar
-    return 0
-}
+. "${SCRIPT_LOCATION}/../../Tools/TESTS/testUtils.sh"
 
 ################################################################################
 ###                                                                          ###
@@ -98,123 +87,164 @@ Cleanup()
 ###                                                                          ###
 ################################################################################
 ##!
-# @brief Check NF (i.e. no format) value
-# @return 0 if format has expected value, exit 1 otherwise
+# @brief Test IsArray in multiple ways
+# @return 0 if all tests are successful, exit 1 after first test failure
 #
 ## 
-TestNoFormat()
+testIsArray()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
- 
-    # Test format
-    testFormat "\033[0m" "${NF}"
-}
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
 
-##!
-# @brief Check if IsWrittenToTerminal behavior when writting to standard output
-# @return 0 if script is included, exit 1 otherwise
-#
-## 
-testDetectionStdOutput()
-{
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
-
-    IsWrittenToTerminal 1 # Standard output to terminal
+    ### Test variable that does not exist
+    IsArray "variableThatDoesNotExist"
     local COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\" " "Local output is not written to terminal. Got code ${COMMAND_RESULT}"
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Test of non existing array should return code 1 but returned code ${COMMAND_RESULT}"
 
-    return 0   
+    ### Test that function does not create symbol of array
+    IsArray "variableThatDoesNotExist"
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "IsArray should not create array"
+
+    ### Test that empty string is not an array
+    IsArray ""
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Empty string should not be seen as an array"
+
+    ### Test that a regular variable is not considered an array
+    local stringVariable="Some text"
+    IsArray "stringVariable"
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "Normal variable should not be considered as an array"
+
+    ### Test that a regular variable is not turned into an array by function
+    IsArray "stringVariable"
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "IsArray should not turn regular variable into an array"
+
+    ### Test detection of an empty array
+    local emptyArray=()
+    IsArray "emptyArray"
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Empty array is an array nonetheless"
+
+    ### Test detection of an array
+    local anArray=("a" 33 "b" "c")
+    IsArray "anArray"
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Failed to detect variable is an array"
+
+    ### Test a simply declared array
+    declare -a anotherArray
+    IsArray "anotherArray"
+    COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "Failed to detect array declared with \"declare -a\""
+
+    return 0
 }
 
 ##!
-# @brief Check if IsWrittenToTerminal behavior when redirecting standard output to file
-# @return 0 if script is included, exit 1 otherwise
+# @brief Check IsInArray behavior when no arguments are provided
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
-testDetectionStdToFile()
+IsInArrayNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
 
-    IsWrittenToTerminal 1 > /tmp/bar # Detection of redirection
+    IsInArray
     local COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\" " "Standard output redirection to file has not been detected. Got code ${COMMAND_RESULT}"
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"2\"" "IsInArray with no arguments should return error code 2 but returned code ${COMMAND_RESULT}"
 
-    return 0   
+    return 0
 }
 
 ##!
-# @brief Check if IsWrittenToTerminal behavior with no input
-# @return 0 if script is included, exit 1 otherwise
+# @brief Check IsInArray behavior when no array name is provided
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
-testDetectionNoInput()
+IsInArrayNoArrayName()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
 
-    IsWrittenToTerminal # No input
+    IsInArray "element"
     local COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"2\" " "Absence of input should appear as an invalid input with code 2 but got code ${COMMAND_RESULT}"
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"3\"" "IsInArray with no array name provided should return error code 3 but returned code ${COMMAND_RESULT}"
 
-    return 0   
+    return 0
 }
 
 ##!
-# @brief Check if IsWrittenToTerminal behavior when writting to error output while standard output is redirected
-# @return 0 if script is included, exit 1 otherwise
+# @brief Check IsInArray behavior when second argument is not an array name
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
-testDetectionErrOutput()
+IsInArrayNotArrayName()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
 
-    IsWrittenToTerminal 2 > /tmp/bar # Error is not redirected
+    local NotAnArray="notAnArray"
+    IsInArray "element" "NotAnArray"
     local COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\" " "Error output is not written to terminal. Got code ${COMMAND_RESULT}"
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"3\"" "IsInArray with no array name provided should return error code 3 but returned code ${COMMAND_RESULT}"
 
-    return 0   
+    return 0
 }
 
 ##!
-# @brief Check if IsWrittenToTerminal behavior when redirecting error output to file
-# @return 0 if script is included, exit 1 otherwise
+# @brief Check IsInArray behavior when element is indeed in array
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ## 
-testDetectionErrToFile()
+IsInArrayInArray()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
 
-    IsWrittenToTerminal 2 2> /tmp/bar # Detection of redirection
+    local TestArray=("a" "b" "element" "42" "666")
+    IsInArray "element" "TestArray"
     local COMMAND_RESULT=$?
-    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\" " "Error output redirection to file has not been detected. Got code ${COMMAND_RESULT}"
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"0\"" "IsInArray should indicate element is in array with code 0 but returned code ${COMMAND_RESULT}"
 
-    return 0   
+    return 0
 }
 
 ##!
-# @brief Check if the result of a FormattedPrint to file (i.e. not terminal) is the one expected
-# @return 0 if function displays message as expected, or exit 1 if message is not printed correctly
+# @brief Check IsInArray behavior when element is not in array
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
-# We only test redirection to file because printing to terminal does not allow us to capture flux
-#
-##
-TestFormattedPrintToFile()
+## 
+IsInArrayNotInArray()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
 
-    # Compute printed text and expected text
-    FormattedPrint 1 "Head Terminal : " " : Foot Terminal" "Head File : " " : Foot File" "A" "small" "text" > /tmp/bar
-    local printedText=$(cat /tmp/bar)
-    local expectedText="Head File : A small text : Foot File"
-    
-    # Process output
-    endTestIfAssertFails "\"${printedText}\" = \"${expectedText}\" " "Expected\n${expectedText}\nBut\n${printedText}\nwas printed"
+    local TestArray=("a" "b" "EpicFail" "42" "666")
+    IsInArray "element" "TestArray"
+    local COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "IsInArray should indicate element is not in array with code 1 but returned code ${COMMAND_RESULT}"
+
+    return 0
+}
+
+##!
+# @brief Check IsInArray behavior when element tested is part of an array element but NOT an array element
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+## 
+IsInArrayPartOfElement()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
+
+    local TestArray=("a" "b" "elementispart" "containselement" "beforEelementAfter" "42" "666")
+    IsInArray "element" "TestArray"
+    local COMMAND_RESULT=$?
+    endTestIfAssertFails "\"${COMMAND_RESULT}\" -eq \"1\"" "IsInArray should indicate element is in array with code 0 but returned code ${COMMAND_RESULT}"
 
     return 0
 }
@@ -224,18 +254,16 @@ TestFormattedPrintToFile()
 ###                              Execute tests                               ###
 ###                                                                          ###
 ################################################################################
-#Format
-doTest TestNoFormat
+### Do Tests
+doTest testIsArray
 
-# IsWrittenToTerminal
-doTest testDetectionStdOutput
-doTest testDetectionStdToFile
-doTest testDetectionNoInput
-doTest testDetectionErrOutput
-doTest testDetectionErrToFile
-
-# FormattedPrint
-doTest TestFormattedPrintToFile
+#IsInArray
+doTest IsInArrayNoArg
+doTest IsInArrayNoArrayName
+doTest IsInArrayNotArrayName
+doTest IsInArrayInArray
+doTest IsInArrayNotInArray
+doTest IsInArrayPartOfElement
 
 ### Tests result
 displaySuiteResults

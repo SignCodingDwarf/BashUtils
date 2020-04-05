@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file declareDeletion.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 12 January 2020
+# Definition of functions used to declare directories and files to delete
 
 ###
 # MIT License
@@ -68,35 +68,113 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z "${DECLAREDELETION_SH}" ]; then
 
-### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_DECLAREDELETION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_DECLAREDELETION_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_DECLAREDELETION_SH}/../../Printing/debug.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+DECLAREDELETION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using DECLAREDELETION_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Declare elements to delete
+# @param @ : List of elements to delete at the end of test
+# @return 0 if all elements are added to deletion list
+#         1 if no elements were provided
 #
 ##
-FunctionExists()
+DeclElementsToDel()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
-        return 1
+    local elements=("$@")
+    local element=""
+    if [ "${#elements[@]}" -eq "0" ]; then 
+        PrintError "You should specify elements to delete"
+        return 1       
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    PrintInfo "Adding the following elements for deletion : "
+    PrintInfo "${elements[@]}"
+    ELEMENTS_CREATED+=("${elements[@]}") # Append elements to the array
+    return 0
 }
 
-fi # FUNCTION_SH
+##!
+# @brief Create folders then declare them as elements to delete
+# @param @ : List of folders to create and delete at the end of test
+# @return 0 if all folders could be created
+#         1 if no folder to create is specified
+#         >0 the number of folders that were not created
+#
+# If a folder already exists, creation is considered a failure and folder is not added to list of elements to delete.
+# Only creates folder not its parents. If parents do not exist, creation fails.
+#
+##
+DeclMkFoldersToDel()
+{
+    local folders=("$@")
+    local failedCreation=0
+
+    if [ "${#folders[@]}" -eq "0" ]; then 
+        PrintError "You should specify folders to create"
+        return 1       
+    fi
+
+    for folder in ${folders[@]}; do
+        PrintInfo "Creating ${folder} folder"
+        mkdir ${folder}
+        local result=$?
+        if [ ${result} -eq 0 ]; then
+            DeclElementsToDel ${folder} # Declare folder to be deleted
+        else
+            PrintWarning "Failed to create ${folder} directory with code ${result}"
+            ((failedCreation++))
+        fi
+    done
+    return ${failedCreation}
+}
+
+##!
+# @brief Create files then declare them as elements to delete
+# @param @ : List of files to create and delete at the end of test
+# @return 0 if all files could be created
+#         1 if no file to create is specified
+#         >0 the number of files that were not created
+#
+# If a file already exists, creation is considered a failure and file is not added to list of elements to delete.
+# Only creates file not its parents. If parents do not exist, creation fails.
+#
+##
+DeclMkFilesToDel()
+{
+    local files=("$@")
+    local failedCreation=0
+
+    if [ "${#files[@]}" -eq "0" ]; then 
+        PrintError "You should specify files to create"
+        return 1       
+    fi
+
+    for f in ${files[@]}; do
+        PrintInfo "Creating ${f} file"
+        if [[ ! -e ${f} ]]; then
+            touch ${f}
+            local result=$?
+            if [ "${result}" -eq "0" ]; then
+                DeclElementsToDel ${f} # Declare file to be deleted
+            else
+                PrintWarning "Failed to create ${f} file with code ${result}"
+                ((failedCreation++))
+            fi
+        else
+            PrintWarning "File ${f} already exists. It should be diverted."
+            ((failedCreation++))
+        fi
+    done
+    return ${failedCreation}
+}
+
+
+fi # DECLAREDELETION_SH
 
 #  ______________________________ 
 # |                              |

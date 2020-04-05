@@ -1,15 +1,20 @@
 #!/bin/bash
 
-# @file runTests.sh
+# @file install.sh
 # @author SignC0dingDw@rf
 # @version 1.0
-# @date 27 March 2020
-# @brief Script allowing to run tests scripts in all BashUtils modules and display results
+# @date 30 March 2020
+# @brief Script allowing to install BashUtils on your system to a given location an have an environment variable with this location.
 
 ### Exit Code
 #
 # 0 : Program executed successfully
-# 1 : Failed to create results folder
+# 1 : Unknown argument received
+# 2 : Desired installation folder does not exist
+# 3 : Cannot uninstall previous version of the library
+# 4 : Failed to create installation directory
+# 5 : Failed to copy content to installation directory
+# 6 : Failed to create environment location variable
 #
 
 ###
@@ -79,20 +84,10 @@
 ###                                                                          ###
 ################################################################################
 ### Get script location
-SCRIPT_LOCATION_RUN_TESTS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SCRIPT_LOCATION_INSTALL_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-. "${SCRIPT_LOCATION_RUN_TESTS_SH}/Printing/cmdHelp.sh"
-. "${SCRIPT_LOCATION_RUN_TESTS_SH}/Tools/tests.sh"
-
-################################################################################
-###                                                                          ###
-###                              Configuration                               ###
-###                                                                          ###
-################################################################################
-# Set module working directory
-SetModuleRoot ${SCRIPT_LOCATION_RUN_TESTS_SH}
-# Build list of modules
-ListModules
+. "${SCRIPT_LOCATION_INSTALL_SH}/Printing/cmdHelp.sh"
+. "${SCRIPT_LOCATION_INSTALL_SH}/Tools/installUtils.sh"
 
 ################################################################################
 ###                                                                          ###
@@ -107,7 +102,7 @@ ListModules
 ## 
 Usage()
 {
-    PrintUsage "runTests" "[options]" "[tested_module_1] .. [tested_module_N]" 
+    PrintUsage "install" "[options]"
 }
 
 ##!
@@ -120,8 +115,9 @@ Help()
 {
     Usage
     printf "\n"
-    PrintDescription "Command allowing to run tests of BashUtils modules (i.e. folders)."
-    PrintDescription "Can specify one or more modules. If no modules is specified, all modules are tested."
+    PrintDescription "Command allowing to install BashUtils to desired location."
+    PrintDescription "You can choose your installation location and, if it is already installed, previous installation will be deleted."
+    PrintDescription "Creates the BASH_UTILS_LIB environement variable, so that you can easily include it in other scripts."
     printf "\n"
 
     printf "Options:\n"
@@ -129,11 +125,8 @@ Help()
     PrintOption "-h" "--help" "show this help message and exit"
     PrintOption "-v" "--verbose" "get detailed execution information"
     printf "\n"
-    PrintOptionCategory "Listing"
-    PrintOption "-l" "--list-modules" "list available modules"
-    printf "\n"
-    PrintOptionCategory "Log"
-    PrintOption "-r" "--results-location=<path>" "folder where the execution results are stored. Default is /tmp"
+    PrintOptionCategory "Configuration"
+    PrintOption "-d" "--install-directory=<directory>" "set directory where BashUtils will be installed. Default is /usr/local/lib"
 }
 
 ################################################################################
@@ -142,8 +135,7 @@ Help()
 ###                                                                          ###
 ################################################################################
 VERBOSE=false
-MODULES_TO_TEST=() # List of tested modules
-RESULTS_LOCATION="/tmp"
+INSTALL_LOCATION="/usr/local/lib"
 
 ################################################################################
 ###                                                                          ###
@@ -160,56 +152,60 @@ do
         -v|--verbose) # if asked to set verbose execution
             VERBOSE=true
         ;;
-        -l|--list-modules)
-            PrintModulesList
-            exit 0
+        -d=*|--install-directory=*)
+            INSTALL_LOCATION="${argument#*=}"
         ;;
-        -r=*|--results-location=*)
-            RESULTS_LOCATION="${argument#*=}"
-        ;;
-        *) #default check if argument is in list       
-            IsInModuleList ${argument}
-            inList="$?"
-            if [ "${inList}" -eq "0" ]; then
-                MODULES_TO_TEST+=(${argument})
-            else
-                PrintWarning "Failed to add ${argument} to modules to test list"
-            fi    
+        *) #default check if argument is in list      
+            PrintError "${argument} is not a valid argument" 
+            Help
+            exit 1 
         ;;
     esac
 done
 
-# If no module to test is specified, fill the list with the complete modules list
-if [ -z "${MODULES_TO_TEST}" ]; then
-    MODULES_TO_TEST=($(PrintModulesList))
+if [ ! -d "${INSTALL_LOCATION}" ]; then
+    PrintError "Desired install directory ${INSTALL_LOCATION} does not exist"
+    exit 2
 fi
 
-# Create the folder storing results
-CreateResultFolder "${RESULTS_LOCATION}"
+################################################################################
+###                                                                          ###
+###                       Cleanup previous installation                      ###
+###                                                                          ###
+################################################################################
+PrintInfo "********** Uninstalling previous library version **********"
+InstallCleanUp
 if [ "$?" -ne "0" ]; then
-    exit 1
-fi 
+    exit 3
+fi
 
 ################################################################################
 ###                                                                          ###
-###                              Execute Tests                               ###
+###                                 Install                                  ###
 ###                                                                          ###
 ################################################################################
-for testedModule in ${MODULES_TO_TEST[@]}; do
-    PrintInfo "********** Testing Module ${testedModule} **********"
-    TestModule "${testedModule}"
-done
+PrintInfo "********** Creating BashUtils directory in ${INSTALL_LOCATION} **********"
+CreateInstallDirectory "${INSTALL_LOCATION}"
+if [ "$?" -ne "0" ]; then
+    exit 4
+fi
+
+PrintInfo "********** Copying BashUtils **********"
+CopyContentToInstallDirectory "${INSTALL_LOCATION}" "${SCRIPT_LOCATION_INSTALL_SH}" # Assume install.sh is at root of directory
+if [ "$?" -ne "0" ]; then
+    exit 5
+fi
 
 ################################################################################
 ###                                                                          ###
-###                             Display Results                              ###
+###                      Reference to new installation                       ###
 ###                                                                          ###
 ################################################################################
-for testedModule in ${MODULES_TO_TEST[@]}; do
-    PrintModuleResult "${testedModule}"
-done
-
-PrintExecutionSummary
+PrintInfo "********** Creating reference to BashUtils directory **********"
+CreateInstallDirectoryReference "${INSTALL_LOCATION}"
+if [ "$?" -ne "0" ]; then
+    exit 6
+fi
 
 exit 0
 

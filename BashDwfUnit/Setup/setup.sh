@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file setup.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 27 January 2020
+# @brief Definition of the setup function used to setup up environment before execution of TestSuite tests.
 
 ###
 # MIT License
@@ -68,35 +68,44 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${SETUP_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_PRINT_SETUP_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_SETUP_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_SETUP_SH}/../../Printing/debug.sh"
+. "${SCRIPT_LOCATION_PRINT_SETUP_SH}/../../Testing/function.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+SETUP_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using SETUP_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Test setup phase
+# @return 0 if setup was successful, otherwise adds one of more of following values
+#         4 : User defined Setup failed
 #
 ##
-FunctionExists()
+Setup()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
-        return 1
-    fi
+    local exitCode=0
 
-    declare -f ${name} > /dev/null # Return code of declare
+    ELEMENTS_CREATED=()
+    ELEMENTS_DIVERTED=()
+    ENV_VARS_VALUES_TO_RESTORE=()
+
+    # Check if user has defined specific operations
+    FunctionExists TestSetup
+    if [ "$?" -eq "0" ]; then
+        TestSetup
+        if [ "$?" -ne "0" ]; then
+            ((exitCode+=4))
+        fi
+    else
+        PrintWarning "No User defined setup is to be performed"
+    fi
+    return ${exitCode}
 }
 
-fi # FUNCTION_SH
+fi # SETUP_SH
 
 #  ______________________________ 
 # |                              |

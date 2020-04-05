@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file stringContent.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 23 February 2020
+# @brief Definition of utilitaries and variables used to update content of strings.
 
 ###
 # MIT License
@@ -68,35 +68,43 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${STRINGCONTENT_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_STRINGCONTENT_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_STRINGCONTENT_SH}/../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_STRINGCONTENT_SH}/../Testing/strings.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+STRINGCONTENT_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using STRINGCONTENT_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Add suffix if content does not already have the suffix
+# @param 1 : String Content
+# @param 2 : Desired suffix
+# @print String with added suffix if needed
+# @return 0 
 #
 ##
-FunctionExists()
+AddSuffix()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
-        return 1
+    local content="$1"
+    local suffix="$2" 
+    local output=""
+
+    EndsWithSuffix "${content}" "${suffix}"
+    local endsWithSuffix=$?
+
+    if [ "${endsWithSuffix}" -ne "0" ]; then
+        output="${content}${suffix}"
+    else
+        output="${content}"
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    printf "%s" "${output}"
+    return 0    
 }
 
-fi # FUNCTION_SH
+fi # STRINGCONTENT_SH
 
 #  ______________________________ 
 # |                              |

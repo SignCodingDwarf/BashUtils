@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# @file runTests.sh
-# @author SignC0dingDw@rf
-# @version 1.0
-# @date 27 March 2020
-# @brief Script allowing to run tests scripts in all BashUtils modules and display results
+# file :  setupTest.sh
+# author : SignC0dingDw@rf
+# version : 1.0
+# date : 27 January 2020
+# Unit testing of setup.sh file.
 
 ### Exit Code
 #
-# 0 : Program executed successfully
-# 1 : Failed to create results folder
+# 0 : Execution succeeded
+# Number of failed tests otherwise
 #
 
 ###
@@ -75,143 +75,143 @@
 
 ################################################################################
 ###                                                                          ###
-###                                Inclusions                                ###
+###                  Redefinition of BashUnit basic functions                ###
 ###                                                                          ###
 ################################################################################
-### Get script location
-SCRIPT_LOCATION_RUN_TESTS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-
-. "${SCRIPT_LOCATION_RUN_TESTS_SH}/Printing/cmdHelp.sh"
-. "${SCRIPT_LOCATION_RUN_TESTS_SH}/Tools/tests.sh"
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION}/../../../Tools/TESTS/testFunctions.sh"
 
 ################################################################################
 ###                                                                          ###
-###                              Configuration                               ###
+###                                  Setup                                   ###
 ###                                                                          ###
 ################################################################################
-# Set module working directory
-SetModuleRoot ${SCRIPT_LOCATION_RUN_TESTS_SH}
-# Build list of modules
-ListModules
-
-################################################################################
-###                                                                          ###
-###                                  Usage                                   ###
-###                                                                          ###
-################################################################################
-##!
-# @brief Print usage of command
-# @output Command usage
-# @return 0 if print is successful, >0 otherwise
-#
-## 
-Usage()
+Setup()
 {
-    PrintUsage "runTests" "[options]" "[tested_module_1] .. [tested_module_N]" 
-}
+    ELEMENTS_CREATED=("Something")
+    ELEMENTS_DIVERTED=("A" "Stuff")
+    ENV_VARS_VALUES_TO_RESTORE=("Not" "an" "Empty" "Array")
 
-##!
-# @brief Print command help
-# @output Command help
-# @return 0 if print is successful, >0 otherwise
-#
-## 
-Help()
-{
-    Usage
-    printf "\n"
-    PrintDescription "Command allowing to run tests of BashUtils modules (i.e. folders)."
-    PrintDescription "Can specify one or more modules. If no modules is specified, all modules are tested."
-    printf "\n"
-
-    printf "Options:\n"
-    PrintOptionCategory "General Options"
-    PrintOption "-h" "--help" "show this help message and exit"
-    PrintOption "-v" "--verbose" "get detailed execution information"
-    printf "\n"
-    PrintOptionCategory "Listing"
-    PrintOption "-l" "--list-modules" "list available modules"
-    printf "\n"
-    PrintOptionCategory "Log"
-    PrintOption "-r" "--results-location=<path>" "folder where the execution results are stored. Default is /tmp"
+    return 0    
 }
 
 ################################################################################
 ###                                                                          ###
-###                            Control Variables                             ###
+###                                 Cleanup                                  ###
 ###                                                                          ###
 ################################################################################
-VERBOSE=false
-MODULES_TO_TEST=() # List of tested modules
-RESULTS_LOCATION="/tmp"
+Cleanup()
+{
+    rm -rf /tmp/barError*
+}
 
 ################################################################################
 ###                                                                          ###
-###                            Process Arguments                             ###
+###                              Declare Tests                               ###
 ###                                                                          ###
 ################################################################################
-for argument in "$@" # for every input argument
-do
-    case $argument in
-        -h|--help) # if asked to render help
-            Help # Print help and exit
-            exit 0
-        ;;
-        -v|--verbose) # if asked to set verbose execution
-            VERBOSE=true
-        ;;
-        -l|--list-modules)
-            PrintModulesList
-            exit 0
-        ;;
-        -r=*|--results-location=*)
-            RESULTS_LOCATION="${argument#*=}"
-        ;;
-        *) #default check if argument is in list       
-            IsInModuleList ${argument}
-            inList="$?"
-            if [ "${inList}" -eq "0" ]; then
-                MODULES_TO_TEST+=(${argument})
-            else
-                PrintWarning "Failed to add ${argument} to modules to test list"
-            fi    
-        ;;
-    esac
-done
+##!
+# @brief Check Setup behavior if no user defined actions are perfomed
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+## 
+SetupNoAction()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../setup.sh" "1.0"
 
-# If no module to test is specified, fill the list with the complete modules list
-if [ -z "${MODULES_TO_TEST}" ]; then
-    MODULES_TO_TEST=($(PrintModulesList))
-fi
+    ### Execute Command
+    Setup 2> /tmp/barErrorOutput
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
 
-# Create the folder storing results
-CreateResultFolder "${RESULTS_LOCATION}"
-if [ "$?" -ne "0" ]; then
-    exit 1
-fi 
+    local emptyArray=()
+    CheckArrayContent ELEMENTS_CREATED emptyArray
+    CheckArrayContent ELEMENTS_DIVERTED emptyArray
+    CheckArrayContent ENV_VARS_VALUES_TO_RESTORE emptyArray
+
+    ### Check Output
+    printf "[Warning] : No User defined setup is to be performed\n" > /tmp/barErrorRef
+    TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
+}
+
+##!
+# @brief Check Setup behavior if user defined setup is successful
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+## 
+SetupOK()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../setup.sh" "1.0"
+
+    ### Prepare actions
+    TestSetup()
+    {
+        return 0
+    }
+
+    ### Execute Command
+    Setup 2> /tmp/barErrorOutput
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
+    local emptyArray=()
+    CheckArrayContent ELEMENTS_CREATED emptyArray
+    CheckArrayContent ELEMENTS_DIVERTED emptyArray
+    CheckArrayContent ENV_VARS_VALUES_TO_RESTORE emptyArray
+
+    ### Check Output
+    printf "" > /tmp/barErrorRef
+    TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
+}
+
+##!
+# @brief Check Setup behavior if user defined setup fails
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+## 
+SetupError()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../setup.sh" "1.0"
+
+    ### Prepare actions
+    TestSetup()
+    {
+        return 42
+    }
+
+    ### Execute Command
+    Setup 2> /tmp/barErrorOutput
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"4\" " "Expected function to exit with code 4 but exited with code ${test_result}"
+
+    local emptyArray=()
+    CheckArrayContent ELEMENTS_CREATED emptyArray
+    CheckArrayContent ELEMENTS_DIVERTED emptyArray
+    CheckArrayContent ENV_VARS_VALUES_TO_RESTORE emptyArray
+
+    ### Check Output
+    printf "" > /tmp/barErrorRef
+    TestWrittenText /tmp/barErrorOutput /tmp/barErrorRef
+}
 
 ################################################################################
 ###                                                                          ###
-###                              Execute Tests                               ###
+###                              Execute tests                               ###
 ###                                                                          ###
 ################################################################################
-for testedModule in ${MODULES_TO_TEST[@]}; do
-    PrintInfo "********** Testing Module ${testedModule} **********"
-    TestModule "${testedModule}"
-done
+### Do Tests
+doTest SetupNoAction
+doTest SetupOK
+doTest SetupError
 
-################################################################################
-###                                                                          ###
-###                             Display Results                              ###
-###                                                                          ###
-################################################################################
-for testedModule in ${MODULES_TO_TEST[@]}; do
-    PrintModuleResult "${testedModule}"
-done
+### Tests result
+displaySuiteResults
 
-PrintExecutionSummary
+exit ${FAILED_TEST_NB}
 
-exit 0
 
 #  ______________________________ 
 # |                              |

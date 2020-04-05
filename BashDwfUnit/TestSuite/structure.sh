@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# @file function.sh
+# @file structure.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 17 November 2019
+# @brief Definition of the variables used to store TestSuite data and functions to reset TestSuite content and display execution results.
 
 ###
 # MIT License
 #
-# Copyright (c) 2020 SignC0dingDw@rf
+# Copyright (c) 2019 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,35 +68,111 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${STRUCTURE_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_PRINT_STRUCTURE_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../Utils/testStatus.sh"
+. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../../Testing/types.sh"
+. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../../Printing/debug.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+STRUCTURE_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using STRUCTURE_SH=""
 
+### Test suite control variables
+# They are prefixed with "_" because they are "internals" to TestSuite structure and thus should not be used directly
+_SUITE_NAME="" # Name of the test suite
+_SUITE_TESTS=() # List of tests in test suite
+_SUITE_RUN_TESTS=() # List of tests run in current test suite
+_SUITE_RUN_RESULTS=() # List of results of last tests execution
+
+### Functions
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Reset test suite execution state
+# @return 0
 #
 ##
-FunctionExists()
+ResetSuiteExecutionState()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
+    _SUITE_RUN_TESTS=()
+    _SUITE_RUN_RESULTS=()   
+    return 0
+}
+
+##!
+# @brief Reset test suite status to initial state
+# @param 1 : Name of the test suite
+# @return 0 if test suite was correctly declared
+#         1 if No test suite name provided
+#
+##
+DeclareTestSuite()
+{
+    if [ -z "$1" ]; then
+        PrintError "Test Suite should have a name provided"
+        return 1
+    fi
+    _SUITE_NAME="$1"
+    _SUITE_TESTS=() 
+    ResetSuiteExecutionState  
+}
+
+##!
+# @brief Display Summaery of TestSuite execution
+# @output Execution summary of tests
+# @return 0 if display was performed well
+#         1 if _SUITE_RUN_TESTS and _SUITE_RUN_RESULTS have different sizes
+#
+##
+DisplayTestSuiteExeSummary()
+{
+    if [ "${#_SUITE_RUN_TESTS[@]}" -ne "${#_SUITE_RUN_RESULTS[@]}" ] ; then
+        PrintError "_SUITE_RUN_TESTS size ${#_SUITE_RUN_TESTS[@]} does not match size of _SUITE_RUN_RESULTS ${#_SUITE_RUN_RESULTS[@]}"
         return 1
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    # Headers
+    local summaryTitle="*     Execution Summary of Test Suite : ${_SUITE_NAME}     *"
+    local summaryWidth=${#summaryTitle}
+    local spacesNumber=0
+    ((spacesNumber=${summaryWidth}-2))
+    printf "%0.s*" $(seq 1 ${summaryWidth})
+    printf "\n*"
+    printf "%0.s " $(seq 1 ${spacesNumber})
+    printf "*\n"
+    printf "${summaryTitle}"
+    printf "\n*"
+    printf "%0.s " $(seq 1 ${spacesNumber})
+    printf "*\n"
+    printf "%0.s*" $(seq 1 ${summaryWidth})
+    printf "\n"
+
+    # Display test Results
+    local index=0
+    local failedTestNb=0
+    local runTestNb=${#_SUITE_RUN_TESTS[@]}
+    for (( index = 0; index < ${#_SUITE_RUN_TESTS[@]}; index++ )); do
+        printf ">   "
+        PrintTestSummary ${_SUITE_RUN_TESTS[${index}]} ${_SUITE_RUN_RESULTS[${index}]}
+        if [ "${_SUITE_RUN_RESULTS[${index}]}" = "false" ] || [ "${_SUITE_RUN_RESULTS[${index}]}" = "1" ];  then 
+            ((failedTestNb++))
+        fi
+    done
+
+    # Display Overall Summary
+    printf "%0.s*" $(seq 1 ${summaryWidth})
+    printf "\n"
+    ((spacesNumber=(${summaryWidth}-(7+${#runTestNb}+1+${#failedTestNb}+5))/2)) # Nombre d'espaces avant le texte, (Taille totale - longueur du texte)/2
+    printf "%0.s " $(seq 1 ${spacesNumber})
+    PrintRunSummary ${runTestNb} ${failedTestNb} 
+    printf "%0.s*" $(seq 1 ${summaryWidth})
+    printf "\n"
+  
+
+    return 0
 }
 
-fi # FUNCTION_SH
+fi # STRUCTURE_SH
 
 #  ______________________________ 
 # |                              |

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file teardown.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 2.0
+# @date 29 January 2020
+# @brief Definition of the teardown function used to clean up environment after execution of TestSuite tests.
 
 ###
 # MIT License
@@ -68,35 +68,62 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${TEARDOWN_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_PRINT_TEARDOWN_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_SH}/../../Printing/debug.sh"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_SH}/../../Testing/function.sh"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_SH}/teardownUtils.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+TEARDOWN_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TEARDOWN_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Test teardown phase
+# @return 0 if setup was successful, otherwise adds one of more of following values
+#         16  : Element deletion failed
+#         32  : Restoring diverted elements failed
+#         64 : Restoring environment variables failed
+#         128 : User defined TestTeardown failed
 #
 ##
-FunctionExists()
+Teardown()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
-        return 1
+    local exitCode=0
+
+    # Delete created elements
+    DeleteElements "${ELEMENTS_CREATED[@]}"
+    if [ "$?" -ne "0" ]; then
+        ((exitCode+=16))
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    # Restore diverted elements
+    RestoreElements "${ELEMENTS_DIVERTED[@]}"
+    if [ "$?" -ne "0" ]; then
+        ((exitCode+=32))
+    fi
+
+    # Restore environment variables
+    RestoreEnvVars "${ENV_VARS_VALUES_TO_RESTORE[@]}"
+    if [ "$?" -ne "0" ]; then
+        ((exitCode+=64))
+    fi
+
+    # Check if user has defined specific operations
+    FunctionExists TestTeardown
+    if [ "$?" -eq "0" ]; then
+        TestTeardown
+        if [ "$?" -ne "0" ]; then
+            ((exitCode+=128))
+        fi
+    else
+        PrintWarning "No User defined teardown is to be performed"
+    fi
+    return ${exitCode}
 }
 
-fi # FUNCTION_SH
+fi # TEARDOWN_SH
 
 #  ______________________________ 
 # |                              |

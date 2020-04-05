@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# @file function.sh
+# @file arrays.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 25 November 2019
+# @brief Definition of utilitaries to query information on arrays and their content
 
 ###
 # MIT License
 #
-# Copyright (c) 2020 SignC0dingDw@rf
+# Copyright (c) 2019 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,35 +68,65 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${ARRAYS_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_ARRAYS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_ARRAYS_SH}/../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_ARRAYS_SH}/../Printing/debug.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+ARRAYS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ARRAYS_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
+# @brief Check if an variable is an array
+# @param 1 : Variable name
+# @return 0 if variable is array, >0 otherwise
 #
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# From https://fvue.nl/wiki/Bash:_Detect_if_variable_is_an_array
 #
 ##
-FunctionExists()
+IsArray()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
-        return 1
-    fi
-
-    declare -f ${name} > /dev/null # Return code of declare
+    declare -p "$1" 2> /dev/null | grep -q 'declare \-a'  
 }
 
-fi # FUNCTION_SH
+##!
+# @brief Check if an array contains a given element
+# @param 1 : Element to check
+# @param 2 : Array name
+# @return 0 if element is in array
+#         1 if element is not in array
+#         2 if element is an empty string
+#         3 if argument two is not an array name
+#
+# From https://stackoverflow.com/questions/8063228/how-do-i-check-if-a-variable-exists-in-a-list-in-bash
+#
+##
+IsInArray()
+{
+    local element="$1"
+    local arrayName="$2"
+
+    if [ -z "${element}" ]; then
+        PrintError "You should indicate a non empty element name"
+        return 2
+    fi
+    IsArray ${arrayName}
+    local result=$?
+    if [ "${result}" -ne "0" ]; then
+        PrintError "${arrayName} is not the name of an array"
+        return 3
+    fi
+    local arrayContent=()
+    eval arrayContent=\( \${${arrayName}[@]} \)
+    if [[ ${arrayContent[@]} =~ (^|[[:space:]])"${element}"($|[[:space:]]) ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+fi # ARRAYS_SH
 
 #  ______________________________ 
 # |                              |

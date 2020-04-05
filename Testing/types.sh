@@ -2,14 +2,14 @@
 
 # @file function.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 16 November 2019
+# @brief Definition of utilitaries and variables used to manage types.
 
 ###
 # MIT License
 #
-# Copyright (c) 2020 SignC0dingDw@rf
+# Copyright (c) 2019 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,35 +68,34 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${TYPES_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_TYPES_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_TYPES_SH}/../Parsing/parseVersion.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+TYPES_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TYPES_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Check if a value is an unsigned integer
+# @param 1 : Value to test
+# @return 0 if it is an unsigned integer, 1 otherwise
 #
 ##
-FunctionExists()
+IsUnsignedInteger()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
+    local valueTested="$1"
+    local uIntRegEx='^[0-9]+$' 
+
+    if [[ "${valueTested}" =~ ${uIntRegEx} ]];  then # test if it is an unsigned integer
+        return 0
+    else
         return 1
     fi
-
-    declare -f ${name} > /dev/null # Return code of declare
+    
 }
 
-fi # FUNCTION_SH
+fi # TYPES_SH
 
 #  ______________________________ 
 # |                              |

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file testCase.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 02 February 2020
+# @brief Definition of the function used to execute a test case.
 
 ###
 # MIT License
@@ -68,35 +68,72 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${TESTCASE_SH} ]; then
 
-### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+### Inclusions
+SCRIPT_LOCATION_PRINT_TESTCASE_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../../Printing/debug.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../../Testing/function.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../Utils/testStatus.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../Setup/setup.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../Teardown/teardown.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+TESTCASE_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTCASE_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Execute a test case
+# @param 1 : Name of the test to run
+# @return 0 if test execution is successful
+#         1 : Provided test name is not a function
+#         otherwise returns the sum of one or more of the following values :
+#         2 : Test failed
+#         4 : User defined setup failed
+#         8 : Reserved (for future setup return code extension)
+#         16  : Element deletion failed during teardown
+#         32  : Restoring diverted elements failed during teardown
+#         64 : Restoring environment variables failed during teardown
+#         128 : User defined TestTeardown failed during teardown
 #
 ##
-FunctionExists()
+runTestCase()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
+    local testName="$1"
+    local testResult=0
+
+    FunctionExists "${testName}"
+    if [ "$?" -ne "0" ]; then
+        PrintError "${testName} is not a test (i.e. function) name"
         return 1
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    PrintTestName ${testName}    
+    (
+        local runStatus=0
+        # Setup
+        Setup
+        ((runStatus+=$?))
+        if [ "${runStatus}" -ne "0" ]; then
+            exit ${runStatus} # If setup failed we don't clean up anything becuase we can't really know what state we're in
+        fi   
+
+        # Test
+        (eval "${testName}")
+        if [ "$?" -ne "0" ]; then
+            ((runStatus+=2)) # Even if test fails we go to clean up
+        fi
+
+        # Teardown
+        Teardown
+        ((runStatus+=$?))
+
+        exit ${runStatus} # All went fine
+    )
+    testResult=$?
+    return ${testResult}
 }
 
-fi # FUNCTION_SH
+fi # TESTCASE_SH
 
 #  ______________________________ 
 # |                              |

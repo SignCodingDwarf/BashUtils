@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file function.sh
+# @file strings.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
-# @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
+# @version 1.0
+# @date 23 February 2020
+# @brief Definition of utilitaries and variables used to perform tests on strings content.
 
 ###
 # MIT License
@@ -68,35 +68,41 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${STRINGS_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_STRINGS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_STRINGS_SH}/../Parsing/parseVersion.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+STRINGS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using STRINGS_SH=""
 
 ##!
-# @brief Check if a function with a given name exists
-# @param 1 : Function name
-# @return 0 if function exists,
-#         1 if empty function name
-#         >0 otherwise (see declare return codes for more details)
-#
-# From https://stackoverflow.com/questions/85880/determine-if-a-function-exists-in-bash
+# @brief Check if string ends with given suffix
+# @param 1 : Value to test
+# @param 2 : Expected suffix
+# @return 0 if it ends with given suffix,
+#         1 if no suffix is provided,
+#         2 if it does not end with given suffix
 #
 ##
-FunctionExists()
+EndsWithSuffix()
 {
-    local name="${1}"
-    if [ -z "${name}" ]; then # declare -f does not detect empty argument as an error.
+    local valueTested="$1"
+    local suffix="$2" 
+
+    if [ -z "${suffix}" ]; then
         return 1
     fi
 
-    declare -f ${name} > /dev/null # Return code of declare
+    if [[ "${valueTested}" == *"${suffix}" ]];  then # test if it ends with suffix
+        return 0
+    else
+        return 2
+    fi
+    
 }
 
-fi # FUNCTION_SH
+fi # STRINGS_SH
 
 #  ______________________________ 
 # |                              |
