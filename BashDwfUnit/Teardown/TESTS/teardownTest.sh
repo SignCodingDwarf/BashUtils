@@ -2,8 +2,8 @@
 
 # @file teardownTest.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 29 January 2020
+# @version 1.3
+# @date 14 May 2020
 # @brief Unit testing of teardown.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -144,7 +144,7 @@ Cleanup()
 TeardownNoAction()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.1"
 
     ### Execute Command
     Teardown 2> /tmp/barErrorOutput
@@ -164,7 +164,7 @@ TeardownNoAction()
 TeardownAllOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.1"
 
     ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto1" "/tmp/toto8/dummy2")
@@ -193,7 +193,7 @@ TeardownAllOK()
 TeardownTestTeardownError()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.1"
 
     ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto6" "/tmp/toto8/dummy4")
@@ -222,7 +222,7 @@ TeardownTestTeardownError()
 TeardownTestEnvVarError()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.1"
 
     ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto7" "/tmp/toto8/dummy6")
@@ -251,7 +251,7 @@ TeardownTestEnvVarError()
 TeardownTestDivertionError()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../teardown.sh" "2.1"
 
     ### Prepare actions 
     ELEMENTS_CREATED=("/tmp/toto10" "/tmp/toto8/dummy8")

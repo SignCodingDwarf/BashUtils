@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# file :  assertFilesTest.sh
+# file :  filesTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 19 March 2020
-# Unit testing of assertFiles.sh file.
+# version : 1.1
+# date : 14 May 2020
+# Unit testing of files.sh file.
 
 ### Exit Code
 #
@@ -165,7 +165,7 @@ Cleanup()
 testAssertFileEqualityNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFiles.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILES_ARE_IDENTICAL > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -188,7 +188,7 @@ testAssertFileEqualityNoArg()
 testAssertFileEqualityMissingArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFiles.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILES_ARE_IDENTICAL "Reference" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -211,7 +211,7 @@ testAssertFileEqualityMissingArg()
 testAssertFileEqualityEmptyArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFiles.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILES_ARE_IDENTICAL "" "SomeContent" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -234,7 +234,7 @@ testAssertFileEqualityEmptyArg()
 testAssertFileEqualityReferenceNotAFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFiles.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILES_ARE_IDENTICAL "./notAFile" "/tmp/barCmpTested.txt" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -256,7 +256,7 @@ testAssertFileEqualityReferenceNotAFile()
 testAssertFileEqualityTestedNotAFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFiles.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILES_ARE_IDENTICAL "/tmp/barCmpReference.txt" "/tmp/isItAFile" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -278,7 +278,7 @@ testAssertFileEqualityTestedNotAFile()
 testAssertFileEqualityOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFiles.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILES_ARE_IDENTICAL "/tmp/barCmpEmpty1.txt" "/tmp/barCmpEmpty2.txt" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -300,7 +300,7 @@ testAssertFileEqualityOK()
 testAssertFileEqualityOKHeader()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFiles.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILES_ARE_IDENTICAL "/tmp/barCmpReference.txt" "/tmp/barCmpTested.txt" "Comparison of the infamous Catalog of The Dwarves" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -322,7 +322,7 @@ testAssertFileEqualityOKHeader()
 testAssertFileEqualityKO()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFiles.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILES_ARE_IDENTICAL "/tmp/barCmpReference.txt" "/tmp/barCmpTested2.txt" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -362,7 +362,7 @@ testAssertFileEqualityKO()
 testAssertFileEqualityKOHeader()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFiles.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILES_ARE_IDENTICAL "/tmp/barCmpReference.txt" "/tmp/barCmpTested3.txt" "Oops there is an error in the Edda" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code

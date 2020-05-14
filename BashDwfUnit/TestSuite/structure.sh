@@ -2,14 +2,14 @@
 
 # @file structure.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 17 November 2019
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of the variables used to store TestSuite data and functions to reset TestSuite content and display execution results.
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,16 +68,16 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${STRUCTURE_SH} ]; then
+if [ -z ${TESTSUITE_STRUCTURE_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_PRINT_STRUCTURE_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../Utils/testStatus.sh"
-. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../../Testing/types.sh"
-. "${SCRIPT_LOCATION_PRINT_STRUCTURE_SH}/../../Printing/debug.sh"
+SCRIPT_LOCATION_PRINT_TESTSUITE_STRUCTURE_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_TESTSUITE_STRUCTURE_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTSUITE_STRUCTURE_SH}/../Utils/testStatus.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTSUITE_STRUCTURE_SH}/../../Testing/types.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTSUITE_STRUCTURE_SH}/../../Printing/debug.sh"
 
-STRUCTURE_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using STRUCTURE_SH=""
+TESTSUITE_STRUCTURE_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTSUITE_STRUCTURE_SH=""
 
 ### Test suite control variables
 # They are prefixed with "_" because they are "internals" to TestSuite structure and thus should not be used directly
@@ -172,7 +172,7 @@ DisplayTestSuiteExeSummary()
     return 0
 }
 
-fi # STRUCTURE_SH
+fi # TESTSUITE_STRUCTURE_SH
 
 #  ______________________________ 
 # |                              |

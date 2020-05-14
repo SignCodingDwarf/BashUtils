@@ -2,8 +2,8 @@
 
 # @file function.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 01 February 2020
+# @version 1.3
+# @date 14 May 2020
 # @brief Definition of utilitaries and variables used to manage functions and commands and especially check their availability
 
 ###
@@ -68,13 +68,13 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${FUNCTION_SH} ]; then
+if [ -z ${TESTING_FUNCTION_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FUNCTION_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_TESTING_FUNCTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_TESTING_FUNCTION_SH}/../Parsing/parseVersion.sh"
 
-FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using FUNCTION_SH=""
+TESTING_FUNCTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTING_FUNCTION_SH=""
 
 ##!
 # @brief Check if a function with a given name exists
@@ -96,7 +96,7 @@ FunctionExists()
     declare -f ${name} > /dev/null # Return code of declare
 }
 
-fi # FUNCTION_SH
+fi # TESTING_FUNCTION_SH
 
 #  ______________________________ 
 # |                              |

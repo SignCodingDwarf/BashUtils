@@ -2,8 +2,8 @@
 
 # @file arraysTest.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 23 December 2019
+# @version 1.2
+# @date 14 May 2020
 # @brief Unit testing of arrays.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -15,7 +15,7 @@
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -94,7 +94,7 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 testIsArray()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.1"
 
     ### Test variable that does not exist
     IsArray "variableThatDoesNotExist"
@@ -151,7 +151,7 @@ testIsArray()
 IsInArrayNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.1"
 
     IsInArray
     local COMMAND_RESULT=$?
@@ -168,7 +168,7 @@ IsInArrayNoArg()
 IsInArrayNoArrayName()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.1"
 
     IsInArray "element"
     local COMMAND_RESULT=$?
@@ -185,7 +185,7 @@ IsInArrayNoArrayName()
 IsInArrayNotArrayName()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.1"
 
     local NotAnArray="notAnArray"
     IsInArray "element" "NotAnArray"
@@ -203,7 +203,7 @@ IsInArrayNotArrayName()
 IsInArrayInArray()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.1"
 
     local TestArray=("a" "b" "element" "42" "666")
     IsInArray "element" "TestArray"
@@ -221,7 +221,7 @@ IsInArrayInArray()
 IsInArrayNotInArray()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.1"
 
     local TestArray=("a" "b" "EpicFail" "42" "666")
     IsInArray "element" "TestArray"
@@ -239,7 +239,7 @@ IsInArrayNotInArray()
 IsInArrayPartOfElement()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../arrays.sh" "1.1"
 
     local TestArray=("a" "b" "elementispart" "containselement" "beforEelementAfter" "42" "666")
     IsInArray "element" "TestArray"

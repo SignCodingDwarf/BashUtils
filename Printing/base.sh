@@ -2,14 +2,14 @@
 
 # @file base.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 27 October 2019
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of base format and of functions used to format prints
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,13 +68,13 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${BASE_SH} ]; then
+if [ -z ${PRINTING_BASE_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_FORMAT_BASE_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_FORMAT_BASE_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_FORMAT_PRINTING_BASE_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_FORMAT_PRINTING_BASE_SH}/../Parsing/parseVersion.sh"
 
-BASE_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using BASE_SH=""
+PRINTING_BASE_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using PRINTING_BASE_SH=""
 
 ### Formats
 NF='\033[0m' # Clear all formats
@@ -137,7 +137,7 @@ FormattedPrint()
 }
 
 
-fi # BASE_SH
+fi # PRINTING_BASE_SH
 
 #  ______________________________ 
 # |                              |

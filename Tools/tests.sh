@@ -2,8 +2,8 @@
 
 # @file tests.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 27 March 2020
+# @version 1.1
+# @date 14 May 2020
 # Definition of functions used by the runTests.sh script.
 
 ###
@@ -68,15 +68,15 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${TESTS_SH} ]; then
+if [ -z ${TOOLS_TESTS_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_TESTS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_TESTS_SH}/../Testing/arrays.sh"
-. "${SCRIPT_LOCATION_TESTS_SH}/../BashDwfUnit/TestSuite/testsManagement.sh"
-. "${SCRIPT_LOCATION_TESTS_SH}/../Updating/stringContent.sh"
+SCRIPT_LOCATION_TOOLS_TESTS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_TOOLS_TESTS_SH}/../Testing/arrays.sh"
+. "${SCRIPT_LOCATION_TOOLS_TESTS_SH}/../BashDwfUnit/TestSuite/testsManagement.sh"
+. "${SCRIPT_LOCATION_TOOLS_TESTS_SH}/../Updating/stringContent.sh"
 
-TESTS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTS_SH=""
+TOOLS_TESTS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TOOLS_TESTS_SH=""
 
 ################################################################################
 ###                                                                          ###
@@ -307,7 +307,7 @@ PrintExecutionSummary()
     fi
 }
 
-fi # TESTS_SH
+fi # TOOLS_TESTS_SH
 
 #  ______________________________ 
 # |                              |

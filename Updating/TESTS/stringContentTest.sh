@@ -2,8 +2,8 @@
 
 # @file stringContentTest.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 23 February 2020
+# @version 1.1
+# @date 14 May 2020
 # @brief Unit testing of stringContent.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -94,7 +94,7 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 testAddSuffixNoParam()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.1"
 
     local resultString=""
     # Call command
@@ -116,7 +116,7 @@ testAddSuffixNoParam()
 testAddSuffixEmptySuffix()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.1"
 
     local referenceString="A message"
     local resultString=""
@@ -139,7 +139,7 @@ testAddSuffixEmptySuffix()
 testAddSuffixSuffixAdded()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.1"
 
     local referenceString="Some text to suffix"
     local resultString=""
@@ -162,7 +162,7 @@ testAddSuffixSuffixAdded()
 testAddSuffixSuffixNotAdded()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.1"
 
     local referenceString="Some text with already a suffix!"
     local resultString=""
@@ -185,7 +185,7 @@ testAddSuffixSuffixNotAdded()
 testAddSuffixComplexSuffix()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../stringContent.sh" "1.1"
 
     local referenceString="Some text"
     local resultString=""

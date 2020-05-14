@@ -2,8 +2,8 @@
 
 # file :  setupTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 27 January 2020
+# version : 1.1
+# date : 14 May 2020
 # Unit testing of setup.sh file.
 
 ### Exit Code
@@ -118,7 +118,7 @@ Cleanup()
 SetupNoAction()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../setup.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../setup.sh" "1.1"
 
     ### Execute Command
     Setup 2> /tmp/barErrorOutput
@@ -143,7 +143,7 @@ SetupNoAction()
 SetupOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../setup.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../setup.sh" "1.1"
 
     ### Prepare actions
     TestSetup()
@@ -174,7 +174,7 @@ SetupOK()
 SetupError()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../setup.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../setup.sh" "1.1"
 
     ### Prepare actions
     TestSetup()

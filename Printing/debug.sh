@@ -2,14 +2,14 @@
 
 # @file debug.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 27 October 2019
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of debug formats and of functions used for debug printing
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,14 +68,14 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${DEBUG_SH} ]; then
+if [ -z ${PRINTING_DEBUG_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_PRINT_DEBUG_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_DEBUG_SH}/../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_DEBUG_SH}/base.sh"
+SCRIPT_LOCATION_PRINT_PRINTING_DEBUG_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_PRINTING_DEBUG_SH}/../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_PRINTING_DEBUG_SH}/base.sh"
 
-DEBUG_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using DEBUG_SH=""
+PRINTING_DEBUG_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using DEBUG_SH=""
 
 ### Formats
 infoFormat='\033[1;34m' # Infos are printed in light blue
@@ -141,7 +141,7 @@ PrintError()
     FormattedPrint 2 ${errorFormat} ${NF} "[Error] : " "" "$*"
 }
 
-fi # DEBUG_SH
+fi # PRINTING_DEBUG_SH
 
 #  ______________________________ 
 # |                              |

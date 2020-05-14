@@ -2,8 +2,8 @@
 
 # file :  testCaseTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 02 February 2020
+# version : 1.1
+# date : 14 May 2020
 # Unit testing of testCase.sh file.
 
 ### Exit Code
@@ -119,7 +119,7 @@ Cleanup()
 runTestCaseNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.1"
 
     ### Execute Command
     runTestCase 2> /tmp/barErrorOutput
@@ -139,7 +139,7 @@ runTestCaseNoArg()
 runTestCaseNotTest()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.1"
 
     ### Declare a variable
     local iAmAVariable="MyOwnContent"
@@ -171,7 +171,7 @@ runTestCaseNotTest()
 runTestCaseOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.1"
 
     ### Test Functions
     TestSetup()
@@ -208,7 +208,7 @@ runTestCaseOK()
 runSetupFailure()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.1"
 
     ### Test Functions
     TestSetup()
@@ -249,7 +249,7 @@ runSetupFailure()
 runTestFailure()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.1"
 
     ### Test Functions
     TestSetup()
@@ -290,7 +290,7 @@ runTestFailure()
 runTeardownFailure()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.1"
 
     ### Test Functions
     TestSetup()
@@ -331,7 +331,7 @@ runTeardownFailure()
 runCombinedFailure()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.1"
 
     ### Test Functions
     TestSetup()
@@ -374,7 +374,7 @@ runCombinedFailure()
 runCombinedFailure2()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testCase.sh" "1.1"
 
     ### Test Functions
     TestSetup()

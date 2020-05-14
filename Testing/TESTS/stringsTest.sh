@@ -2,8 +2,8 @@
 
 # @file stringsTest.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 23 February 2020
+# @version 1.1
+# @date 14 May 2020
 # @brief Unit testing of strings.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -94,7 +94,7 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 testEndsWithSuffixEmptyPar()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.1"
 
     # Call command
     EndsWithSuffix
@@ -114,7 +114,7 @@ testEndsWithSuffixEmptyPar()
 testEndsWithSuffixNoSuffix()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.1"
 
     # Call command
     EndsWithSuffix "Some String"
@@ -134,7 +134,7 @@ testEndsWithSuffixNoSuffix()
 testEndsWithSuffixOK()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.1"
 
     # Call command
     EndsWithSuffix "Some String" "ing"
@@ -154,7 +154,7 @@ testEndsWithSuffixOK()
 testEndsWithSuffixKO()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.1"
 
     # Call command
     EndsWithSuffix "Some String" "NotASuffix"
@@ -174,7 +174,7 @@ testEndsWithSuffixKO()
 testEndsWithSuffixSuffixMiddle()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.1"
 
     # Call command
     EndsWithSuffix "A very complex string" "lex"
@@ -194,7 +194,7 @@ testEndsWithSuffixSuffixMiddle()
 testEndsWithSuffixComplexSuffix()
 {
     # Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../strings.sh" "1.1"
 
     # Call command
     EndsWithSuffix "A string with a very complex suffix \n" "lex suffix \n"

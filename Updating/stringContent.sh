@@ -2,8 +2,8 @@
 
 # @file stringContent.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 23 February 2020
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of utilitaries and variables used to update content of strings.
 
 ###
@@ -68,14 +68,14 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${STRINGCONTENT_SH} ]; then
+if [ -z ${UPDATING_STRINGCONTENT_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_STRINGCONTENT_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_STRINGCONTENT_SH}/../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_STRINGCONTENT_SH}/../Testing/strings.sh"
+SCRIPT_LOCATION_UPDATING_STRINGCONTENT_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_UPDATING_STRINGCONTENT_SH}/../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_UPDATING_STRINGCONTENT_SH}/../Testing/strings.sh"
 
-STRINGCONTENT_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using STRINGCONTENT_SH=""
+UPDATING_STRINGCONTENT_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using UPDATING_STRINGCONTENT_SH=""
 
 ##!
 # @brief Add suffix if content does not already have the suffix
@@ -104,7 +104,7 @@ AddSuffix()
     return 0    
 }
 
-fi # STRINGCONTENT_SH
+fi # UPDATING_STRINGCONTENT_SH
 
 #  ______________________________ 
 # |                              |

@@ -2,8 +2,8 @@
 
 # @file strings.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 23 February 2020
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of utilitaries and variables used to perform tests on strings content.
 
 ###
@@ -68,13 +68,13 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${STRINGS_SH} ]; then
+if [ -z ${TESTING_STRINGS_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_STRINGS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_STRINGS_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_TESTING_STRINGS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_TESTING_STRINGS_SH}/../Parsing/parseVersion.sh"
 
-STRINGS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using STRINGS_SH=""
+TESTING_STRINGS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTING_STRINGS_SH=""
 
 ##!
 # @brief Check if string ends with given suffix
@@ -102,7 +102,7 @@ EndsWithSuffix()
     
 }
 
-fi # STRINGS_SH
+fi # TESTING_STRINGS_SH
 
 #  ______________________________ 
 # |                              |

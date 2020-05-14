@@ -2,8 +2,8 @@
 
 # @file assertUtils.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 23 February 2020
+# @version 1.2
+# @date 14 May 2020
 # @brief Definition of the utilities used to indicate assertion errors.
 
 ###
@@ -68,16 +68,16 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${ASSERTUTILS_SH} ]; then
+if [ -z ${ASSERT_ASSERTUTILS_SH} ]; then
 
 ### Inclusions
-SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Printing/debug.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Testing/types.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTUTILS_SH}/../../Updating/stringContent.sh"
+SCRIPT_LOCATION_PRINT_ASSERT_ASSERTUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_ASSERTUTILS_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_ASSERTUTILS_SH}/../../Printing/debug.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_ASSERTUTILS_SH}/../../Testing/types.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_ASSERTUTILS_SH}/../../Updating/stringContent.sh"
 
-ASSERTUTILS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTUTILS_SH=""
+ASSERT_ASSERTUTILS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERT_ASSERTUTILS_SH=""
 
 ### Formats
 errorMessageFormat='\033[1;31m' # Error Messages are printed in light red
@@ -151,7 +151,7 @@ EndTestOnFailure()
     exit ${errorCode}
 }
 
-fi # ASSERTUTILS_SH
+fi # ASSERT_ASSERTUTILS_SH
 
 #  ______________________________ 
 # |                              |

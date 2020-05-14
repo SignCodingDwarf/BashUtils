@@ -2,8 +2,8 @@
 
 # @file testCase.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 02 February 2020
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of the function used to execute a test case.
 
 ###
@@ -68,18 +68,18 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${TESTCASE_SH} ]; then
+if [ -z ${TESTCASE_TESTCASE_SH} ]; then
 
 ### Inclusions
-SCRIPT_LOCATION_PRINT_TESTCASE_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../../Printing/debug.sh"
-. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../../Testing/function.sh"
-. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../Utils/testStatus.sh"
-. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../Setup/setup.sh"
-. "${SCRIPT_LOCATION_PRINT_TESTCASE_SH}/../Teardown/teardown.sh"
+SCRIPT_LOCATION_PRINT_TESTCASE_TESTCASE_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_TESTCASE_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_TESTCASE_SH}/../../Printing/debug.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_TESTCASE_SH}/../../Testing/function.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_TESTCASE_SH}/../Utils/testStatus.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_TESTCASE_SH}/../Setup/setup.sh"
+. "${SCRIPT_LOCATION_PRINT_TESTCASE_TESTCASE_SH}/../Teardown/teardown.sh"
 
-TESTCASE_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTCASE_SH=""
+TESTCASE_TESTCASE_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTCASE_TESTCASE_SH=""
 
 ##!
 # @brief Execute a test case
@@ -133,7 +133,7 @@ runTestCase()
     return ${testResult}
 }
 
-fi # TESTCASE_SH
+fi # TESTCASE_TESTCASE_SH
 
 #  ______________________________ 
 # |                              |

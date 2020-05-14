@@ -2,8 +2,8 @@
 
 # @file filesTest.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 24 December 2019
+# @version 1.1
+# @date 14 May 2020
 # @brief Unit testing of files.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -15,7 +15,7 @@
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -140,7 +140,7 @@ Cleanup()
 testIsFilePathNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     isFilePath 
@@ -156,7 +156,7 @@ testIsFilePathNoArg()
 testIsFilePathEmptyArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     isFilePath ""
@@ -172,7 +172,7 @@ testIsFilePathEmptyArg()
 testIsFilePathUnexistingElement()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     isFilePath "/tmp/UnexistingElement"
@@ -188,7 +188,7 @@ testIsFilePathUnexistingElement()
 testIsFilePathNotFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     isFilePath "/tmp/foo"
@@ -204,7 +204,7 @@ testIsFilePathNotFile()
 testIsFilePathFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     isFilePath "/tmp/bar1"
@@ -220,7 +220,7 @@ testIsFilePathFile()
 testIsFilePathSymlinkNotFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     isFilePath "/tmp/fooLN"
@@ -236,7 +236,7 @@ testIsFilePathSymlinkNotFile()
 testIsFilePathSymlinkFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     isFilePath "/tmp/bar2"
@@ -252,7 +252,7 @@ testIsFilePathSymlinkFile()
 testIsFilePathNotFileMultipleArgs()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     isFilePath "/tmp/foo" "/tmp/bar1"
@@ -268,7 +268,7 @@ testIsFilePathNotFileMultipleArgs()
 testIsFilePathFileMultipleArgs()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     isFilePath "/tmp/bar1" "/tmp/notAFile"
@@ -284,7 +284,7 @@ testIsFilePathFileMultipleArgs()
 testAreFilesIdenticalNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     areFilesIdentical 
@@ -300,7 +300,7 @@ testAreFilesIdenticalNoArg()
 testAreFilesIdenticalMissingArg2()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     areFilesIdentical  "/tmp/bar3"
@@ -317,7 +317,7 @@ testAreFilesIdenticalMissingArg2()
 testAreFilesIdenticalArg1NotFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     areFilesIdentical  "/tmp/foo" "/tmp/bar3"
@@ -334,7 +334,7 @@ testAreFilesIdenticalArg1NotFile()
 testAreFilesIdenticalArg2NotFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     areFilesIdentical  "/tmp/bar3" "/tmp/NOTAFILE"
@@ -350,7 +350,7 @@ testAreFilesIdenticalArg2NotFile()
 testAreFilesIdenticalFilesDifferent()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     areFilesIdentical  "/tmp/bar3" "/tmp/bar4"
@@ -366,7 +366,7 @@ testAreFilesIdenticalFilesDifferent()
 testAreFilesIdenticalFilesIdentical()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../files.sh" "1.1"
 
     ### Call command
     areFilesIdentical  "/tmp/bar3" "/tmp/bar5"

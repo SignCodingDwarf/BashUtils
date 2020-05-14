@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# @file assertInclusions.sh
+# @file inclusions.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 19 March 2020
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of a set of macros used to check inclusion of files.
 
 ###
@@ -68,15 +68,15 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${ASSERTINCLUSIONS_SH} ]; then
+if [ -z ${ASSERT_INCLUSIONS_SH} ]; then
 
 ### Inclusions
-SCRIPT_LOCATION_PRINT_ASSERTINCLUSIONS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_ASSERTINCLUSIONS_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTINCLUSIONS_SH}/assertUtils.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTINCLUSIONS_SH}/../../Testing/files.sh"
+SCRIPT_LOCATION_PRINT_ASSERT_INCLUSIONS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_INCLUSIONS_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_INCLUSIONS_SH}/assertUtils.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_INCLUSIONS_SH}/../../Testing/files.sh"
 
-ASSERTINCLUSIONS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTINCLUSIONS_SH=""
+ASSERT_INCLUSIONS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERT_INCLUSIONS_SH=""
 
 ##!
 # @brief Turns a script path to the name of the corresponding inclusion control variable
@@ -100,10 +100,12 @@ filePathToInclusionVariable()
     if [[ "${filePath}" == */ ]]; then
         return 2
     fi
+    local absolutePath=$(readlink -f "${filePath}")
     
+    local moduleName=$(basename $(dirname "${absolutePath}")) # Get module name as directory containing file
     local fileName=$(basename ${filePath}) # Get filename with extension from path
 
-    echo "${fileName}" | tr . _ | tr - _ | tr a-z A-Z # Replaces extension's . by _, any - by _ and then does toupper (could use ${variable^^} but this is Bash>4.0 only and we don't have any special characters here that we don't have already replaced)
+    echo "${moduleName}_${fileName}" | tr . _ | tr - _ | tr a-z A-Z # Replaces extension's . by _, any - by _ and then does toupper (could use ${variable^^} but this is Bash>4.0 only and we don't have any special characters here that we don't have already replaced)
 
     return 0
 }
@@ -293,7 +295,7 @@ INCLUDE_AND_ASSERT_VERSION()
     ASSERT_FILE_INCLUDED_WITH_VERSION "${fileTested}" "${expectedVersion}"
 }
 
-fi # ASSERTINCLUSIONS_SH
+fi # ASSERT_INCLUSIONS_SH
 
 #  ______________________________ 
 # |                              |

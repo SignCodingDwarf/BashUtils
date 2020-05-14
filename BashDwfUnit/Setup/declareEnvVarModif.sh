@@ -2,8 +2,8 @@
 
 # @file  declareEnvVarModif.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 12 January 2020
+# @version 1.1
+# @date 14 May 2020
 # Definition of functions used to declare modified environment variables
 
 ###
@@ -68,13 +68,13 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z "${DECLAREENVVARMODIF_SH}" ]; then
+if [ -z "${SETUP_DECLAREENVVARMODIF_SH}" ]; then
 
-SCRIPT_LOCATION_DECLAREENVVARMODIF_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_DECLAREENVVARMODIF_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_DECLAREENVVARMODIF_SH}/../../Printing/debug.sh"
+SCRIPT_LOCATION_SETUP_DECLAREENVVARMODIF_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_SETUP_DECLAREENVVARMODIF_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_SETUP_DECLAREENVVARMODIF_SH}/../../Printing/debug.sh"
 
-DECLAREENVVARMODIF_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using DECLAREENVVARMODIF_SH=""
+SETUP_DECLAREENVVARMODIF_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using SETUP_DECLAREENVVARMODIF_SH=""
 
 ### Functions
 ##!
@@ -133,7 +133,7 @@ DeclModEnvVar()
     return 0
 }
 
-fi # DECLAREENVVARMODIF_SH
+fi # SETUP_DECLAREENVVARMODIF_SH
 
 #  ______________________________ 
 # |                              |

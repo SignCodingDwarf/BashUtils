@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# @file teardownUtils.sh
+# @file utils.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 01 December 2019
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of functions used to restore environment state after test execution.
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,14 +68,14 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${TEARDOWNUTILS_SH} ]; then
+if [ -z ${TEARDOWN_UTILS_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_PRINT_TEARDOWNUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_TEARDOWNUTILS_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_TEARDOWNUTILS_SH}/../../Printing/debug.sh"
+SCRIPT_LOCATION_PRINT_TEARDOWN_UTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_UTILS_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_UTILS_SH}/../../Printing/debug.sh"
 
-TEARDOWNUTILS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TEARDOWNUTILS_SH=""
+TEARDOWN_UTILS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TEARDOWN_UTILS_SH=""
 
 ### Functions
 ##!
@@ -173,7 +173,7 @@ RestoreEnvVars()
     return ${nbFails}
 }
 
-fi # TEARDOWNUTILS_SH
+fi # TEARDOWN_UTILS_SH
 
 #  ______________________________ 
 # |                              |

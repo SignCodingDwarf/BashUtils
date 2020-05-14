@@ -2,8 +2,8 @@
 
 # @file structureTest.sh
 # @author SignC0dingDw@rf
-# @version 2.0
-# @date 02 February 2020
+# @version 2.1
+# @date 14 May 2020
 # @brief Unit testing of structure.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -114,7 +114,7 @@ Cleanup()
 TestSuiteValueManagement()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.1"
 
     # Initial states, arrays are empty, strings empty
     endTestIfAssertFails " -z  \"${_SUITE_NAME}\" " "_SUITE_NAME should be initialized to empty but has content ${_SUITE_NAME}\n"
@@ -200,7 +200,7 @@ TestSuiteValueManagement()
 DisplaySummarySizeNotMatching()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.1"
 
     ### Set values
     _SUITE_RUN_TESTS=("TestA" "TestB" "TestC")
@@ -227,7 +227,7 @@ DisplaySummarySizeNotMatching()
 DisplaySummaryNoErrors()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.1"
 
     ### Set values
     _SUITE_NAME="Guess What ?"
@@ -273,7 +273,7 @@ DisplaySummaryNoErrors()
 DisplaySummaryWithErrors()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.1"
 
     ### Set values
     _SUITE_NAME="Some Errors"
@@ -315,7 +315,7 @@ DisplaySummaryWithErrors()
 DisplaySummaryAllErrors()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../structure.sh" "1.1"
 
     ### Set values
     _SUITE_NAME="That is not good"

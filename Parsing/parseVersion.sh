@@ -3,15 +3,15 @@
 ###
 # @file parseVersion.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 23 October 2019
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of utilitaries used to parse version from a file
 ###
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -70,10 +70,10 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${PARSEVERSION_SH} ]; then
+if [ -z ${PARSING_PARSEVERSION_SH} ]; then
 
 # Definition of inclusion also contains the current library version
-PARSEVERSION_SH="1.0" # Reset using PARSEVERSION_SH=""
+PARSING_PARSEVERSION_SH="1.0" # Reset using PARSING_PARSEVERSION_SH=""
 
 ### Functions
 ##!
@@ -137,7 +137,7 @@ parseBashDoxygenVersion()
     parseDoxygenVersion $1 "#" 
 }
 
-fi # PARSEVERSION_SH
+fi # PARSING_PARSEVERSION_SH
 
 #  ______________________________ 
 # |                              |

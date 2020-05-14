@@ -2,8 +2,8 @@
 
 # file :  assertUtilsTest.sh
 # author : SignC0dingDw@rf
-# version : 1.1
-# date : 23 February 2020
+# version : 1.2
+# date : 14 May 2020
 # Unit testing of assertUtils.sh file.
 
 ### Exit Code
@@ -114,7 +114,7 @@ Cleanup()
 testErrorMessageFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Test Pattern
     testFormat "\033[1;31m" "${errorMessageFormat}"
@@ -129,7 +129,7 @@ testErrorMessageFormat()
 testDelimiterValue()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Test lineDelimiter
     endTestIfAssertFails "\"${lineDelimiter}\" = \"\n\" " "Line delimiter must be \n but has value ${lineDelimiter}"
@@ -144,7 +144,7 @@ testDelimiterValue()
 testPrintErrorLine()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     PrintErrorLine "This is an error message" > /tmp/barOutput
@@ -163,7 +163,7 @@ testPrintErrorLine()
 testPrintErrorMessageNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     PrintErrorMessage > /tmp/barOutput
@@ -182,7 +182,7 @@ testPrintErrorMessageNoArg()
 testPrintErrorMessageSingleLine()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     PrintErrorMessage "This is the bottom line" > /tmp/barOutput
@@ -201,7 +201,7 @@ testPrintErrorMessageSingleLine()
 testPrintErrorMessageSingleLineDelimiterEnding()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     PrintErrorMessage "I am on the line\n" > /tmp/barOutput
@@ -220,7 +220,7 @@ testPrintErrorMessageSingleLineDelimiterEnding()
 testPrintErrorMessageMultiLine()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     PrintErrorMessage "First line\nAnother Line\nStill online" > /tmp/barOutput
@@ -241,7 +241,7 @@ testPrintErrorMessageMultiLine()
 testPrintErrorMessageMultiLineDelimiterEnding()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     PrintErrorMessage "Mario\nPikachu\nFox\nSamus\nLink\nYoshi\nDK\nKirby\n" > /tmp/barOutput
@@ -267,7 +267,7 @@ testPrintErrorMessageMultiLineDelimiterEnding()
 testPrintErrorMessageConsecutiveDelimiters()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     PrintErrorMessage "Header\nSubheader\n\nText\nnot again a text !!\n\nFooter\n" > /tmp/barOutput
@@ -292,7 +292,7 @@ testPrintErrorMessageConsecutiveDelimiters()
 testEndTestOnFailureNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -314,7 +314,7 @@ testEndTestOnFailureNoArg()
 testEndTestOnFailureSingleLine()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure "This is a mistake" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -336,7 +336,7 @@ testEndTestOnFailureSingleLine()
 testEndTestOnFailureSingleLineDelimiterEnding()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure "An error\n" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -358,7 +358,7 @@ testEndTestOnFailureSingleLineDelimiterEnding()
 testEndTestOnFailureMultilineLine()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure "Several\nErrors" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -381,7 +381,7 @@ testEndTestOnFailureMultilineLine()
 testEndTestOnFailureMultiLineDelimiterEnding()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure "Falcon\nJigglypluff\nNess\nLuigi\n" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -406,7 +406,7 @@ testEndTestOnFailureMultiLineDelimiterEnding()
 testEndTestOnFailureMultiLineConsecutiveDelimiters()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure "I\n\n'm\nBored\n\n!!!!!!" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -433,7 +433,7 @@ testEndTestOnFailureMultiLineConsecutiveDelimiters()
 testEndTestOnFailureValidReturnCode()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure "In range" 42 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -455,7 +455,7 @@ testEndTestOnFailureValidReturnCode()
 testEndTestOnFailureOutOfRangeReturnCode()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure "Out of\n range" 256 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -478,7 +478,7 @@ testEndTestOnFailureOutOfRangeReturnCode()
 testEndTestOnFailureZeroReturnCode()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure "Zero Suit Samus\n" 0 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -500,7 +500,7 @@ testEndTestOnFailureZeroReturnCode()
 testEndTestOnFailureStringReturnCode()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../assertUtils.sh" "1.2"
 
     ### Execute Command
     (EndTestOnFailure "A\nB\nC\n" "Not A valid exit code" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code

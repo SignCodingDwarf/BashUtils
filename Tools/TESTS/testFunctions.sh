@@ -3,8 +3,8 @@
 ###
 # @file testFunctions.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 02 February 2020
+# @version 1.3
+# @date 14 May 2020
 # @brief A set of additional test functions used to mutualize commonly performed tests.
 ###
 
@@ -70,15 +70,15 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${TESTFUNCTIONS_SH} ]; then
+if [ -z ${TOOLS_TESTFUNCTIONS_SH} ]; then
 
 # Definition of inclusion also contains the current library version
-TESTFUNCTIONS_SH="1.0" # Reset using TESTFUNCTIONS_SH=""
+TOOLS_TESTFUNCTIONS_SH="1.3" # Reset using TOOLS_TESTFUNCTIONS_SH=""
 
 # Inclusion of dependencies
-SCRIPT_LOCATION_TESTFUNCTIONS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_TESTFUNCTIONS_SH}/testUtils.sh"
-. "${SCRIPT_LOCATION_TESTFUNCTIONS_SH}/../../Testing/files.sh"
+SCRIPT_LOCATION_TOOLS_TESTFUNCTIONS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_TOOLS_TESTFUNCTIONS_SH}/testUtils.sh"
+. "${SCRIPT_LOCATION_TOOLS_TESTFUNCTIONS_SH}/../../Testing/files.sh"
 
 ################################################################################
 ###                                                                          ###
@@ -214,7 +214,7 @@ CheckArraySize()
     return 0
 }
 
-fi # TESTFUNCTIONS_SH
+fi # TOOLS_TESTFUNCTIONS_SH
 
 #  ______________________________ 
 # |                              |

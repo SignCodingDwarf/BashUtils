@@ -2,8 +2,8 @@
 
 # @file teardown.sh
 # @author SignC0dingDw@rf
-# @version 2.0
-# @date 29 January 2020
+# @version 2.1
+# @date 14 May 2020
 # @brief Definition of the teardown function used to clean up environment after execution of TestSuite tests.
 
 ###
@@ -68,16 +68,16 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${TEARDOWN_SH} ]; then
+if [ -z ${TEARDOWN_TEARDOWN_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_PRINT_TEARDOWN_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_TEARDOWN_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_TEARDOWN_SH}/../../Printing/debug.sh"
-. "${SCRIPT_LOCATION_PRINT_TEARDOWN_SH}/../../Testing/function.sh"
-. "${SCRIPT_LOCATION_PRINT_TEARDOWN_SH}/teardownUtils.sh"
+SCRIPT_LOCATION_PRINT_TEARDOWN_TEARDOWN_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_TEARDOWN_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_TEARDOWN_SH}/../../Printing/debug.sh"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_TEARDOWN_SH}/../../Testing/function.sh"
+. "${SCRIPT_LOCATION_PRINT_TEARDOWN_TEARDOWN_SH}/utils.sh"
 
-TEARDOWN_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TEARDOWN_SH=""
+TEARDOWN_TEARDOWN_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TEARDOWN_TEARDOWN_SH=""
 
 ##!
 # @brief Test teardown phase
@@ -123,7 +123,7 @@ Teardown()
     return ${exitCode}
 }
 
-fi # TEARDOWN_SH
+fi # TEARDOWN_TEARDOWN_SH
 
 #  ______________________________ 
 # |                              |

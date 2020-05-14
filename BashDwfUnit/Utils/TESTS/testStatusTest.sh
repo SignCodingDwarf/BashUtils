@@ -2,8 +2,8 @@
 
 # @file testStatusTest.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 28 December 2019
+# @version 1.2
+# @date 14 May 2020
 # @brief Unit testing of testStatus.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -15,7 +15,7 @@
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -105,7 +105,7 @@ Cleanup()
 testNameFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     testFormat "\033[1;34m" "${testNameFormat}"
     return 0    
@@ -119,7 +119,7 @@ testNameFormat()
 testSuccessFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     testFormat "\033[1;32m" "${successFormat}"
     return 0    
@@ -133,7 +133,7 @@ testSuccessFormat()
 testFailureFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     testFormat "\033[1;31m" "${failureFormat}"
     return 0    
@@ -147,7 +147,7 @@ testFailureFormat()
 TestPrintTestName()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     PrintTestName "dummyTest" > /tmp/barOutput
     printf "***** Running Test : dummyTest *****\n" > /tmp/barRef
@@ -162,7 +162,7 @@ TestPrintTestName()
 TestPrintSuccess()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     PrintSuccess > /tmp/barOutput
     printf "[Result] : Test Successful\n" > /tmp/barRef
@@ -177,7 +177,7 @@ TestPrintSuccess()
 TestPrintFailure()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     PrintFailure 42 > /tmp/barOutput
     printf "[Result] : Test Failed with error 42\n" > /tmp/barRef
@@ -192,7 +192,7 @@ TestPrintFailure()
 TestPrintTestSummaryNoArgs()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintTestSummary > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -214,7 +214,7 @@ TestPrintTestSummaryNoArgs()
 TestPrintTestSummaryNoStatus()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintTestSummary "a dummy test" > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -236,7 +236,7 @@ TestPrintTestSummaryNoStatus()
 TestPrintTestSummaryInvalidStatus()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintTestSummary "a dummy test" notAStatus > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -258,7 +258,7 @@ TestPrintTestSummaryInvalidStatus()
 TestPrintTestSummarySuccessTrue()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintTestSummary "some successful test" true > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -280,7 +280,7 @@ TestPrintTestSummarySuccessTrue()
 TestPrintTestSummarySuccessZero()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintTestSummary "anotherSuccessfulTest" 0 > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -302,7 +302,7 @@ TestPrintTestSummarySuccessZero()
 TestPrintTestSummaryFailedFalse()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintTestSummary "aFailedTest" false > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -324,7 +324,7 @@ TestPrintTestSummaryFailedFalse()
 TestPrintTestSummaryFailedOne()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintTestSummary "theLastTest" 1 > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -346,7 +346,7 @@ TestPrintTestSummaryFailedOne()
 TestPrintRunSummaryNoArgs()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintRunSummary > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -368,7 +368,7 @@ TestPrintRunSummaryNoArgs()
 TestPrintRunSummaryInvalidTestRunNb()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintRunSummary notANumber 12 > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -390,7 +390,7 @@ TestPrintRunSummaryInvalidTestRunNb()
 TestPrintRunSummaryMissingTestFailedNb()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintRunSummary 7 > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -412,7 +412,7 @@ TestPrintRunSummaryMissingTestFailedNb()
 TestPrintRunSummaryInvalidTestFailedNb()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintRunSummary 7 -3 > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -438,7 +438,7 @@ TestPrintRunSummaryInvalidTestFailedNb()
 TestPrintRunSummarySupTestFailedNb()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintRunSummary 7 12 > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -460,7 +460,7 @@ TestPrintRunSummarySupTestFailedNb()
 TestPrintRunSummaryFailedTests()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintRunSummary 7 3 > /tmp/barOutput 2> /tmp/barErrorOutput
@@ -482,7 +482,7 @@ TestPrintRunSummaryFailedTests()
 TestPrintRunSummarySuccessfulTests()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testStatus.sh" "1.1"
 
     ### Execute Command
     PrintRunSummary 21 0 > /tmp/barOutput 2> /tmp/barErrorOutput

@@ -3,15 +3,15 @@
 ###
 # @file testUtils.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 26 December 2019
+# @version 1.2
+# @date 14 May 2020
 # @brief Reimplements BashDwfUnit basic test features to allow testing of elements used by this framework.
 ###
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -70,10 +70,10 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${TESTUTILS_SH} ]; then
+if [ -z ${TOOLS_TESTUTILS_SH} ]; then
 
 # Definition of inclusion also contains the current library version
-TESTUTILS_SH="1.1" # Reset using TESTUTILS_SH=""
+TOOLS_TESTUTILS_SH="1.2" # Reset using TOOLS_TESTUTILS_SH=""
 
 ################################################################################
 ###                                                                          ###
@@ -227,10 +227,12 @@ filePathToInclusionVariable()
     if [ -z "${FILE_PATH}" ]; then
         return 1
     fi
+    local ABSOLUTE_PATH=$(readlink -f "${FILE_PATH}")
     
-    local FILE_NAME=$(basename ${FILE_PATH}) # Get filename with extension from path
+    local MODULE_NAME=$(basename $(dirname "${ABSOLUTE_PATH}")) # Get module name as directory containing file
+    local FILE_NAME=$(basename "${ABSOLUTE_PATH}") # Get filename with extension from path
 
-    echo "${FILE_NAME}" | tr . _ | tr a-z A-Z # Replaces extension's . by _, if any and then does toupper (could use ${variable^^} but this is Bash>4.0 only and we don't have any special characters here)
+    echo "${MODULE_NAME}_${FILE_NAME}" | tr . _ | tr a-z A-Z # Replaces extension's . by _, if any and then does toupper (could use ${variable^^} but this is Bash>4.0 only and we don't have any special characters here)
 
     return 0
 }
@@ -274,7 +276,7 @@ testScriptInclusion()
     return 0
 }
 
-fi # TESTUTILS_SH
+fi # TOOLS_TESTUTILS_SH
 
 #  ______________________________ 
 # |                              |

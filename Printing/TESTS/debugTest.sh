@@ -2,8 +2,8 @@
 
 # @file debugTest.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 28 December 2019
+# @version 1.3
+# @date 14 May 2020
 # @brief Unit testing of debug.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -15,7 +15,7 @@
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -170,7 +170,7 @@ Cleanup()
 testInfoFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.1"
 
     testFormat "\033[1;34m" "${infoFormat}"
     return 0    
@@ -184,7 +184,7 @@ testInfoFormat()
 testWarningFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.1"
 
     testFormat "\033[1;33m" "${warningFormat}"
     return 0    
@@ -198,7 +198,7 @@ testWarningFormat()
 testErrorFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.1"
 
     testFormat "\033[1;31m" "${errorFormat}"
     return 0    
@@ -223,7 +223,7 @@ testErrorFormat()
 testDebugPrint()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../debug.sh" "1.1"
 
     # Only redirection to file is tested
     ### Test print without verbosity 
@@ -238,7 +238,7 @@ testDebugPrint()
     TestPrint PrintInfo false "Still an info message" # Still displays nothing because funtion was no loaded once again
 
     ### Test print with verbosity 
-    DEBUG_SH="" # Allows script to be reloaded
+    PRINTING_DEBUG_SH="" # Allows script to be reloaded
     . "${SCRIPT_LOCATION}/../debug.sh" # Reload print utils to "reset" PrintInfo
     TestPrint PrintInfo true "Yet another info message"
     TestPrint PrintWarning true "Yet another warning message"

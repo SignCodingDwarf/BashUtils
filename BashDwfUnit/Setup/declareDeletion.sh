@@ -2,8 +2,8 @@
 
 # @file declareDeletion.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 12 January 2020
+# @version 1.1
+# @date 14 May 2020
 # Definition of functions used to declare directories and files to delete
 
 ###
@@ -68,13 +68,13 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z "${DECLAREDELETION_SH}" ]; then
+if [ -z "${SETUP_DECLAREDELETION_SH}" ]; then
 
-SCRIPT_LOCATION_DECLAREDELETION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_DECLAREDELETION_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_DECLAREDELETION_SH}/../../Printing/debug.sh"
+SCRIPT_LOCATION_SETUP_DECLAREDELETION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_SETUP_DECLAREDELETION_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_SETUP_DECLAREDELETION_SH}/../../Printing/debug.sh"
 
-DECLAREDELETION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using DECLAREDELETION_SH=""
+SETUP_DECLAREDELETION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using SETUP_DECLAREDELETION_SH=""
 
 ##!
 # @brief Declare elements to delete
@@ -174,7 +174,7 @@ DeclMkFilesToDel()
 }
 
 
-fi # DECLAREDELETION_SH
+fi # SETUP_DECLAREDELETION_SH
 
 #  ______________________________ 
 # |                              |

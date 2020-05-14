@@ -2,8 +2,8 @@
 
 # file :  declareDivertionTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 26 January 2020
+# version : 1.1
+# date : 14 May 2020
 # Unit testing of declareDivertion.sh file.
 
 ### Exit Code
@@ -147,7 +147,7 @@ Cleanup()
 TestDivertCopyElementNoInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Test command
     DivertCopyElement 2> /tmp/barErrorOutput
@@ -169,7 +169,7 @@ TestDivertCopyElementNoInput()
 TestDivertCopyElementNominalInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Test command
     DivertCopyElement /tmp/foo1 /tmp/foo/bar1 /tmp/foo3 /tmp/fooL /tmp/foo/bar4 /tmp/foo/bar2 2> /tmp/barErrorOutput
@@ -198,7 +198,7 @@ TestDivertCopyElementNominalInput()
 TestDivertCopyElementAlreadyDivertedElements()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Create divertion of element
     touch /tmp/foo/bar1.utmv
@@ -228,7 +228,7 @@ TestDivertCopyElementAlreadyDivertedElements()
 TestDivertCopyElementErrors()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Test command
     DivertCopyElement /tmp/DoesNOTExist /tmp/foo1 2> /tmp/barErrorOutput
@@ -254,7 +254,7 @@ TestDivertCopyElementErrors()
 TestDivertMoveElementNoInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Test command
     DivertCopyElement 2> /tmp/barErrorOutput
@@ -276,7 +276,7 @@ TestDivertMoveElementNoInput()
 TestDivertMoveElementNominalInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Test command
     DivertMoveElement /tmp/foo1 /tmp/foo/bar1 /tmp/foo3 /tmp/fooL /tmp/foo/bar4 /tmp/foo/bar2 2> /tmp/barErrorOutput
@@ -308,7 +308,7 @@ TestDivertMoveElementNominalInput()
 TestDivertMoveElementAlreadyDivertedElements()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Create divertion of element
     touch /tmp/foo/bar1.utmv
@@ -344,7 +344,7 @@ TestDivertMoveElementAlreadyDivertedElements()
 TestDivertMoveElementErrors()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Test command
     DivertMoveElement /tmp/DoesNOTExist /tmp/foo1 2> /tmp/barErrorOutput
@@ -370,7 +370,7 @@ TestDivertMoveElementErrors()
 TestDivertReplaceElementNoInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Test command
     DivertReplaceElement 2> /tmp/barErrorOutput
@@ -392,7 +392,7 @@ TestDivertReplaceElementNoInput()
 TestDivertReplaceElementNoReplacingElement()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Test command
     DivertReplaceElement /tmp/foo 2> /tmp/barErrorOutput
@@ -414,7 +414,7 @@ TestDivertReplaceElementNoReplacingElement()
 TestDivertReplaceElementSuccess()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Test command
     DivertReplaceElement /tmp/foo /tmp/ref 2> /tmp/barErrorOutput
@@ -442,7 +442,7 @@ TestDivertReplaceElementSuccess()
 TestDivertReplaceElementAlreadyDiverted()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDivertion.sh" "1.1"
 
     ### Create divertion
     mkdir /tmp/foo.utmv

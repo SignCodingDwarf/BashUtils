@@ -2,8 +2,8 @@
 
 # @file setup.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 27 January 2020
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of the setup function used to setup up environment before execution of TestSuite tests.
 
 ###
@@ -68,15 +68,15 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${SETUP_SH} ]; then
+if [ -z ${SETUP_SETUP_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_PRINT_SETUP_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_SETUP_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_SETUP_SH}/../../Printing/debug.sh"
-. "${SCRIPT_LOCATION_PRINT_SETUP_SH}/../../Testing/function.sh"
+SCRIPT_LOCATION_PRINT_SETUP_SETUP_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_SETUP_SETUP_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_SETUP_SETUP_SH}/../../Printing/debug.sh"
+. "${SCRIPT_LOCATION_PRINT_SETUP_SETUP_SH}/../../Testing/function.sh"
 
-SETUP_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using SETUP_SH=""
+SETUP_SETUP_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using SETUP_SETUP_SH=""
 
 ##!
 # @brief Test setup phase
@@ -105,7 +105,7 @@ Setup()
     return ${exitCode}
 }
 
-fi # SETUP_SH
+fi # SETUP_SETUP_SH
 
 #  ______________________________ 
 # |                              |

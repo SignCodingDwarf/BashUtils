@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file teardownUtilsTest.sh
+# @file utilsTest.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 12 January 2020
-# @brief Unit testing of teardownUtils.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
+# @version 1.3
+# @date 14 May 2020
+# @brief Unit testing of utils.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
 #
@@ -490,7 +490,7 @@ DeleteElementsNoInput()
     CheckInitialState
 
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../utils.sh" "1.1"
 
     ### Test command
     DeleteElements 2> /tmp/barErrorOutput
@@ -524,7 +524,7 @@ DeleteElementsNominalInput()
     CheckInitialState
 
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../utils.sh" "1.1"
 
     ### Test command
     ## Only Directories
@@ -621,7 +621,7 @@ DeleteElementsNotExisting()
     CheckInitialState
 
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../utils.sh" "1.1"
 
     ### Test command
     DeleteElements "/tmp/toto11" "/tmp/toto8/dummy42" "/tmp/NothingToSeeInHere" 2> /tmp/barErrorOutput
@@ -655,7 +655,7 @@ RestoreElementsNoInput()
     CheckInitialState
 
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../utils.sh" "1.1"
 
     ### Test command
     RestoreElements 2> /tmp/barErrorOutput
@@ -689,7 +689,7 @@ RestoreElementsNominalInput()
     CheckInitialState
 
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../utils.sh" "1.1"
 
     ### Test command
     RestoreElements "/tmp/fileRes/phi6.txt" "/tmp/tutu1" "/tmp/fileRes/phi1.txt" "/tmp/fileRes/phi4.txt" "/tmp/tutu3" 2> /tmp/barErrorOutput
@@ -719,7 +719,7 @@ RestoreElementsNotExisting()
     CheckInitialState
 
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../utils.sh" "1.1"
 
     ### Test command
     rm -r /tmp/tutu4.utmv # We delete a folder divertion to create an error
@@ -754,7 +754,7 @@ RestoreEnvVarsNoInput()
     CheckInitialState
 
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../utils.sh" "1.1"
 
     ### Test command
     RestoreEnvVars 2> /tmp/barErrorOutput
@@ -780,7 +780,7 @@ RestoreEnvVarsNominalInput()
     CheckInitialState
 
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../utils.sh" "1.1"
 
     ### Test command
     VARS_RES=("ENV_T1" "ValZ" "ENV_T4" "" "ENV_T3" "ValX")
@@ -807,7 +807,7 @@ RestoreEnvVarsWithError()
     CheckInitialState
 
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../teardownUtils.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../utils.sh" "1.1"
 
     ### Test command
     VARS_RES=("ENV_T2" "ValY" "ENV_T6" "ValU" "ENV_T5" "ValV" "ENV_T4") # No value for T4 => error

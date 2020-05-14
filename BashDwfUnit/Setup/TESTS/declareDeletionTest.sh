@@ -2,8 +2,8 @@
 
 # file :  declareDeletionTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 12 January 2020
+# version : 1.1
+# date : 14 May 2020
 # Unit testing of declareDeletion.sh file.
 
 ### Exit Code
@@ -131,7 +131,7 @@ Cleanup()
 TestDeclElementsToDelNoInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclElementsToDel 2> /tmp/barErrorOutput
@@ -150,7 +150,7 @@ TestDeclElementsToDelNoInput()
 TestDeclElementsToDelNominalInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Add a few variables
     DeclElementsToDel "/tmp/foo" "/tmp/bar" "/tmp/tutu" > /tmp/barErrorOutput
@@ -183,7 +183,7 @@ TestDeclElementsToDelNominalInput()
 TestDeclMkFoldersToDelNoInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFoldersToDel 2> /tmp/barErrorOutput
@@ -202,7 +202,7 @@ TestDeclMkFoldersToDelNoInput()
 TestDeclMkFoldersToDelNominalInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFoldersToDel "/tmp/toto2" "/tmp/foo3" 2> /tmp/barErrorOutput
@@ -241,7 +241,7 @@ TestDeclMkFoldersToDelNominalInput()
 TestDeclMkFoldersToDelExistingFolders()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFoldersToDel "/tmp/toto2" "/tmp/foo" "/tmp/toto" "/tmp/foo3" 2> /tmp/barErrorOutput
@@ -269,7 +269,7 @@ TestDeclMkFoldersToDelExistingFolders()
 TestDeclMkFoldersToDelNoPaths()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFoldersToDel "/tmp/NotExisting/CannotBeCreated" "/tmp/bar/foo" "/tmp/foo3" "DOESNOTEXIST/CRITICALFAILURE" 2> /tmp/barErrorOutput
@@ -299,7 +299,7 @@ TestDeclMkFoldersToDelNoPaths()
 TestDeclMkFoldersToDelExistingFiles()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFoldersToDel "/tmp/foo/bar1" "/tmp/foo/bar2" 2> /tmp/barErrorOutput
@@ -327,7 +327,7 @@ TestDeclMkFoldersToDelExistingFiles()
 TestDeclMkFilesToDelNoInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFilesToDel 2> /tmp/barErrorOutput
@@ -346,7 +346,7 @@ TestDeclMkFilesToDelNoInput()
 TestDeclMkFilesToDelNominalInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFilesToDel "/tmp/foo/bar3" "/tmp/foo/bar4" 2> /tmp/barErrorOutput
@@ -385,7 +385,7 @@ TestDeclMkFilesToDelNominalInput()
 TestDeclMkFilesToDelExistingFolders()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFilesToDel "/tmp/foo" "/tmp/foo/bar3" 2> /tmp/barErrorOutput
@@ -409,7 +409,7 @@ TestDeclMkFilesToDelExistingFolders()
 TestDeclMkFilesToDelNoPaths()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFilesToDel "/tmp/NotExisting/CannotBeCreated" "/tmp/foo/bar3" "DOESNOTEXIST/CRITICALFAILURE" 2> /tmp/barErrorOutput
@@ -436,7 +436,7 @@ TestDeclMkFilesToDelNoPaths()
 TestDeclMkFilesToDelExistingFiles()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareDeletion.sh" "1.1"
 
     ### Test command
     DeclMkFilesToDel "/tmp/foo/bar1" "/tmp/foo/bar2" 2> /tmp/barErrorOutput

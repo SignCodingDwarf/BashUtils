@@ -2,8 +2,8 @@
 
 # @file testsManagementTests.sh
 # @author SignC0dingDw@rf
-# @version 2.0
-# @date 08 February 2020
+# @version 2.1
+# @date 14 May 2020
 # @brief Unit testing of testsManagement.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -146,7 +146,7 @@ Cleanup()
 AddTestsNoParam()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=() # Make sure list of tests is empty
@@ -172,7 +172,7 @@ AddTestsNoParam()
 AddTestsOnlyAddFailures()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=() # Make sure list of tests is empty
@@ -203,7 +203,7 @@ AddTestsOnlyAddFailures()
 AddTestsAddFailures()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=() # Make sure list of tests is empty
@@ -235,7 +235,7 @@ AddTestsAddFailures()
 AddTestsOnlyAddSuccess()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=() # Make sure list of tests is empty
@@ -261,7 +261,7 @@ AddTestsOnlyAddSuccess()
 AddTestsAddRedundant()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=("Aloha" "AnotherTest" "ATest") # Initial test list
@@ -290,7 +290,7 @@ AddTestsAddRedundant()
 RunTestsNoParam()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
@@ -323,7 +323,7 @@ RunTestsNoParam()
 RunTestsOnlyRunFailures()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
@@ -368,7 +368,7 @@ RunTestsOnlyRunFailures()
 RunTestsRunFailures()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
@@ -413,7 +413,7 @@ RunTestsRunFailures()
 RunTestsOnlyRunSuccess()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
@@ -457,7 +457,7 @@ RunTestsOnlyRunSuccess()
 RunTestsRunDuplicates()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=("Aloha" "ATest" "AnotherTest" "TerminatorTest") # Test list for all tests
@@ -502,7 +502,7 @@ RunTestsRunDuplicates()
 RunTestsRunNotTests()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Variables
     local someVariable="tutu"
@@ -550,7 +550,7 @@ RunTestsRunNotTests()
 RunAllTestsEmpty()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=() # Empty Test List
@@ -592,7 +592,7 @@ RunAllTestsEmpty()
 RunAllTestsNominal()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=("Aloha" "TerminatorTest" "AnotherTest" "ATest") # Test list for all tests
@@ -636,7 +636,7 @@ RunAllTestsNominal()
 RunAllTestsDuplicates()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Declare Test suite
     _SUITE_TESTS=("Aloha" "TerminatorTest" "AnotherTest" "TerminatorTest" "ATest" "Aloha")
@@ -681,7 +681,7 @@ RunAllTestsDuplicates()
 RunAllTestsNotTests()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../testsManagement.sh" "1.2"
 
     ### Variables
     local someVariable="tutu"

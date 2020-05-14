@@ -2,8 +2,8 @@
 
 # @file installUtils.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 30 March 2020
+# @version 1.1
+# @date 14 May 2020
 # Definition of functions used by the install.sh script.
 
 ###
@@ -68,15 +68,15 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${INSTALLUTILS_SH} ]; then
+if [ -z ${TOOLS_INSTALLUTILS_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_INSTALLUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_INSTALLUTILS_SH}/../Testing/arrays.sh"
-. "${SCRIPT_LOCATION_INSTALLUTILS_SH}/../BashDwfUnit/TestSuite/testsManagement.sh"
-. "${SCRIPT_LOCATION_INSTALLUTILS_SH}/../Updating/stringContent.sh"
+SCRIPT_LOCATION_TOOLS_INSTALLUTILS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_TOOLS_INSTALLUTILS_SH}/../Testing/arrays.sh"
+. "${SCRIPT_LOCATION_TOOLS_INSTALLUTILS_SH}/../BashDwfUnit/TestSuite/testsManagement.sh"
+. "${SCRIPT_LOCATION_TOOLS_INSTALLUTILS_SH}/../Updating/stringContent.sh"
 
-INSTALLUTILS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using INSTALLUTILS_SH=""
+TOOLS_INSTALLUTILS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TOOLS_INSTALLUTILS_SH=""
 
 ################################################################################
 ###                                                                          ###
@@ -256,7 +256,7 @@ CreateInstallDirectoryReference()
     fi
 }
 
-fi # INSTALLUTILS_SH
+fi # TOOLS_INSTALLUTILS_SH
 
 #  ______________________________ 
 # |                              |

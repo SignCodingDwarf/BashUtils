@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file assertStrings.sh
+# @file folders.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 18 March 2020
-# @brief Definition of a set of macros used to check strings values.
+# @version 1.1
+# @date 14 May 2020
+# @brief Definition of a set of macros used to check folders content.
 
 ###
 # MIT License
@@ -68,60 +68,79 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${ASSERTSTRINGS_SH} ]; then
+if [ -z ${ASSERT_FOLDERS_SH} ]; then
 
 ### Inclusions
-SCRIPT_LOCATION_PRINT_ASSERTSTRINGS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_ASSERTSTRINGS_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTSTRINGS_SH}/assertUtils.sh"
+SCRIPT_LOCATION_PRINT_ASSERT_FOLDERS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_FOLDERS_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_FOLDERS_SH}/assertUtils.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_FOLDERS_SH}/../../Testing/arrays.sh"
 
-ASSERTSTRINGS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTSTRINGS_SH=""
+ASSERT_FOLDERS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERT_FOLDERS_SH=""
 
 ##!
-# @brief Checks that a string is equal to an expected value
-# @param 1 : Expected string value
-# @param 2 : Tested string value
-# @param 3 : Error Message Header. Default is "Provided strings are not identical"
-# @return 0 if strings are identical, exit 1 otherwise
+# @brief Checks that the content of a folder matches an expected content
+# @param 1 : Name of the array containing expected folder content
+# @param 2 : Tested folder
+# @param 3 : Error Message Header. Default is "Folder has not expected content"
+# @return 0 if files are identical, exit 1 otherwise
 #
-# Compare two strings using = test. Strict equality (i.e. no pattern matching) is checked.
-# If tested and/or compared strings are empty, this triggers an error. 
+# Compare the content of a folder (ls -a) with the content of an array that describes expected content.
 # Returns the following error message :
 # @param_3
-# Expected : @param_1
-# Got : @param_2
+# Expected : 
+# @param_1 content
+# Got : 
+# @param_2 content
 #
 # Error message header (@param_3) can be multiline provided you insert \n characters in string
 #
 ##
-ASSERT_STRING_IS_EQUAL()
+ASSERT_FOLDER_HAS_EXPECTED_CONTENT()
 {
-    local expected="$1"
+    local expectedContentArrayName="$1"
     local tested="$2"
     local messageHeader="$3"
     local errorMessage=""
 
-    if [ -z "${expected}" -o -z "${tested}" ]; then # If at least a value to compare is empty, error
-        errorMessage="Problem on provided arguments. Usage:${lineDelimiter}ASSERT_STRING_IS_EQUAL <expected_string> <tested_string> [Message Header]${lineDelimiter}"
+    # Check arguments
+    if [ -z "${expectedContentArrayName}" -o -z "${tested}" ]; then # If at least a value to compare is empty, error
+        errorMessage="Problem on provided arguments. Usage:${lineDelimiter}ASSERT_FOLDER_HAS_EXPECTED_CONTENT <expected_content_name> <tested_folder> [Message Header]${lineDelimiter}"
         EndTestOnFailure "${errorMessage}"
     fi
 
+    # Message header default value
     if [ -z "${messageHeader}" ]; then
-        messageHeader="Provided strings are not identical\n"
+        messageHeader="Folder has not expected content${lineDelimiter}"
     fi
     errorMessage=$(AddSuffix "${messageHeader}" "${lineDelimiter}") ## Add delimiter in the end of line
 
-    [ "${expected}" = "${tested}" ] 2> /dev/null # Test condition
-    # Check error
+    # Check expectedContentArrayName is indeed and array and get its content
+    IsArray "${expectedContentArrayName}"
     if [ "$?" -ne "0" ]; then
-        errorMessage="${errorMessage}Expected : ${expected}${lineDelimiter}Got : ${tested}${lineDelimiter}"
-        EndTestOnFailure "${errorMessage}"
+        errorMessage="${expectedContentArrayName} is not the name of an array.${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"      
+    fi
+    local -n expectedContent=${expectedContentArrayName}
+
+    # Check tested is indeed a folder and get content
+    if [ ! -d "${tested}" ]; then
+        errorMessage="${tested} is not a directory.${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"          
+    fi
+    local testedContent=$(ls ${tested} | tr '\n' ' ') # For printing on single line
+
+    # Compare contents
+    local differences=(`echo ${expectedContent[@]} ${testedContent[@]} | tr ' ' '\n' | sort | uniq -u`) # https://stackoverflow.com/questions/2312762/compare-difference-of-two-arrays-in-bash
+    if [ "${#differences[@]}" -ne "0" ]; then
+        errorMessage="${errorMessage}Expected :${lineDelimiter}${expectedContent[*]}${lineDelimiter}Got :${lineDelimiter}${testedContent[*]}${lineDelimiter}Differences :${lineDelimiter}${differences[*]}${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}" 
     else
         return 0
     fi
 }
 
-fi # ASSERTSTRINGS_SH
+fi # ASSERT_FOLDERS_SH
 
 #  ______________________________ 
 # |                              |

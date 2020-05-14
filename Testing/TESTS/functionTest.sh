@@ -2,8 +2,8 @@
 
 # @file functionTest.sh
 # @author SignC0dingDw@rf
-# @version 2.2
-# @date 01 February 2020
+# @version 2.3
+# @date 14 May 2020
 # @brief Unit testing of function.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -94,7 +94,7 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 testFunctionExists()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.2"
+    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.3"
 
     ### Test before function exists
     FunctionExists DummyFunction
@@ -137,7 +137,7 @@ testFunctionExists()
 testNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.2"
+    testScriptInclusion "${SCRIPT_LOCATION}/../function.sh" "1.3"
 
     ## Test command
     FunctionExists 

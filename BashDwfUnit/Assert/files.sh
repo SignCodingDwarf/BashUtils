@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# @file assertNumbers.sh
+# @file files.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 23 February 2020
-# @brief Definition of a set of macros used to directly compare numbers.
+# @version 1.1
+# @date 14 May 2020
+# @brief Definition of a set of macros used to check files content.
 
 ###
 # MIT License
@@ -68,32 +68,37 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${ASSERTNUMBERS_SH} ]; then
+if [ -z ${ASSERT_FILES_SH} ]; then
 
 ### Inclusions
-SCRIPT_LOCATION_PRINT_ASSERTNUMBERS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_ASSERTNUMBERS_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTNUMBERS_SH}/assertUtils.sh"
+SCRIPT_LOCATION_PRINT_ASSERT_FILES_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_FILES_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_FILES_SH}/assertUtils.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_FILES_SH}/../../Testing/files.sh"
 
-ASSERTNUMBERS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTNUMBERS_SH=""
+ASSERT_FILES_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERT_FILES_SH=""
 
 ##!
-# @brief Checks that a number is equal to an expected value
-# @param 1 : Expected number value
-# @param 2 : Tested number value
-# @param 3 : Error Message Header. Default is "Provided numbers are not equal"
-# @return 0 if numbers are identical, exit 1 otherwise
+# @brief Checks that a file is identical to a reference
+# @param 1 : Expected file content
+# @param 2 : Tested file content
+# @param 3 : Error Message Header. Default is "Files are not identical"
+# @return 0 if files are identical, exit 1 otherwise
 #
-# Compare two numbers using -eq test.
+# Compare two files and check their content is equal byte by byte.
+# If tested and/or compared file names are empty, this triggers an error. 
 # Returns the following error message :
 # @param_3
-# Expected : @param_1
-# Got : @param_2
+# Expected : 
+# @param_1 content
+#
+# Got : 
+# @param_2 content
 #
 # Error message header (@param_3) can be multiline provided you insert \n characters in string
 #
 ##
-ASSERT_NUMBER_IS_EQUAL()
+ASSERT_FILES_ARE_IDENTICAL()
 {
     local expected="$1"
     local tested="$2"
@@ -101,69 +106,35 @@ ASSERT_NUMBER_IS_EQUAL()
     local errorMessage=""
 
     if [ -z "${expected}" -o -z "${tested}" ]; then # If at least a value to compare is empty, error
-        errorMessage="Problem on provided arguments. Usage:${lineDelimiter}ASSERT_NUMBER_IS_EQUAL <expected_nb> <tested_nb> [Message Header]${lineDelimiter}"
+        errorMessage="Problem on provided arguments. Usage:${lineDelimiter}ASSERT_FILES_ARE_IDENTICAL <expected_file> <tested_file> [Message Header]${lineDelimiter}"
         EndTestOnFailure "${errorMessage}"
     fi
 
     if [ -z "${messageHeader}" ]; then
-        messageHeader="Provided numbers are not equal\n"
+        messageHeader="Files are not identical\n"
     fi
     errorMessage=$(AddSuffix "${messageHeader}" "${lineDelimiter}") ## Add delimiter in the end of line
 
-    [ "${expected}" -eq "${tested}" ] 2> /dev/null # Test condition
+    areFilesIdentical "${expected}" "${tested}" 2> /dev/null # Test condition
+    local areIdentical="$?"
     # Check error
-    if [ "$?" -ne "0" ]; then
-        errorMessage="${errorMessage}Expected : ${expected}${lineDelimiter}Got : ${tested}${lineDelimiter}"
+    if [ "${areIdentical}" -eq "1" ]; then
+        local expectedContent=$(cat "${expected}")
+        local testedContent=$(cat "${tested}")
+        errorMessage="${errorMessage}Expected :${lineDelimiter}${expectedContent}${lineDelimiter}Got :${lineDelimiter}${testedContent}${lineDelimiter}"
+        EndTestOnFailure "${errorMessage}"
+    elif [ "${areIdentical}" -eq "2" ]; then
+        errorMessage="Expected argument ${expected} is not a file"
+        EndTestOnFailure "${errorMessage}"
+    elif [ "${areIdentical}" -eq "3" ]; then
+        errorMessage="Tested argument ${tested} is not a file"
         EndTestOnFailure "${errorMessage}"
     else
         return 0
     fi
 }
 
-##!
-# @brief Checks that a number is not equal to an expected value
-# @param 1 : Expected number value
-# @param 2 : Tested number value
-# @param 3 : Error Message Header. Default is "Provided numbers are equal"
-# @return 0 if numbers are identical, exit 1 otherwise
-#
-# Compare two numbers using -ne test.
-# Returns the following error message :
-# @param_3
-# Expected : @param_1
-# Got : @param_2
-#
-# Error message header (@param_3) can be multiline provided you insert \n characters in string
-#
-##
-ASSERT_NUMBER_IS_NOT_EQUAL()
-{
-    local expected="$1"
-    local tested="$2"
-    local messageHeader="$3"
-    local errorMessage=""
-
-    if [ -z "${expected}" -o -z "${tested}" ]; then # If at least a value to compare is empty, error
-        errorMessage="Problem on provided arguments. Usage:${lineDelimiter}ASSERT_NUMBER_IS_NOT_EQUAL <expected_nb> <tested_nb> [Message Header]${lineDelimiter}"
-        EndTestOnFailure "${errorMessage}"
-    fi
-
-    if [ -z "${messageHeader}" ]; then
-        messageHeader="Provided numbers are equal\n"
-    fi
-    errorMessage=$(AddSuffix "${messageHeader}" "${lineDelimiter}") ## Add delimiter in the end of line
-
-    [ "${expected}" -ne "${tested}" ] 2> /dev/null # Test condition
-    # Check error
-    if [ "$?" -ne "0" ]; then
-        errorMessage="${errorMessage}Expected : ${expected}${lineDelimiter}Got : ${tested}${lineDelimiter}"
-        EndTestOnFailure "${errorMessage}"
-    else
-        return 0
-    fi
-}
-
-fi # ASSERTNUMBERS_SH
+fi # ASSERT_FILES_SH
 
 #  ______________________________ 
 # |                              |

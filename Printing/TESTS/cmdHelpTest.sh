@@ -2,8 +2,8 @@
 
 # @file cmdHelpTest.sh
 # @author SignC0dingDw@rf
-# @version 1.3
-# @date 26 March 2020
+# @version 1.4
+# @date 14 May 2020
 # @brief Unit testing of cmdHelp.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -105,7 +105,7 @@ Cleanup()
 testUsageFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     testFormat "\033[1;34m" "${usageFormat}"
     return 0    
@@ -119,7 +119,7 @@ testUsageFormat()
 testDescriptionFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     testFormat "\033[1;31m" "${descriptionFormat}"
     return 0    
@@ -133,7 +133,7 @@ testDescriptionFormat()
 testHelpOptionsFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     testFormat "\033[1;32m" "${helpOptionsFormat}"
     return 0    
@@ -147,7 +147,7 @@ testHelpOptionsFormat()
 testHelpCategoryFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     testFormat "\033[1;33m" "${helpCategoryFormat}"
     return 0    
@@ -161,7 +161,7 @@ testHelpCategoryFormat()
 TestPrintUsageArguments()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     PrintUsage "dummyCmd" "<options>" "[arg1]" "[arg2]" "[arg3]" > /tmp/barOutput
     printf "Usage \n" > /tmp/barRef
@@ -177,7 +177,7 @@ TestPrintUsageArguments()
 TestPrintUsageNoArgument()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     PrintUsage "simpleCmd" > /tmp/barOutput
     printf "Usage \n" > /tmp/barRef
@@ -193,7 +193,7 @@ TestPrintUsageNoArgument()
 TestPrintDescription()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     PrintDescription "Description of a command" > /tmp/barOutput
     printf "Description of a command\n" > /tmp/barRef
@@ -210,7 +210,7 @@ TestPrintDescription()
 TestPrintOptionCategory()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     PrintOptionCategory "A category of options" > /tmp/barOutput
     printf "%s\n" "----- A category of options -----" > /tmp/barRef
@@ -227,7 +227,7 @@ TestPrintOptionCategory()
 TestIsLongOptionValid()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     IsLongOption "--longOpt"
     local is_long_option=$?
@@ -244,7 +244,7 @@ TestIsLongOptionValid()
 TestIsLongOptionInvalid()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     IsLongOption "-shortOpt"
     local is_long_option=$?
@@ -285,7 +285,7 @@ TestIsLongOptionInvalid()
 TestIsShortOptionValid()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     IsShortOption "-a"
     local is_short_option=$?
@@ -306,7 +306,7 @@ TestIsShortOptionValid()
 TestIsShortOptionInvalid()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     IsShortOption "--longOpt"
     local is_short_option=$?
@@ -347,7 +347,7 @@ TestIsShortOptionInvalid()
 TestPrintOptionValidCases()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     PrintOption "-v" "--verbose" "set verbosity" > /tmp/barOutput
     local print_result=$?
@@ -396,7 +396,7 @@ TestPrintOptionValidCases()
 TestPrintOptionNoOption()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     PrintOption "no option" "present" > /tmp/barOutput
     local print_result=$?
@@ -421,7 +421,7 @@ TestPrintOptionNoOption()
 TestPrintOptionDuplication()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.1"
+    testScriptInclusion "${SCRIPT_LOCATION}/../cmdHelp.sh" "1.2"
 
     PrintOption "-v" "-w" "twice a short option" > /tmp/barOutput
     local print_result=$?

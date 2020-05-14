@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# file :  assertInclusionsTest.sh
+# file :  inclusionsTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 19 March 2020
-# Unit testing of assertInclusions.sh file.
+# version : 1.1
+# date : 14 May 2020
+# Unit testing of inclusions.sh file.
 
 ### Exit Code
 #
@@ -95,7 +95,7 @@ Setup()
 
     touch /tmp/barFailingScript.sh
     echo "#!/bin/bash" > /tmp/barFailingScript.sh
-    echo "BARFAILINGSCRIPT_SH=12.3" >> /tmp/barFailingScript.sh
+    echo "TMP_BARFAILINGSCRIPT_SH=12.3" >> /tmp/barFailingScript.sh
     echo "ErrorFunction()" >> /tmp/barFailingScript.sh
     echo "{" >> /tmp/barFailingScript.sh
     echo "return 27" >> /tmp/barFailingScript.sh
@@ -104,7 +104,10 @@ Setup()
 
     touch /tmp/barSuccessScript.sh
     echo "#!/bin/bash" > /tmp/barSuccessScript.sh
-    echo "BARSUCCESSSCRIPT_SH=75.4" >> /tmp/barSuccessScript.sh    
+    echo "TMP_BARSUCCESSSCRIPT_SH=75.4" >> /tmp/barSuccessScript.sh    
+    
+    mkdir -p /tmp/bar/foo
+    touch /tmp/bar/foo/someBashScript.sh
 
     return 0    
 }
@@ -132,7 +135,7 @@ Cleanup()
 testToInclusionVariableNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     local inclusionVariable="Default"
@@ -154,7 +157,7 @@ testToInclusionVariableNoArg()
 testToInclusionVariableEmptyArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     local inclusionVariable="Default"
@@ -176,15 +179,15 @@ testToInclusionVariableEmptyArg()
 testToInclusionVariableNominalCase()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     local inclusionVariable="Default"
-    inclusionVariable=$(filePathToInclusionVariable "../../someBashScript.sh" 2> /tmp/barError)
+    inclusionVariable=$(filePathToInclusionVariable "/tmp/bar/foo/../someBashScript.sh" 2> /tmp/barError)
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
 
-    endTestIfAssertFails "\"${inclusionVariable}\" = \"SOMEBASHSCRIPT_SH\" " "Inclusion variable name should be SOMEBASHSCRIPT_SH but has value ${inclusionVariable}"
+    endTestIfAssertFails "\"${inclusionVariable}\" = \"BAR_SOMEBASHSCRIPT_SH\" " "Inclusion variable name should be SOMEBASHSCRIPT_SH but has value ${inclusionVariable}"
 
     printf "" > /tmp/barErrorRef 
     TestWrittenText /tmp/barError /tmp/barErrorRef
@@ -198,7 +201,7 @@ testToInclusionVariableNominalCase()
 testToInclusionVariableNoExtension()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     local inclusionVariable="Default"
@@ -206,7 +209,7 @@ testToInclusionVariableNoExtension()
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
 
-    endTestIfAssertFails "\"${inclusionVariable}\" = \"ANEXAMPLEOFEXECUTABLE\" " "Inclusion variable name should be ANEXAMPLEOFEXECUTABLE but has value ${inclusionVariable}"
+    endTestIfAssertFails "\"${inclusionVariable}\" = \"TMP_ANEXAMPLEOFEXECUTABLE\" " "Inclusion variable name should be ANEXAMPLEOFEXECUTABLE but has value ${inclusionVariable}"
 
     printf "" > /tmp/barErrorRef 
     TestWrittenText /tmp/barError /tmp/barErrorRef
@@ -220,7 +223,7 @@ testToInclusionVariableNoExtension()
 testToInclusionVariableSpecialCharacters()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     local inclusionVariable="Default"
@@ -228,7 +231,7 @@ testToInclusionVariableSpecialCharacters()
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
 
-    endTestIfAssertFails "\"${inclusionVariable}\" = \"A_FILE_NAME_1_0_SH\" " "Inclusion variable name should be A_FILE_NAME_1_0_SH but has value ${inclusionVariable}"
+    endTestIfAssertFails "\"${inclusionVariable}\" = \"TMP_A_FILE_NAME_1_0_SH\" " "Inclusion variable name should be A_FILE_NAME_1_0_SH but has value ${inclusionVariable}"
 
     printf "" > /tmp/barErrorRef 
     TestWrittenText /tmp/barError /tmp/barErrorRef
@@ -242,7 +245,7 @@ testToInclusionVariableSpecialCharacters()
 testToInclusionVariableFolderEnding()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     local inclusionVariable="Default"
@@ -264,7 +267,7 @@ testToInclusionVariableFolderEnding()
 testNotIncludedNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_NOT_INCLUDED > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -287,7 +290,7 @@ testNotIncludedNoArg()
 testNotIncludedEmptyArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_NOT_INCLUDED "" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -310,7 +313,7 @@ testNotIncludedEmptyArg()
 testNotIncludedNotAFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_NOT_INCLUDED "NotAFile.sh" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -332,7 +335,7 @@ testNotIncludedNotAFile()
 testNotIncludedOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_NOT_INCLUDED "/tmp/barTestFile.sh" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -354,16 +357,16 @@ testNotIncludedOK()
 testNotIncludedKO()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
-    local BARTESTFILE_SH="I should be empty"
+    local TMP_BARTESTFILE_SH="I should be empty"
     (ASSERT_FILE_NOT_INCLUDED "/tmp/barTestFile.sh" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
     printf "[Assertion Failure] : File /tmp/barTestFile.sh is already included.\n" > /tmp/barRef
-    printf "[Assertion Failure] : Inclusion control variable BARTESTFILE_SH has value I should be empty\n" >> /tmp/barRef
+    printf "[Assertion Failure] : Inclusion control variable TMP_BARTESTFILE_SH has value I should be empty\n" >> /tmp/barRef
     TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
@@ -378,7 +381,7 @@ testNotIncludedKO()
 testIncludedNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_INCLUDED > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -401,7 +404,7 @@ testIncludedNoArg()
 testIncludedEmptyArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_INCLUDED "" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -424,7 +427,7 @@ testIncludedEmptyArg()
 testIncludedNotAFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_INCLUDED "NotAFile.sh" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -446,10 +449,10 @@ testIncludedNotAFile()
 testIncludedOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
-    local BARTESTFILE_SH="I am included"
+    local TMP_BARTESTFILE_SH="I am included"
     (ASSERT_FILE_INCLUDED "/tmp/barTestFile.sh" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
@@ -469,7 +472,7 @@ testIncludedOK()
 testIncludedKO()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_INCLUDED "/tmp/barTestFile.sh" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -491,7 +494,7 @@ testIncludedKO()
 testIncludedVersionNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_INCLUDED_WITH_VERSION > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -514,7 +517,7 @@ testIncludedVersionNoArg()
 testIncludedVersionMissingArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_INCLUDED_WITH_VERSION "../notAFile/" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -537,7 +540,7 @@ testIncludedVersionMissingArg()
 testIncludedVersionEmptyArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_INCLUDED_WITH_VERSION "" "2.3" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -560,7 +563,7 @@ testIncludedVersionEmptyArg()
 testIncludedVersionNotAFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_INCLUDED_WITH_VERSION "./thisIsNotAFile" "2.3" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -582,10 +585,10 @@ testIncludedVersionNotAFile()
 testIncludedVersionOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
-    local BARTESTFILE_SH="42.666"
+    local TMP_BARTESTFILE_SH="42.666"
     (ASSERT_FILE_INCLUDED_WITH_VERSION "/tmp/barTestFile.sh" "42.666" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
@@ -605,10 +608,10 @@ testIncludedVersionOK()
 testIncludedVersionKO()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
-    local BARTESTFILE_SH="121"
+    local TMP_BARTESTFILE_SH="121"
     (ASSERT_FILE_INCLUDED_WITH_VERSION "/tmp/barTestFile.sh" "21" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
@@ -630,7 +633,7 @@ testIncludedVersionKO()
 testIncludedVersionKONotIncluded()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (ASSERT_FILE_INCLUDED_WITH_VERSION "/tmp/barTestFile.sh" "42.666" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -654,7 +657,7 @@ testIncludedVersionKONotIncluded()
 testAssertVersionNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (INCLUDE_AND_ASSERT_VERSION > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -677,7 +680,7 @@ testAssertVersionNoArg()
 testAssertVersionMissingArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (INCLUDE_AND_ASSERT_VERSION "../notAFile/" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -700,7 +703,7 @@ testAssertVersionMissingArg()
 testAssertVersionEmptyArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (INCLUDE_AND_ASSERT_VERSION "" "" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -723,7 +726,7 @@ testAssertVersionEmptyArg()
 testAssertVersionNotAFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (INCLUDE_AND_ASSERT_VERSION "./thisIsNotAFile" "2.3" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -745,16 +748,16 @@ testAssertVersionNotAFile()
 testAssertVersionAlreadyIncluded()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
-    local BARTESTFILE_SH="42.666"
+    local TMP_BARTESTFILE_SH="42.666"
     (INCLUDE_AND_ASSERT_VERSION "/tmp/barTestFile.sh" "21" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
     printf "[Assertion Failure] : File /tmp/barTestFile.sh is already included.\n" > /tmp/barRef
-    printf "[Assertion Failure] : Inclusion control variable BARTESTFILE_SH has value 42.666\n" >> /tmp/barRef
+    printf "[Assertion Failure] : Inclusion control variable TMP_BARTESTFILE_SH has value 42.666\n" >> /tmp/barRef
     TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
@@ -769,7 +772,7 @@ testAssertVersionAlreadyIncluded()
 testAssertVersionNotAScript()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (INCLUDE_AND_ASSERT_VERSION "/tmp/barNoScript.txt" "666" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -791,7 +794,7 @@ testAssertVersionNotAScript()
 testAssertVersionScriptFailure()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (INCLUDE_AND_ASSERT_VERSION "/tmp/barFailingScript.sh" "33" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -813,7 +816,7 @@ testAssertVersionScriptFailure()
 testAssertVersionInclusionWrongVersion()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (INCLUDE_AND_ASSERT_VERSION "/tmp/barSuccessScript.sh" "121" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
@@ -837,7 +840,7 @@ testAssertVersionInclusionWrongVersion()
 testAssertVersionOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertInclusions.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../inclusions.sh" "1.1"
 
     ### Execute Command
     (INCLUDE_AND_ASSERT_VERSION "/tmp/barSuccessScript.sh" "75.4" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code

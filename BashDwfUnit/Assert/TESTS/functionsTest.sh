@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# file :  assertStringsTest.sh
+# file :  functionsTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 18 March 2020
-# Unit testing of assertStrings.sh file.
+# version : 1.1
+# date : 14 May 2020
+# Unit testing of functions.sh file.
 
 ### Exit Code
 #
@@ -88,6 +88,15 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 ################################################################################
 Setup()
 {
+    testFunction()
+    {
+        return 42
+    }
+    testFunction2()
+    {
+        return 69
+    }
+
     return 0    
 }
 
@@ -107,22 +116,23 @@ Cleanup()
 ###                                                                          ###
 ################################################################################
 ##!
-# @brief Check ASSERT_STRING_IS_EQUAL behavior with no arguments provided
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_RETURN_CODE_VALUE behavior with no arguments provided
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertStringEqualityNoArg()
+testAssertReturnEqualityNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertStrings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../functions.sh" "1.1"
 
     ### Execute Command
-    (ASSERT_STRING_IS_EQUAL > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    testFunction # Call test function just before calling test
+    (ASSERT_RETURN_CODE_VALUE > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
     printf "[Assertion Failure] : Problem on provided arguments. Usage:\n" > /tmp/barRef
-    printf "[Assertion Failure] : ASSERT_STRING_IS_EQUAL <expected_string> <tested_string> [Message Header]\n" >> /tmp/barRef
+    printf "[Assertion Failure] : ASSERT_RETURN_CODE_VALUE <expected_code> [Message Header]\n" >> /tmp/barRef
     TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
@@ -130,40 +140,18 @@ testAssertStringEqualityNoArg()
 }
 
 ##!
-# @brief Check ASSERT_STRING_IS_EQUAL behavior with missing argument
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_RETURN_CODE_VALUE behavior with return code equal to expected code
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertStringEqualityMissingArg()
+testAssertReturnEqualityOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertStrings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../functions.sh" "1.1"
 
     ### Execute Command
-    (ASSERT_STRING_IS_EQUAL "Reference" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
-    local test_result=$?
-    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
-
-    printf "[Assertion Failure] : Problem on provided arguments. Usage:\n" > /tmp/barRef
-    printf "[Assertion Failure] : ASSERT_STRING_IS_EQUAL <expected_string> <tested_string> [Message Header]\n" >> /tmp/barRef
-    TestWrittenText /tmp/barOutput /tmp/barRef 
-
-    printf "" > /tmp/barErrorRef 
-    TestWrittenText /tmp/barError /tmp/barErrorRef
-}
-
-##!
-# @brief Check ASSERT_STRING_IS_EQUAL behavior with tested string equal to expected string
-# @String 0 if behavior is as expected, exit 1 otherwise
-#
-##
-testAssertStringEqualityOK()
-{
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertStrings.sh" "1.0"
-
-    ### Execute Command
-    (ASSERT_STRING_IS_EQUAL "AString" "AString" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    testFunction # Call test function just before calling test
+    (ASSERT_RETURN_CODE_VALUE 42 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
 
@@ -175,17 +163,18 @@ testAssertStringEqualityOK()
 }
 
 ##!
-# @brief Check ASSERT_STRING_IS_EQUAL behavior with tested string equal to expected string and changed error header
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_RETURN_CODE_VALUE behavior with return code equal to expected code and changed error header
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertStringEqualityOKHeader()
+testAssertReturnEqualityOKHeader()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertStrings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../functions.sh" "1.1"
 
     ### Execute Command
-    (ASSERT_STRING_IS_EQUAL "AString" "AString" "A comparison of strings" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    testFunction2 # Call test function just before calling test
+    (ASSERT_RETURN_CODE_VALUE 69 "This message will not be printed" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
 
@@ -197,23 +186,24 @@ testAssertStringEqualityOKHeader()
 }
 
 ##!
-# @brief Check ASSERT_STRING_IS_EQUAL behavior with tested string not equal to expected string
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_RETURN_CODE_VALUE behavior with return code different than expected code
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertStringEqualityKO()
+testAssertReturnEqualityKO()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertStrings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../functions.sh" "1.1"
 
     ### Execute Command
-    (ASSERT_STRING_IS_EQUAL "AString" "AnotherText" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    testFunction2 # Call test function just before calling test
+    (ASSERT_RETURN_CODE_VALUE 42 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
-    printf "[Assertion Failure] : Provided strings are not identical\n" > /tmp/barRef
-    printf "[Assertion Failure] : Expected : AString\n" >> /tmp/barRef 
-    printf "[Assertion Failure] : Got : AnotherText\n" >> /tmp/barRef 
+    printf "[Assertion Failure] : Function does not have expected return code\n" > /tmp/barRef
+    printf "[Assertion Failure] : Expected : 42\n" >> /tmp/barRef 
+    printf "[Assertion Failure] : Got : 69\n" >> /tmp/barRef 
     TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
@@ -221,23 +211,25 @@ testAssertStringEqualityKO()
 }
 
 ##!
-# @brief Check ASSERT_STRING_IS_EQUAL behavior with tested string not equal to expected string and changed error header
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_RETURN_CODE_VALUE behavior with return code different than expected code and changed error header
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertStringEqualityKOHeader()
+testAssertReturnEqualityKOHeader()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertStrings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../functions.sh" "1.1"
 
     ### Execute Command
-    (ASSERT_STRING_IS_EQUAL "MySpeech" "TheTextIRead" "\n" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    testFunction # Call test function just before calling test
+    (ASSERT_RETURN_CODE_VALUE 69 "Call of the Wild failed\n\n" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
-    printf "[Assertion Failure] : \n" > /tmp/barRef 
-    printf "[Assertion Failure] : Expected : MySpeech\n" >> /tmp/barRef 
-    printf "[Assertion Failure] : Got : TheTextIRead\n" >> /tmp/barRef 
+    printf "[Assertion Failure] : Call of the Wild failed\n" > /tmp/barRef
+    printf "[Assertion Failure] : \n" >> /tmp/barRef 
+    printf "[Assertion Failure] : Expected : 69\n" >> /tmp/barRef 
+    printf "[Assertion Failure] : Got : 42\n" >> /tmp/barRef 
     TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
@@ -245,70 +237,24 @@ testAssertStringEqualityKOHeader()
 }
 
 ##!
-# @brief Check ASSERT_STRING_IS_EQUAL behavior with arguments being empty strings
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_RETURN_CODE_VALUE behavior with argument not being a number
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertStringEqualityEmptyString()
+testAssertReturnEqualityNotANumber()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertStrings.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../functions.sh" "1.1"
 
     ### Execute Command
-    (ASSERT_STRING_IS_EQUAL "" "" "NotWorkingOnEmptyStrings" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    echo "Toto" # Call test function just before calling test
+    (ASSERT_RETURN_CODE_VALUE "NotANumber" "You should have sent a number" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
-    printf "[Assertion Failure] : Problem on provided arguments. Usage:\n" > /tmp/barRef
-    printf "[Assertion Failure] : ASSERT_STRING_IS_EQUAL <expected_string> <tested_string> [Message Header]\n" >> /tmp/barRef
-    TestWrittenText /tmp/barOutput /tmp/barRef 
-
-    printf "" > /tmp/barErrorRef 
-    TestWrittenText /tmp/barError /tmp/barErrorRef
-}
-
-##!
-# @brief Check ASSERT_STRING_IS_EQUAL behavior with tested string being a part of reference string
-# @String 0 if behavior is as expected, exit 1 otherwise
-#
-##
-testAssertStringEqualityTestedPartOfReference()
-{
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertStrings.sh" "1.0"
-
-    ### Execute Command
-    (ASSERT_STRING_IS_EQUAL "A very long string" "ery" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
-    local test_result=$?
-    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
-
-    printf "[Assertion Failure] : Provided strings are not identical\n" > /tmp/barRef
-    printf "[Assertion Failure] : Expected : A very long string\n" >> /tmp/barRef 
-    printf "[Assertion Failure] : Got : ery\n" >> /tmp/barRef 
-    TestWrittenText /tmp/barOutput /tmp/barRef 
-
-    printf "" > /tmp/barErrorRef 
-    TestWrittenText /tmp/barError /tmp/barErrorRef
-}
-
-##!
-# @brief Check ASSERT_STRING_IS_EQUAL behavior with reference string being a part of tested string
-# @String 0 if behavior is as expected, exit 1 otherwise
-#
-##
-testAssertStringEqualityReferencePartOfTested()
-{
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertStrings.sh" "1.0"
-
-    ### Execute Command
-    (ASSERT_STRING_IS_EQUAL "eTe" "SomeText" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
-    local test_result=$?
-    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
-
-    printf "[Assertion Failure] : Provided strings are not identical\n" > /tmp/barRef
-    printf "[Assertion Failure] : Expected : eTe\n" >> /tmp/barRef 
-    printf "[Assertion Failure] : Got : SomeText\n" >> /tmp/barRef 
+    printf "[Assertion Failure] : You should have sent a number\n" > /tmp/barRef
+    printf "[Assertion Failure] : Expected : NotANumber\n" >> /tmp/barRef 
+    printf "[Assertion Failure] : Got : 0\n" >> /tmp/barRef 
     TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
@@ -321,16 +267,13 @@ testAssertStringEqualityReferencePartOfTested()
 ###                                                                          ###
 ################################################################################
 ### Do Tests
-# ASSERT_STRING_IS_EQUAL
-doTest testAssertStringEqualityNoArg
-doTest testAssertStringEqualityMissingArg
-doTest testAssertStringEqualityOK
-doTest testAssertStringEqualityOKHeader
-doTest testAssertStringEqualityKO
-doTest testAssertStringEqualityKOHeader
-doTest testAssertStringEqualityEmptyString
-doTest testAssertStringEqualityTestedPartOfReference
-doTest testAssertStringEqualityReferencePartOfTested
+# ASSERT_RETURN_CODE_VALUE
+doTest testAssertReturnEqualityNoArg
+doTest testAssertReturnEqualityOK
+doTest testAssertReturnEqualityOKHeader
+doTest testAssertReturnEqualityKO
+doTest testAssertReturnEqualityKOHeader
+doTest testAssertReturnEqualityNotANumber
 
 ### Tests result
 displaySuiteResults

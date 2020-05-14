@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# @file assertFunctions.sh
+# @file functions.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 18 March 2020
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of a set of macros used to perform verifications on functions.
 
 ###
@@ -68,14 +68,14 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${ASSERTFUNCTIONS_SH} ]; then
+if [ -z ${ASSERT_FUNCTIONS_SH} ]; then
 
 ### Inclusions
-SCRIPT_LOCATION_PRINT_ASSERTFUNCTIONS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_PRINT_ASSERTFUNCTIONS_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_PRINT_ASSERTFUNCTIONS_SH}/assertUtils.sh"
+SCRIPT_LOCATION_PRINT_ASSERT_FUNCTIONS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_FUNCTIONS_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINT_ASSERT_FUNCTIONS_SH}/assertUtils.sh"
 
-ASSERTFUNCTIONS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERTFUNCTIONS_SH=""
+ASSERT_FUNCTIONS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ASSERT_FUNCTIONS_SH=""
 
 ##!
 # @brief Checks that the return code of a function has expected value
@@ -119,7 +119,7 @@ ASSERT_RETURN_CODE_VALUE()
     fi
 }
 
-fi # ASSERTFUNCTIONS_SH
+fi # ASSERT_FUNCTIONS_SH
 
 #  ______________________________ 
 # |                              |

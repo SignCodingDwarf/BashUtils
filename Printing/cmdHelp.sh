@@ -2,8 +2,8 @@
 
 # @file cmdHelp.sh
 # @author SignC0dingDw@rf
-# @version 1.1
-# @date 26 March 2020
+# @version 1.2
+# @date 14 May 2020
 # @brief Definition of formats and functions used to display help and usage of commands
 
 ###
@@ -68,14 +68,14 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${CMDHELP_SH} ]; then
+if [ -z ${PRINTING_CMDHELP_SH} ]; then
 
 ### Include printUtils.sh
-SCRIPT_LOCATION_CMDHELP_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_CMDHELP_SH}/../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_CMDHELP_SH}/debug.sh"
+SCRIPT_LOCATION_PRINTING_CMDHELP_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_PRINTING_CMDHELP_SH}/../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_PRINTING_CMDHELP_SH}/debug.sh"
 
-CMDHELP_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using CMDHELP_SH=""
+PRINTING_CMDHELP_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using PRINTING_CMDHELP_SH=""
 
 ### Format
 # Usage
@@ -244,7 +244,7 @@ PrintOption()
     fi
 }
 
-fi # CMDHELP_SH
+fi # PRINTING_CMDHELP_SH
 
 #  ______________________________ 
 # |                              |

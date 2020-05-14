@@ -2,14 +2,14 @@
 
 # @file arrays.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 25 November 2019
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of utilitaries to query information on arrays and their content
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,14 +68,14 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${ARRAYS_SH} ]; then
+if [ -z ${TESTING_ARRAYS_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_ARRAYS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_ARRAYS_SH}/../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_ARRAYS_SH}/../Printing/debug.sh"
+SCRIPT_LOCATION_TESTING_ARRAYS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_TESTING_ARRAYS_SH}/../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_TESTING_ARRAYS_SH}/../Printing/debug.sh"
 
-ARRAYS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using ARRAYS_SH=""
+TESTING_ARRAYS_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTING_ARRAYS_SH=""
 
 ##!
 # @brief Check if an variable is an array
@@ -126,7 +126,7 @@ IsInArray()
     fi
 }
 
-fi # ARRAYS_SH
+fi # TESTING_ARRAYS_SH
 
 #  ______________________________ 
 # |                              |

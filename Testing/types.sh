@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# @file function.sh
+# @file types.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 16 November 2019
+# @version 1.1
+# @date 14 May 2020
 # @brief Definition of utilitaries and variables used to manage types.
 
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -68,13 +68,13 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${TYPES_SH} ]; then
+if [ -z ${TESTING_TYPES_SH} ]; then
 
 ### Include parseVersion.sh
-SCRIPT_LOCATION_TYPES_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_TYPES_SH}/../Parsing/parseVersion.sh"
+SCRIPT_LOCATION_TESTING_TYPES_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_TESTING_TYPES_SH}/../Parsing/parseVersion.sh"
 
-TYPES_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TYPES_SH=""
+TESTING_TYPES_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using TESTING_TYPES_SH=""
 
 ##!
 # @brief Check if a value is an unsigned integer
@@ -95,7 +95,7 @@ IsUnsignedInteger()
     
 }
 
-fi # TYPES_SH
+fi # TESTING_TYPES_SH
 
 #  ______________________________ 
 # |                              |

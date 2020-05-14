@@ -2,8 +2,8 @@
 
 # file :  declareEnvVarModifTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 12 January 2020
+# version : 1.1
+# date : 14 May 2020
 # Unit testing of declareEnvVarModif.sh file.
 
 ### Exit Code
@@ -136,7 +136,7 @@ Cleanup()
 TestDeclEnvVarsNoInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareEnvVarModif.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareEnvVarModif.sh" "1.1"
 
     ### Test command
     DeclEnvVars 2> /tmp/barErrorOutput
@@ -155,7 +155,7 @@ TestDeclEnvVarsNoInput()
 TestDeclEnvVarsNominalInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareEnvVarModif.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareEnvVarModif.sh" "1.1"
 
     ### Add a few variables
     DeclEnvVars "ENV_T2" "ENV_T6" > /tmp/barErrorOutput
@@ -199,7 +199,7 @@ TestDeclEnvVarsNominalInput()
 TestDeclModEnvVarNoInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareEnvVarModif.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareEnvVarModif.sh" "1.1"
 
     ### Test command
     DeclModEnvVar 2> /tmp/barErrorOutput
@@ -218,7 +218,7 @@ TestDeclModEnvVarNoInput()
 TestDeclModEnvVarNominalInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../declareEnvVarModif.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../declareEnvVarModif.sh" "1.1"
 
     ### First variable
     DeclModEnvVar "ENV_T3" "ValX" 2> /tmp/barErrorOutput

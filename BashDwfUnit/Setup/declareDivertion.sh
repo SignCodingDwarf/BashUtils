@@ -2,8 +2,8 @@
 
 # @file declareDivertion.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 26 January 2020
+# @version 1.1
+# @date 14 May 2020
 # Definition of functions used to divert directories and files and add them to the restauration list
 
 ###
@@ -68,13 +68,13 @@
 ###
 
 ### Protection against multiple inclusions
-if [ -z ${DECLAREDIVERTION_SH} ]; then
+if [ -z ${SETUP_DECLAREDIVERTION_SH} ]; then
 
-SCRIPT_LOCATION_DECLAREDIVERTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION_DECLAREDIVERTION_SH}/../../Parsing/parseVersion.sh"
-. "${SCRIPT_LOCATION_DECLAREDIVERTION_SH}/../../Printing/debug.sh"
+SCRIPT_LOCATION_SETUP_DECLAREDIVERTION_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+. "${SCRIPT_LOCATION_SETUP_DECLAREDIVERTION_SH}/../../Parsing/parseVersion.sh"
+. "${SCRIPT_LOCATION_SETUP_DECLAREDIVERTION_SH}/../../Printing/debug.sh"
 
-DECLAREDIVERTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using DECLAREDIVERTION_SH="""
+SETUP_DECLAREDIVERTION_SH=$(parseBashDoxygenVersion ${BASH_SOURCE}) # Reset using SETUP_DECLAREDIVERTION_SH="""
 
 ##!
 # @brief Divert elements by copying them
@@ -239,7 +239,7 @@ DivertReplaceElement()
     return 0
 }
 
-fi # DECLAREDIVERTION_SH
+fi # SETUP_DECLAREDIVERTION_SH
 
 #  ______________________________ 
 # |                              |

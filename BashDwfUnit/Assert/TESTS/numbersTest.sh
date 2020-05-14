@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# file :  assertFoldersTest.sh
+# file :  numbersTest.sh
 # author : SignC0dingDw@rf
-# version : 1.0
-# date : 21 March 2020
-# Unit testing of assertFolders.sh file.
+# version : 1.1
+# date : 14 May 2020
+# Unit testing of numbers.sh file.
 
 ### Exit Code
 #
@@ -88,14 +88,6 @@ SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd
 ################################################################################
 Setup()
 {
-    mkdir /tmp/foo
-    mkdir /tmp/foo/foo1
-    mkdir /tmp/foo/foo2
-    touch /tmp/foo/bar1
-    touch /tmp/foo/foo1/bar12
-    touch /tmp/foo/foo1/bar34
-    touch /tmp/foo/foo1/bar56
-    mkdir /tmp/foo/foo1/foo
     return 0    
 }
 
@@ -106,7 +98,6 @@ Setup()
 ################################################################################
 Cleanup()
 {
-    rm -rf /tmp/foo
     rm -rf /tmp/bar*
 }
 
@@ -116,22 +107,22 @@ Cleanup()
 ###                                                                          ###
 ################################################################################
 ##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with no arguments provided
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_NUMBER_IS_EQUAL behavior with no arguments provided
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertFolderContentNoArg()
+testAssertNumberEqualityNoArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
 
     ### Execute Command
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    (ASSERT_NUMBER_IS_EQUAL > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
     printf "[Assertion Failure] : Problem on provided arguments. Usage:\n" > /tmp/barRef
-    printf "[Assertion Failure] : ASSERT_FOLDER_HAS_EXPECTED_CONTENT <expected_content_name> <tested_folder> [Message Header]\n" >> /tmp/barRef
+    printf "[Assertion Failure] : ASSERT_NUMBER_IS_EQUAL <expected_nb> <tested_nb> [Message Header]\n" >> /tmp/barRef
     TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
@@ -139,22 +130,22 @@ testAssertFolderContentNoArg()
 }
 
 ##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with missing argument
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_NUMBER_IS_EQUAL behavior with only one argument provided
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertFolderContentMissingArg()
+testAssertNumberEqualityMissingArg()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
 
     ### Execute Command
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT "expectedContent" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    (ASSERT_NUMBER_IS_EQUAL 8 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
     printf "[Assertion Failure] : Problem on provided arguments. Usage:\n" > /tmp/barRef
-    printf "[Assertion Failure] : ASSERT_FOLDER_HAS_EXPECTED_CONTENT <expected_content_name> <tested_folder> [Message Header]\n" >> /tmp/barRef
+    printf "[Assertion Failure] : ASSERT_NUMBER_IS_EQUAL <expected_nb> <tested_nb> [Message Header]\n" >> /tmp/barRef
     TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
@@ -162,109 +153,17 @@ testAssertFolderContentMissingArg()
 }
 
 ##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with empty argument
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_NUMBER_IS_EQUAL behavior with equal arguments
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertFolderContentEmptyArg()
+testAssertNumberEqualityOK()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
 
     ### Execute Command
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT "" "/tmp/foo" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
-    local test_result=$?
-    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
-
-    printf "[Assertion Failure] : Problem on provided arguments. Usage:\n" > /tmp/barRef
-    printf "[Assertion Failure] : ASSERT_FOLDER_HAS_EXPECTED_CONTENT <expected_content_name> <tested_folder> [Message Header]\n" >> /tmp/barRef
-    TestWrittenText /tmp/barOutput /tmp/barRef 
-
-    printf "" > /tmp/barErrorRef 
-    TestWrittenText /tmp/barError /tmp/barErrorRef
-}
-
-##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with expected argument not being a variable
-# @String 0 if behavior is as expected, exit 1 otherwise
-#
-##
-testAssertFolderContentExpectedNotVariable()
-{
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
-
-    ### Execute Command
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT "NotAVariable" "/tmp/foo" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
-    local test_result=$?
-    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
-
-    printf "[Assertion Failure] : NotAVariable is not the name of an array.\n" > /tmp/barRef
-    TestWrittenText /tmp/barOutput /tmp/barRef 
-
-    printf "" > /tmp/barErrorRef 
-    TestWrittenText /tmp/barError /tmp/barErrorRef
-}
-
-##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with expected argument not being an array
-# @String 0 if behavior is as expected, exit 1 otherwise
-#
-##
-testAssertFolderContentExpectedNotArray()
-{
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
-
-    ### Execute Command
-    local someVariable="NotAnArray"
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT "someVariable" "/tmp/foo" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
-    local test_result=$?
-    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
-
-    printf "[Assertion Failure] : someVariable is not the name of an array.\n" > /tmp/barRef
-    TestWrittenText /tmp/barOutput /tmp/barRef 
-
-    printf "" > /tmp/barErrorRef 
-    TestWrittenText /tmp/barError /tmp/barErrorRef
-}
-
-##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with tested argument not being a folder
-# @String 0 if behavior is as expected, exit 1 otherwise
-#
-##
-testAssertFolderContentTestedNotFolder()
-{
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
-
-    ### Execute Command
-    local someVariable=("bar1" "foo1" "foo2")
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT "someVariable" "/tmp/foo/bar1" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
-    local test_result=$?
-    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
-
-    printf "[Assertion Failure] : /tmp/foo/bar1 is not a directory.\n" > /tmp/barRef
-    TestWrittenText /tmp/barOutput /tmp/barRef 
-
-    printf "" > /tmp/barErrorRef 
-    TestWrittenText /tmp/barError /tmp/barErrorRef
-}
-
-##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with folder and expected content matching
-# @String 0 if behavior is as expected, exit 1 otherwise
-#
-##
-testAssertFolderContentOK()
-{
-    ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
-
-    ### Execute Command
-    local someVariable=("bar1" "foo1" "foo2")
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT "someVariable" "/tmp/foo" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    (ASSERT_NUMBER_IS_EQUAL 42 42 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
 
@@ -276,18 +175,17 @@ testAssertFolderContentOK()
 }
 
 ##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with folder and expected content matching and modified header
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_NUMBER_IS_EQUAL behavior with equal arguments and changed error header
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertFolderContentOKHeader()
+testAssertNumberEqualityOKHeader()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
 
     ### Execute Command
-    local someVariable=("bar1" "foo1" "foo2")
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT "someVariable" "/tmp/foo" "Foo is a good directory" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    (ASSERT_NUMBER_IS_EQUAL 42 42 "Comparing numbers failed" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
 
@@ -299,28 +197,23 @@ testAssertFolderContentOKHeader()
 }
 
 ##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with folder and expected content not matching
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_NUMBER_IS_EQUAL behavior with different arguments
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertFolderContentKO()
+testAssertNumberEqualityKO()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
 
     ### Execute Command
-    local someVariable=("bar1" "foo1" "foo3")
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT "someVariable" "/tmp/foo" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    (ASSERT_NUMBER_IS_EQUAL 42 37 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
-    printf "[Assertion Failure] : Folder has not expected content\n" > /tmp/barRef
-    printf "[Assertion Failure] : Expected :\n" >> /tmp/barRef
-    printf "[Assertion Failure] : bar1 foo1 foo3\n" >> /tmp/barRef
-    printf "[Assertion Failure] : Got :\n" >> /tmp/barRef
-    printf "[Assertion Failure] : bar1 foo1 foo2 \n" >> /tmp/barRef
-    printf "[Assertion Failure] : Differences :\n" >> /tmp/barRef
-    printf "[Assertion Failure] : foo2 foo3\n" >> /tmp/barRef
+    printf "[Assertion Failure] : Provided numbers are not equal\n" > /tmp/barRef
+    printf "[Assertion Failure] : Expected : 42\n" >> /tmp/barRef
+    printf "[Assertion Failure] : Got : 37\n" >> /tmp/barRef
     TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
@@ -328,30 +221,210 @@ testAssertFolderContentKO()
 }
 
 ##!
-# @brief Check ASSERT_FOLDER_HAS_EXPECTED_CONTENT behavior with folder and expected content not matching and modified header
-# @String 0 if behavior is as expected, exit 1 otherwise
+# @brief Check ASSERT_NUMBER_IS_EQUAL behavior with different arguments and changed error header
+# @return 0 if behavior is as expected, exit 1 otherwise
 #
 ##
-testAssertFolderContentKOHeader()
+testAssertNumberEqualityKOHeader()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../assertFolders.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
 
     ### Execute Command
-    local someVariable=("bar12" "foo")
-    (ASSERT_FOLDER_HAS_EXPECTED_CONTENT "someVariable" "/tmp/foo/foo1" "foo1 is not the folder I expected" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    (ASSERT_NUMBER_IS_EQUAL 5 27 "Sebastian Vettel racing number" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
     local test_result=$?
     endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
 
-    printf "[Assertion Failure] : foo1 is not the folder I expected\n" > /tmp/barRef
-    printf "[Assertion Failure] : Expected :\n" >> /tmp/barRef
-    printf "[Assertion Failure] : bar12 foo\n" >> /tmp/barRef
-    printf "[Assertion Failure] : Got :\n" >> /tmp/barRef
-    printf "[Assertion Failure] : bar12 bar34 bar56 foo \n" >> /tmp/barRef
-    printf "[Assertion Failure] : Differences :\n" >> /tmp/barRef
-    printf "[Assertion Failure] : bar34 bar56\n" >> /tmp/barRef
-#    diff -ay /tmp/barOutput /tmp/barRef 
-    TestWrittenText /tmp/barOutput /tmp/barRef     
+    printf "[Assertion Failure] : Sebastian Vettel racing number\n" > /tmp/barRef
+    printf "[Assertion Failure] : Expected : 5\n" >> /tmp/barRef
+    printf "[Assertion Failure] : Got : 27\n" >> /tmp/barRef
+    TestWrittenText /tmp/barOutput /tmp/barRef 
+
+    printf "" > /tmp/barErrorRef 
+    TestWrittenText /tmp/barError /tmp/barErrorRef
+}
+
+##!
+# @brief Check ASSERT_NUMBER_IS_EQUAL behavior with tested argument not a number
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+##
+testAssertNumberEqualityNotANumber()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
+
+    ### Execute Command
+    (ASSERT_NUMBER_IS_EQUAL 5 "five" "Not a number" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
+
+    printf "[Assertion Failure] : Not a number\n" > /tmp/barRef
+    printf "[Assertion Failure] : Expected : 5\n" >> /tmp/barRef
+    printf "[Assertion Failure] : Got : five\n" >> /tmp/barRef
+    TestWrittenText /tmp/barOutput /tmp/barRef 
+
+    printf "" > /tmp/barErrorRef 
+    TestWrittenText /tmp/barError /tmp/barErrorRef
+}
+
+##!
+# @brief Check ASSERT_NUMBER_IS_NOT_EQUAL behavior with no arguments provided
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+##
+testAssertNumberInequalityNoArg()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
+
+    ### Execute Command
+    (ASSERT_NUMBER_IS_NOT_EQUAL > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
+
+    printf "[Assertion Failure] : Problem on provided arguments. Usage:\n" > /tmp/barRef
+    printf "[Assertion Failure] : ASSERT_NUMBER_IS_NOT_EQUAL <expected_nb> <tested_nb> [Message Header]\n" >> /tmp/barRef
+    TestWrittenText /tmp/barOutput /tmp/barRef 
+
+    printf "" > /tmp/barErrorRef 
+    TestWrittenText /tmp/barError /tmp/barErrorRef
+}
+
+##!
+# @brief Check ASSERT_NUMBER_IS_NOT_EQUAL behavior with only one argument provided
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+##
+testAssertNumberInequalityMissingArg()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
+
+    ### Execute Command
+    (ASSERT_NUMBER_IS_NOT_EQUAL 8 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
+
+    printf "[Assertion Failure] : Problem on provided arguments. Usage:\n" > /tmp/barRef
+    printf "[Assertion Failure] : ASSERT_NUMBER_IS_NOT_EQUAL <expected_nb> <tested_nb> [Message Header]\n" >> /tmp/barRef
+    TestWrittenText /tmp/barOutput /tmp/barRef 
+
+    printf "" > /tmp/barErrorRef 
+    TestWrittenText /tmp/barError /tmp/barErrorRef
+}
+
+##!
+# @brief Check ASSERT_NUMBER_IS_NOT_EQUAL behavior with equal arguments
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+##
+testAssertNumberInequalityOK()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
+
+    ### Execute Command
+    (ASSERT_NUMBER_IS_NOT_EQUAL 21 18 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
+    printf "" > /tmp/barRef
+    TestWrittenText /tmp/barOutput /tmp/barRef 
+
+    printf "" > /tmp/barErrorRef 
+    TestWrittenText /tmp/barError /tmp/barErrorRef
+}
+
+##!
+# @brief Check ASSERT_NUMBER_IS_NOT_EQUAL behavior with equal arguments and changed error header
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+##
+testAssertNumberInequalityOKHeader()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
+
+    ### Execute Command
+    (ASSERT_NUMBER_IS_NOT_EQUAL 24 42 "Comparing numbers failed" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"0\" " "Expected function to exit with code 0 but exited with code ${test_result}"
+
+    printf "" > /tmp/barRef
+    TestWrittenText /tmp/barOutput /tmp/barRef 
+
+    printf "" > /tmp/barErrorRef 
+    TestWrittenText /tmp/barError /tmp/barErrorRef
+}
+
+##!
+# @brief Check ASSERT_NUMBER_IS_NOT_EQUAL behavior with different arguments
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+##
+testAssertNumberInequalityKO()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
+
+    ### Execute Command
+    (ASSERT_NUMBER_IS_NOT_EQUAL 42 42 > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
+
+    printf "[Assertion Failure] : Provided numbers are equal\n" > /tmp/barRef
+    printf "[Assertion Failure] : Expected : 42\n" >> /tmp/barRef
+    printf "[Assertion Failure] : Got : 42\n" >> /tmp/barRef
+    TestWrittenText /tmp/barOutput /tmp/barRef 
+
+    printf "" > /tmp/barErrorRef 
+    TestWrittenText /tmp/barError /tmp/barErrorRef
+}
+
+##!
+# @brief Check ASSERT_NUMBER_IS_NOT_EQUAL behavior with different arguments and changed error header
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+##
+testAssertNumberInequalityKOHeader()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
+
+    ### Execute Command
+    (ASSERT_NUMBER_IS_NOT_EQUAL 5 5 "Sebastian Vettel racing number" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
+
+    printf "[Assertion Failure] : Sebastian Vettel racing number\n" > /tmp/barRef
+    printf "[Assertion Failure] : Expected : 5\n" >> /tmp/barRef
+    printf "[Assertion Failure] : Got : 5\n" >> /tmp/barRef
+    TestWrittenText /tmp/barOutput /tmp/barRef 
+
+    printf "" > /tmp/barErrorRef 
+    TestWrittenText /tmp/barError /tmp/barErrorRef
+}
+
+##!
+# @brief Check ASSERT_NUMBER_IS_NOT_EQUAL behavior with tested argument not a number
+# @return 0 if behavior is as expected, exit 1 otherwise
+#
+##
+testAssertNumberInequalityNotANumber()
+{
+    ### Include tested script
+    testScriptInclusion "${SCRIPT_LOCATION}/../numbers.sh" "1.1"
+
+    ### Execute Command
+    (ASSERT_NUMBER_IS_NOT_EQUAL "hello" "hello" "Not a number" > /tmp/barOutput 2> /tmp/barError) # To avoid exiting test on return code
+    local test_result=$?
+    endTestIfAssertFails "\"${test_result}\" -eq \"1\" " "Expected function to exit with code 1 but exited with code ${test_result}"
+
+    printf "[Assertion Failure] : Not a number\n" > /tmp/barRef
+    printf "[Assertion Failure] : Expected : hello\n" >> /tmp/barRef
+    printf "[Assertion Failure] : Got : hello\n" >> /tmp/barRef
+    TestWrittenText /tmp/barOutput /tmp/barRef 
 
     printf "" > /tmp/barErrorRef 
     TestWrittenText /tmp/barError /tmp/barErrorRef
@@ -363,17 +436,23 @@ testAssertFolderContentKOHeader()
 ###                                                                          ###
 ################################################################################
 ### Do Tests
-# ASSERT_FOLDER_HAS_EXPECTED_CONTENT
-doTest testAssertFolderContentNoArg
-doTest testAssertFolderContentMissingArg
-doTest testAssertFolderContentEmptyArg
-doTest testAssertFolderContentExpectedNotVariable
-doTest testAssertFolderContentExpectedNotArray
-doTest testAssertFolderContentTestedNotFolder
-doTest testAssertFolderContentOK
-doTest testAssertFolderContentOKHeader
-doTest testAssertFolderContentKO
-doTest testAssertFolderContentKOHeader
+# ASSERT_NUMBER_IS_EQUAL
+doTest testAssertNumberEqualityNoArg
+doTest testAssertNumberEqualityMissingArg
+doTest testAssertNumberEqualityOK
+doTest testAssertNumberEqualityOKHeader
+doTest testAssertNumberEqualityKO
+doTest testAssertNumberEqualityKOHeader
+doTest testAssertNumberEqualityNotANumber
+
+# ASSERT_NUMBER_IS_NOT_EQUAL
+doTest testAssertNumberInequalityNoArg
+doTest testAssertNumberInequalityMissingArg
+doTest testAssertNumberInequalityOK
+doTest testAssertNumberInequalityOKHeader
+doTest testAssertNumberInequalityKO
+doTest testAssertNumberInequalityKOHeader
+doTest testAssertNumberInequalityNotANumber
 
 ### Tests result
 displaySuiteResults

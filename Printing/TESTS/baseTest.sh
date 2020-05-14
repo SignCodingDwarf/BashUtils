@@ -2,8 +2,8 @@
 
 # @file baseTest.sh
 # @author SignC0dingDw@rf
-# @version 1.2
-# @date 28 December 2019
+# @version 1.3
+# @date 14 May 2020
 # @brief Unit testing of base.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -15,7 +15,7 @@
 ###
 # MIT License
 #
-# Copyright (c) 2019 SignC0dingDw@rf
+# Copyright (c) 2020 SignC0dingDw@rf
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@
 ###
 
 ###
-# Copywrong (w) 2019 SignC0dingDw@rf. All profits reserved.
+# Copywrong (w) 2020 SignC0dingDw@rf. All profits reserved.
 #
 # This program is dwarven software: you can redistribute it and/or modify
 # it provided that the following conditions are met:
@@ -105,7 +105,7 @@ Cleanup()
 TestNoFormat()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.1"
  
     # Test format
     testFormat "\033[0m" "${NF}"
@@ -119,7 +119,7 @@ TestNoFormat()
 testDetectionStdOutput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.1"
 
     IsWrittenToTerminal 1 # Standard output to terminal
     local COMMAND_RESULT=$?
@@ -136,7 +136,7 @@ testDetectionStdOutput()
 testDetectionStdToFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.1"
 
     IsWrittenToTerminal 1 > /tmp/bar # Detection of redirection
     local COMMAND_RESULT=$?
@@ -153,7 +153,7 @@ testDetectionStdToFile()
 testDetectionNoInput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.1"
 
     IsWrittenToTerminal # No input
     local COMMAND_RESULT=$?
@@ -170,7 +170,7 @@ testDetectionNoInput()
 testDetectionErrOutput()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.1"
 
     IsWrittenToTerminal 2 > /tmp/bar # Error is not redirected
     local COMMAND_RESULT=$?
@@ -187,7 +187,7 @@ testDetectionErrOutput()
 testDetectionErrToFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.1"
 
     IsWrittenToTerminal 2 2> /tmp/bar # Detection of redirection
     local COMMAND_RESULT=$?
@@ -206,7 +206,7 @@ testDetectionErrToFile()
 TestFormattedPrintToFile()
 {
     ### Include tested script
-    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.0"
+    testScriptInclusion "${SCRIPT_LOCATION}/../base.sh" "1.1"
 
     # Compute printed text and expected text
     FormattedPrint 1 "Head Terminal : " " : Foot Terminal" "Head File : " " : Foot File" "A" "small" "text" > /tmp/bar
