@@ -1,0 +1,5 @@
+# Ignore package generated files
+bashutils_*
+bashutils/debian/bashutils*
+bashutils/debian/*debhelper*
+bashutils/debian/files

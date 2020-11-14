@@ -31,7 +31,9 @@ The folder __TestEnv__ provides you with an example docker file with all require
 
 To build container from Dockerfile run
 `cd TestEnv`
+
 `tag_name=$(cat tagName)`
+
 `docker build -t ${tag_name} .`
 
 #### Run Tests

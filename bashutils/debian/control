@@ -1,0 +1,19 @@
+Source: bashutils
+Section: libs
+Priority: optional
+Maintainer: SignCodingDwarf <dwarfcieofchaos@gmail.com>
+Build-Depends: debhelper (>=11~)
+Standards-Version: 4.1.4
+Homepage: https://github.com/SignCodingDwarf/BashUtils
+
+Package: bashutils
+Architecture: all
+Multi-Arch: foreign
+Depends: bash(>= 4.4), ${misc:Depends}
+Description: Bash utilities library and binaries
+ bashutils package provides a set of bash utility libraires that can be used in
+ bash scripts as well as a library used to perform unit testing of bash scripts.
+ .
+ Also provides binaries used to manage bash libraries that match the folder
+ structure of bashutils package. Management includes listing library content,
+ listing available tests and running one or more library unit tests.
