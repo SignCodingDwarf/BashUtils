@@ -81,8 +81,8 @@
 ### Get script location
 SCRIPT_LOCATION_RUN_TESTS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-. "${SCRIPT_LOCATION_RUN_TESTS_SH}/Printing/cmdHelp.sh"
-. "${SCRIPT_LOCATION_RUN_TESTS_SH}/Tools/tests.sh"
+. "${SCRIPT_LOCATION_RUN_TESTS_SH}/bashutils/contents/lib/Printing/cmdHelp.sh"
+. "${SCRIPT_LOCATION_RUN_TESTS_SH}/bashutils/contents/lib/Tools/tests.sh"
 
 ################################################################################
 ###                                                                          ###
@@ -90,7 +90,7 @@ SCRIPT_LOCATION_RUN_TESTS_SH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/nul
 ###                                                                          ###
 ################################################################################
 # Set module working directory
-SetModuleRoot ${SCRIPT_LOCATION_RUN_TESTS_SH}
+SetModuleRoot "${SCRIPT_LOCATION_RUN_TESTS_SH}/bashutils/contents/lib/"
 # Build list of modules
 ListModules
 

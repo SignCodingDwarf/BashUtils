@@ -25,6 +25,17 @@ If you already had a previous version of the library installed (based on **BASH_
 
 ### Test
 
+#### Test environment
+
+The folder __TestEnv__ provides you with an example docker file with all required packages to test BashUnit in a dedicated environment.
+
+To build container from Dockerfile run
+`cd TestEnv`
+`tag_name=$(cat tagName)`
+`docker build -t ${tag_name} .`
+
+#### Run Tests
+
 You can run unit tests of all the modules to check the library is working on your system using :
 
 `${BASH_UTILS_LIB}/runTests.sh`
