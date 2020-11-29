@@ -2,8 +2,8 @@
 
 # @file functionTest.sh
 # @author SignC0dingDw@rf
-# @version 2.3
-# @date 14 May 2020
+# @version 2.4
+# @date 29 November 2020
 # @brief Unit testing of function.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -79,7 +79,7 @@
 ###                                                                          ###
 ################################################################################
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../Tools/TESTS/testUtils.sh"
+. "${SCRIPT_LOCATION}/../../Tools/testUtils.sh"
 
 ################################################################################
 ###                                                                          ###

@@ -3,8 +3,8 @@
 ###
 # @file parseVersionTest.sh
 # @author SignC0dingDw@rf
-# @version 1.0
-# @date 23 December 2019
+# @version 1.1
+# @date 29 November 2020
 # @brief Unit testing of parseVersion.sh file. Reimplements BashUnit basic test features because it is used by this framework.
 ###
 
@@ -75,7 +75,7 @@
 ###                                                                          ###
 ################################################################################
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../Tools/TESTS/testUtils.sh"
+. "${SCRIPT_LOCATION}/../../Tools/testUtils.sh"
 
 
 ################################################################################

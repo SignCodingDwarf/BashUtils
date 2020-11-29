@@ -2,8 +2,8 @@
 
 # file :  declareDivertionTest.sh
 # author : SignC0dingDw@rf
-# version : 1.1
-# date : 14 May 2020
+# version : 1.2
+# date : 29 November 2020
 # Unit testing of declareDivertion.sh file.
 
 ### Exit Code
@@ -79,7 +79,7 @@
 ###                                                                          ###
 ################################################################################
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../../Tools/TESTS/testFunctions.sh"
+. "${SCRIPT_LOCATION}/../../../Tools/testFunctions.sh"
 
 ################################################################################
 ###                                                                          ###

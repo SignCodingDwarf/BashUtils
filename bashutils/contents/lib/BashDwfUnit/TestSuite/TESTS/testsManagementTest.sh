@@ -2,8 +2,8 @@
 
 # @file testsManagementTests.sh
 # @author SignC0dingDw@rf
-# @version 2.1
-# @date 14 May 2020
+# @version 2.2
+# @date 29 November 2020
 # @brief Unit testing of testsManagement.sh file. Does not implement BashUnit framework because it tests functions this framework uses.
 
 ### Exit Code
@@ -79,7 +79,7 @@
 ###                                                                          ###
 ################################################################################
 SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-. "${SCRIPT_LOCATION}/../../../Tools/TESTS/testFunctions.sh"
+. "${SCRIPT_LOCATION}/../../../Tools/testFunctions.sh"
 
 ################################################################################
 ###                                                                          ###
